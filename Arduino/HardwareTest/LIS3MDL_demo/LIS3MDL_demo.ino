@@ -28,15 +28,15 @@
 
 
 void write_i2c(int address,int subaddress, int data) {
-  //start the communication with IC with the address xx
-  Wire.beginTransmission(address); 
-  //send a bit and ask for register zero
-  Wire.write(subaddress);
+	//start the communication with IC with the address xx
+	Wire.beginTransmission(address); 
+	//send a bit and ask for register zero
+	Wire.write(subaddress);
 
-  Wire.write(data);
-    
-  //end transmission
-  Wire.endTransmission();
+	Wire.write(data);
+
+	//end transmission
+	Wire.endTransmission();
 }
 
 int read_i2c(int address,int subaddress) {
@@ -77,14 +77,14 @@ int read_i2c_16bit(int address,int subaddress) {
 }
 
 void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(9600);  
-  Wire.begin();  
+	// put your setup code here, to run once:
+	Serial.begin(9600);  
+	Wire.begin();  
 
-  write_i2c(I2C_DEVICE_ADDRESS,LIS3MDL_CTRL_REG1,0xf0); //enable temp sensor,  (ultra-high-performance mode for X and Y); DO = 100 (10 Hz ODR)
-    write_i2c(I2C_DEVICE_ADDRESS,LIS3MDL_CTRL_REG3,0x00); //continuous-conversion mode
-  write_i2c(I2C_DEVICE_ADDRESS,LIS3MDL_CTRL_REG4,0x0E); //Ultra-high-performance mode
-    write_i2c(I2C_DEVICE_ADDRESS,LIS3MDL_CTRL_REG5,0xC0); //fast read and bdu enable
+	write_i2c(I2C_DEVICE_ADDRESS,LIS3MDL_CTRL_REG1,0xf0); //enable temp sensor,  (ultra-high-performance mode for X and Y); DO = 100 (10 Hz ODR)
+	write_i2c(I2C_DEVICE_ADDRESS,LIS3MDL_CTRL_REG3,0x00); //continuous-conversion mode
+	write_i2c(I2C_DEVICE_ADDRESS,LIS3MDL_CTRL_REG4,0x0E); //Ultra-high-performance mode
+	write_i2c(I2C_DEVICE_ADDRESS,LIS3MDL_CTRL_REG5,0xC0); //fast read and bdu enable
 }
 
 
@@ -99,31 +99,31 @@ void loop() {
 
 	Serial.print("LIS3MDL_CTRL_REG1: ");
 	Serial.println(read_i2c(I2C_DEVICE_ADDRESS,LIS3MDL_CTRL_REG1),HEX);
- 
-  Serial.print("LIS3MDL_CTRL_REG2: ");
-  Serial.println(read_i2c(I2C_DEVICE_ADDRESS,LIS3MDL_CTRL_REG2),HEX);
 
-    Serial.print("LIS3MDL_CTRL_REG3: ");
-  Serial.println(read_i2c(I2C_DEVICE_ADDRESS,LIS3MDL_CTRL_REG3),HEX);
+	Serial.print("LIS3MDL_CTRL_REG2: ");
+	Serial.println(read_i2c(I2C_DEVICE_ADDRESS,LIS3MDL_CTRL_REG2),HEX);
 
-    Serial.print("LIS3MDL_CTRL_REG4: ");
-  Serial.println(read_i2c(I2C_DEVICE_ADDRESS,LIS3MDL_CTRL_REG4),HEX);
+	Serial.print("LIS3MDL_CTRL_REG3: ");
+	Serial.println(read_i2c(I2C_DEVICE_ADDRESS,LIS3MDL_CTRL_REG3),HEX);
 
-    Serial.print("LIS3MDL_CTRL_REG5: ");
-  Serial.println(read_i2c(I2C_DEVICE_ADDRESS,LIS3MDL_CTRL_REG5),HEX);
+	Serial.print("LIS3MDL_CTRL_REG4: ");
+	Serial.println(read_i2c(I2C_DEVICE_ADDRESS,LIS3MDL_CTRL_REG4),HEX);
+
+	Serial.print("LIS3MDL_CTRL_REG5: ");
+	Serial.println(read_i2c(I2C_DEVICE_ADDRESS,LIS3MDL_CTRL_REG5),HEX);
 
 
-  Serial.print("LIS3MDL_OUT_X: ");
-  Serial.println((signed short)read_i2c_16bit(I2C_DEVICE_ADDRESS,LIS3MDL_OUT_X_L));
+	Serial.print("LIS3MDL_OUT_X: ");
+	Serial.println((signed short)read_i2c_16bit(I2C_DEVICE_ADDRESS,LIS3MDL_OUT_X_L));
 
-    Serial.print("LIS3MDL_OUT_Y: ");
-  Serial.println((signed short)read_i2c_16bit(I2C_DEVICE_ADDRESS,LIS3MDL_OUT_Y_L));
+	Serial.print("LIS3MDL_OUT_Y: ");
+	Serial.println((signed short)read_i2c_16bit(I2C_DEVICE_ADDRESS,LIS3MDL_OUT_Y_L));
 
-    Serial.print("LIS3MDL_OUT_Z: ");
-  Serial.println((signed short)read_i2c_16bit(I2C_DEVICE_ADDRESS,LIS3MDL_OUT_Z_L));
+	Serial.print("LIS3MDL_OUT_Z: ");
+	Serial.println((signed short)read_i2c_16bit(I2C_DEVICE_ADDRESS,LIS3MDL_OUT_Z_L));
 
-      Serial.print("LIS3MDL_TEMP_OUT: ");
-  Serial.println(((signed short)read_i2c_16bit(I2C_DEVICE_ADDRESS,LIS3MDL_TEMP_OUT_L))/8 + 25);
+	Serial.print("LIS3MDL_TEMP_OUT: ");
+	Serial.println(((signed short)read_i2c_16bit(I2C_DEVICE_ADDRESS,LIS3MDL_TEMP_OUT_L))/8 + 25);
 
 
 	delay(1000); 
