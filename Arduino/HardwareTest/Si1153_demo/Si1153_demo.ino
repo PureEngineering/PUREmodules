@@ -12,85 +12,63 @@
 #define SI1153_IRQ_STATUS (0x12)
 #define SI1153_HOSTOUT(x) (0x13+x)
 
-#define MEAS_RATE      0x08
-#define ALS_RATE       0x09
-#define PS_RATE        0x0A
-
-#define ALS_LOW_TH0    0x0B
-#define ALS_LOW_TH1    0x0C
-#define ALS_HI_TH0     0x0D
-#define ALS_HI_TH1     0x0E
-
-#define PS_LED21       0x0F
-#define PS_LED3        0x10
-
-#define PS1_TH0        0x11
-#define PS1_TH1        0x12
-#define PS2_TH0        0x13
-#define PS2_TH1        0x14
-#define PS3_TH0        0x15
-
-#define PS3_TH1        0x16
-#define PARAM_WR       0x17
-#define COMMAND        0x18
-
-#define RESPONSE       0x20
-#define IRQ_STATUS     0x21
-
-#define ALS_VIS_DATA0  0x22
-#define ALS_VIS_DATA1  0x23
-#define ALS_IR_DATA0   0x24
-#define ALS_IR_DATA1   0x25
-
-#define PS1_DATA0      0x26
-#define PS1_DATA1      0x27
-#define PS2_DATA0      0x28
-#define PS2_DATA1      0x29
-#define PS3_DATA0      0x2A
-#define PS3_DATA1      0x2B
-
-
-#define AUX_DATA0      0x2C
-#define AUX_DATA1      0x2D
-
-#define PARAM_RD       0x2E
-#define CHIP_STAT      0x30
-#define ANA_IN_KEY     0x3B
-
-// ram addresses
-
-#define I2C_ADDR                  0x00
-#define CHLIST                    0x01
-#define PSLED12_SELECT            0x02  
-#define PSLED3_SELECT             0x03
-#define PS_ENCODING               0x05
-#define ALS_ENCODING              0x06
-#define PS1_ADCMUX                0x07
-#define PS2_ADCMUX                0x08
-#define PS3_ADCMUX                0x09
-#define PS_ADC_COUNTER            0x0A
-#define PS_ADC_GAIN               0x0B
-#define PS_ADC_MISC               0x0C
-#define ALS_IR_ADCMUX             0x0E
-#define AUX_ADCMUX                0x0F
-#define ALS_VIS_ADC_COUNTER       0x10
-#define ALS_VIS_ADC_GAIN          0x11
-#define ALS_VIS_ADC_MISC          0x12
-#define ALS_HYST                  0x16
-#define PS_HYST                   0x17
-#define PS_HISTORY                0x18
-#define ALS_HISTORY               0x19
-#define ADC_OFFSET                0x1A
-#define LED_REC                   0x1C
-#define ALS_IR_ADC_COUNTER        0x1D
-#define ALS_IR_ADC_GAIN           0x1E
-#define ALS_IR_ADC_MISC           0x1F
+ #define SI1153_I2C_ADDR (0x00)
+ #define SI1153_CHAN_LIST (0x01)
+ #define SI1153_ADCCONFIG0 (0x02)
+ #define SI1153_ADCSENS0 (0x03)
+ #define SI1153_ADCPOST0 (0x04)
+ #define SI1153_MEASCONFIG0 (0x05)
+ #define SI1153_ADCCONFIG1 (0x06)
+ #define SI1153_ADCSENS1 (0x07)
+ #define SI1153_ADCPOST1 (0x08)
+ #define SI1153_MEASCONFIG1 (0x09)
+ #define SI1153_ADCCONFIG2 (0x0A)
+ #define SI1153_ADCSENS2 (0x0B)
+ #define SI1153_ADCPOST2 (0x0C)
+ #define SI1153_MEASCONFIG2 (0x0D)
+ #define SI1153_ADCCONFIG3 (0x0E)
+ #define SI1153_ADCSENS3 (0x0F)
+ #define SI1153_ADCPOST3 (0x10)
+ #define SI1153_MEASCONFIG3 (0x11)
+ #define SI1153_ADCCONFIG4 (0x12)
+ #define SI1153_ADCSENS4 (0x13)
+ #define SI1153_ADCPOST4 (0x14)
+ #define SI1153_MEASCONFIG4 (0x15)
+ #define SI1153_ADCCONFIG5 (0x16)
+ #define SI1153_ADCSENS5 (0x17)
+ #define SI1153_ADCPOST5 (0x18)
+ #define SI1153_MEASCONFIG5 (0x19)
+ #define SI1153_MEASRATE_H (0x1A)
+ #define SI1153_MEASRATE_L (0x1B)
+ #define SI1153_MEASCOUNT0 (0x1C)
+ #define SI1153_MEASCOUNT1 (0x1D)
+ #define SI1153_MEASCOUNT2 (0x1E)
+ #define SI1153_THRESHOLD0_H (0x25)
+ #define SI1153_THRESHOLD0_L (0x26)
+ #define SI1153_THRESHOLD1_H (0x27)
+ #define SI1153_THRESHOLD1_L (0x28)
+ #define SI1153_THRESHOLD2_H (0x29)
+ #define SI1153_THRESHOLD2_L (0x2A)
+ #define SI1153_BURST BURST (0x2B)
 
 
 void setup() {
 	// put your setup code here, to run once:
 	Serial.begin(9600);  
 	Wire.begin();  
+}
+
+
+void write_i2c(int address,int subaddress, int data) {
+  //start the communication with IC with the address xx
+  Wire.beginTransmission(address); 
+  //send a bit and ask for register zero
+  Wire.write(subaddress);
+
+  Wire.write(data);
+
+  //end transmission
+  Wire.endTransmission();
 }
 
 int read_i2c(int address,int subaddress) {
@@ -107,6 +85,71 @@ int read_i2c(int address,int subaddress) {
 	//put the temperature in variable c
 	int d = Wire.read();   
 	return d;
+}
+
+int read_i2c_16bit(int address,int subaddress) {
+  //start the communication with IC with the address xx
+  Wire.beginTransmission(address); 
+  //send a bit and ask for register zero
+  Wire.write(subaddress);
+  //end transmission
+  Wire.endTransmission();
+  //request 2 byte from address xx
+  Wire.requestFrom(address, 2);
+  //wait for response
+  while(Wire.available() == 0);
+  //put the temperature in variable c
+  int d = Wire.read()<<8;   
+
+  while(Wire.available() == 0);
+  //put the temperature in variable c
+  d |= Wire.read();   
+
+  return d;
+}
+
+int write_prameter(int i2c_address,unsigned char command, unsigned char data)
+{
+  Wire.beginTransmission(i2c_address); 
+  //send a bit and ask for register zero
+  Wire.write(i2c_address);
+
+  Wire.write(SI1153_HOSTIN0);
+  Wire.write(data);
+    Wire.write(command);
+
+  //end transmission
+  Wire.endTransmission();
+  
+    Wire.requestFrom(i2c_address, 1);
+  //wait for response
+  while(Wire.available() == 0);
+  //put the temperature in variable c
+  int d = Wire.read();   
+  return d;
+  
+}
+
+
+int read_prameter(int i2c_address,unsigned char command)
+{
+  Wire.beginTransmission(i2c_address); 
+  //send a bit and ask for register zero
+  Wire.write(i2c_address);
+
+  Wire.write(SI1153_COMMAND);
+    Wire.write(command);
+
+  //end transmission
+  Wire.endTransmission();
+  
+    Wire.requestFrom(i2c_address, 1);
+  //wait for response
+  while(Wire.available() == 0);
+  //put the temperature in variable c
+  int d = Wire.read();   
+  return d;
+  
 }
 
 void loop() {
