@@ -5,13 +5,10 @@
 //#define I2C_DEVICE_ADDRESS (0x19) //ADDRESS PULLED HIGH 
 
 
-#define LIS2DH_REG_STATUS1       0x07
-#define LIS2DH_REG_OUTADC1_L     0x08
-#define LIS2DH_REG_OUTADC1_H     0x09
-#define LIS2DH_REG_OUTADC2_L     0x0A
-#define LIS2DH_REG_OUTADC2_H     0x0B
-#define LIS2DH_REG_OUTADC3_L     0x0C
-#define LIS2DH_REG_OUTADC3_H     0x0D
+#define LIS2DH_REG_STATUS_AUX    0x07
+
+#define LIS2DH_REG_TEMP_L        0x0C
+#define LIS2DH_REG_TEMP_H        0x0D
 #define LIS2DH_REG_INTCOUNT      0x0E
 #define LIS2DH_REG_WHOAMI        0x0F
 #define LIS2DH_REG_TEMPCFG       0x1F
@@ -22,13 +19,13 @@
 #define LIS2DH_REG_CTRL5         0x24
 #define LIS2DH_REG_CTRL6         0x25
 #define LIS2DH_REG_REFERENCE     0x26
-#define LIS2DH_REG_STATUS2       0x27
+#define LIS2DH_REG_STATUS        0x27
 
-#define LIS2DH_REG_OUT_X       0x29
+#define LIS2DH_REG_OUT_X         0x29
 
-#define LIS2DH_REG_OUT_Y       0x2B
+#define LIS2DH_REG_OUT_Y         0x2B
 
-#define LIS2DH_REG_OUT_Z       0x2D
+#define LIS2DH_REG_OUT_Z         0x2D
 #define LIS2DH_REG_FIFOCTRL      0x2E
 #define LIS2DH_REG_FIFOSRC       0x2F
 #define LIS2DH_REG_INT1CFG       0x30
@@ -98,7 +95,10 @@ void setup() {
 	Serial.begin(115200);  
 	Wire.begin();  
 
-write_i2c(I2C_DEVICE_ADDRESS,LIS2DH_REG_CTRL1,0x97); //power on all axis, max sample rate(5.376 kHz)
+  write_i2c(I2C_DEVICE_ADDRESS,LIS2DH_REG_CTRL1,0x97); //power on all axis, max sample rate(5.376 kHz)
+  
+  write_i2c(I2C_DEVICE_ADDRESS,LIS2DH_REG_TEMPCFG,0xC0); //enable temperature Sensor
+  write_i2c(I2C_DEVICE_ADDRESS,LIS2DH_REG_CTRL4,0x80); //Block data update enable to read out temperature data
 
 }
 
@@ -107,7 +107,7 @@ void loop() {
 	int i;
 
 	Serial.println("___________________________________________________________");
-	Serial.println("LIS3MDL Register's");
+	Serial.println("LIS2DH Register's");
 
 	Serial.print("LIS2DH_REG_WHOAMI (0x33): ");
 	Serial.println(read_i2c(I2C_DEVICE_ADDRESS,LIS2DH_REG_WHOAMI),HEX);
@@ -122,6 +122,8 @@ void loop() {
 	Serial.print("LIS2DH_REG_OUT_Z_L: ");
 	Serial.println((signed char)read_i2c(I2C_DEVICE_ADDRESS,LIS2DH_REG_OUT_Z));
 
+  Serial.print("LIS2DH_REG_TEMP_L: ");
+  Serial.println((signed char)read_i2c_16bit(I2C_DEVICE_ADDRESS,LIS2DH_REG_TEMP_L));
 
 	delay(1000); 
 }
