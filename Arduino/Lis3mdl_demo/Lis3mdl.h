@@ -11,7 +11,7 @@ class Lis3mdl
 
 		typedef enum {
 			
-			DEVICE_ADDRESS = 0x1E	
+		DEVICE_ADDRESS = 0x1E	
 
 		} UnitAddress;
 
@@ -43,7 +43,7 @@ class Lis3mdl
 		Lis3mdl();
 		void write_byte(uint8_t addr, uint8_t subAddress, uint8_t data);
 		int read_byte(uint8_t addr, uint8_t subAddress);
-    int read_2bytes(uint8_t addr, uint8_t subAddress);
+    		int read_2bytes(uint8_t addr, uint8_t subAddress);
 
 	};
 #endif
