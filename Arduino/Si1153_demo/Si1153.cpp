@@ -45,18 +45,17 @@ int Si1153::read_register(uint8_t addr, uint8_t reg){
 void Si1153::param_set(uint8_t loc, uint8_t val){
 	
 	while(1){
-
-        //Check the current state of Command_CTR register. This will be used to see if write was successful.
+		//Check the current state of Command_CTR register. This will be used to see if write was successful.
 		int CMMND_CTR = Si1153::read_register(Si1153::DEVICE_ADDRESS,Si1153::RESPONSE0); 
 
-        //Write data to INPUT0 register
+		//Write data to INPUT0 register
 		Si1153::write_data(Si1153::DEVICE_ADDRESS,Si1153::HOSTIN0,val,1);
 
-        //Write location (location of param to set) to COMMAND Register
-        uint8_t location = loc | (0B10<<6);
+		//Write location (location of param to set) to COMMAND Register
+		uint8_t location = loc | (0B10<<6);
 		Si1153::write_data(Si1153::DEVICE_ADDRESS,Si1153::COMMAND,location,1);
 
-        //If response has incremented then Write was Successful
+		//If response has incremented then Write was Successful
 		int response = Si1153::read_register(Si1153::DEVICE_ADDRESS,Si1153::RESPONSE0);
 		if (response > CMMND_CTR){
 			break;
@@ -67,24 +66,22 @@ void Si1153::param_set(uint8_t loc, uint8_t val){
 /**
  *   Code used to read the current Parameters values.
  */
-
 int Si1153::param_query(uint8_t loc){
 
 	int result = -1;
 
 	while(1){
-
-        //Check the current state of Command_CTR register. This will be used to see if write was successful.
+        	//Check the current state of Command_CTR register. This will be used to see if write was successful.
 		int CMMND_CTR = Si1153::read_register(Si1153::DEVICE_ADDRESS,Si1153::RESPONSE0);
 
-        //Write location (location of param to set) to COMMAND Register
-        uint8_t location = loc | (0B01<<6);
+        	//Write location (location of param to set) to COMMAND Register
+        	uint8_t location = loc | (0B01<<6);
 		Si1153::write_data(Si1153::DEVICE_ADDRESS,Si1153::COMMAND,location,1);
 
-        //If response has incremented then Write was Successful
+        	//If response has incremented then Write was Successful
 		int response = Si1153::read_register(Si1153::DEVICE_ADDRESS,Si1153::RESPONSE0);
 		if(response>CMMND_CTR){
-            //Read the param value from the Response1 Register
+           		 //Read the param value from the Response1 Register
 			result = Si1153::read_register(Si1153::DEVICE_ADDRESS,Si1153::RESPONSE1);
 			break;
 		}
