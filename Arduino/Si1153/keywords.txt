@@ -1,0 +1,8 @@
+Si1153	KEYWORD1
+config_channel	KEYWORD2
+write_data	KEYWORD2
+read_register	KEYWORD2
+param_set	KEYWORD2
+param_query	KEYWORD2
+send_command	KEYWORD2
+get_int_from_bytes	KEYWORD2
