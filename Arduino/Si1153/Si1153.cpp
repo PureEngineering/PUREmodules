@@ -59,7 +59,6 @@ void Si1153::param_set(uint8_t loc, uint8_t val){
 	uint8_t packet[2];
 
 	while(1){
-
 		int cmmnd_ctr = Si1153::read_register(Si1153::DEVICE_ADDRESS, Si1153::RESPONSE_0, 1);
 
 		packet[0] = Si1153::HOSTIN_0;
@@ -75,7 +74,6 @@ void Si1153::param_set(uint8_t loc, uint8_t val){
 		if(r > cmmnd_ctr){
 			break;
 		}
-
 	} 
 }
 
@@ -103,7 +101,7 @@ int Si1153::param_query(uint8_t loc){
 
 	return result;
 }
-G
+
 /**
  * Sends command to the command register
  */
@@ -139,3 +137,4 @@ int Si1153::get_int_from_bytes(uint8_t *data, size_t len){
 
 	return result;
 }
+
