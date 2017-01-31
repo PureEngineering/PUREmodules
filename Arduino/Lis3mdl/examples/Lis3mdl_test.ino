@@ -1,10 +1,11 @@
+//Magnetometer
 #include "Lis3mdl.h"
 
 Lis3mdl lis3mdl;
 
 void setup(){
   Wire.begin();
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   //Turn on Temp Sensor, Set X and Y mode to Ultra-high-Performance, 10 Hz data rate
   lis3mdl.write_byte(Lis3mdl::DEVICE_ADDRESS, Lis3mdl::CTRL_REG1,0xf0);
@@ -22,9 +23,9 @@ void setup(){
 
 void loop(){
   int whoAmI_response;
-  int output_X;
-  int output_Y;
-  int output_Z;
+  int16_t output_X;
+  int16_t output_Y;
+  int16_t output_Z;
   int output_temp;
   
   Serial.print("Lis3mdl WHO_AM_I (Should be 0x3D) ");
