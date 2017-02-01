@@ -54,3 +54,40 @@ int Lis3mdl::read_byte(uint8_t addr, uint8_t subAddress){
     return val;                          //Return Value
  }
 
+
+uint8_t Lis3mdl::begin(){
+
+    uint8_t CTRL1_WORD = 0x00;
+    CTRL1_WORD  = (settings.TEMP_EN  <<7)  & 0xF0;        
+    CTRL1_WORD |= (settings.OM       <<5)  & 0x60;
+    CTRL1_WORD |= (settings.DO       <<2)  & 0x1C;
+    CTRL1_WORD |= (settings.FAST_ODR <<1)  & 0x02;
+    CTRL1_WORD |= (settings.ST          )  & 0x01;
+    write_byte(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::CTRL_REG1,CTRL1_WORD);
+
+
+    uint8_t CTRL2_WORD = 0x00;
+    CTRL2_WORD  = (settings.FS       <<5)  & 0x60;        
+    CTRL2_WORD |= (settings.REBOOT   <<3)  & 0x08;
+    CTRL2_WORD |= (settings.SOFT_RST <<2)  & 0x04;
+    write_byte(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::CTRL_REG2,CTRL2_WORD);
+
+    uint8_t CTRL3_WORD = 0x00;
+    CTRL3_WORD  = (settings.LP       <<5)  & 0x20;        
+    CTRL3_WORD |= (settings.SIM      <<2)  & 0x04;
+    CTRL3_WORD |= (settings.MD          )  & 0x03;
+    write_byte(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::CTRL_REG3,CTRL3_WORD);
+
+
+    uint8_t CTRL4_WORD = 0x00;
+    CTRL4_WORD  = (settings.OMZ      <<2)  & 0x0C;        
+    CTRL4_WORD |= (settings.BLE      <<1)  & 0x02;
+    write_byte(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::CTRL_REG4,CTRL4_WORD);
+
+
+    uint8_t CTRL5_WORD = 0x00;
+    CTRL5_WORD  = (settings.FAST_READ  <<7)  & 0x80;        
+    CTRL5_WORD |= (settings.BDU        <<6)  & 0x40;
+    write_byte(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::CTRL_REG5,CTRL5_WORD);
+
+}

@@ -40,10 +40,40 @@ class Lis3mdl
 
 		} registerAddress;
 
+		struct SensorSettings
+		{
+			public:
+
+				//CTRL1
+				uint8_t TEMP_EN  = 0x00;
+				uint8_t OM       = 0x00;
+				uint8_t DO       = 0x04;
+				uint8_t FAST_ODR = 0x00;
+				uint8_t ST       = 0x00;
+				//CTRL2
+				uint8_t FS       = 0x00;
+				uint8_t REBOOT   = 0x00;
+				uint8_t SOFT_RST = 0x00;
+				//CTRL3
+				uint8_t LP       = 0x00;
+				uint8_t SIM      = 0x00;
+				uint8_t MD       = 0x03;
+				//CTRL4
+				uint8_t OMZ      = 0x00;
+				uint8_t BLE      = 0x00;
+				//CTRL5
+				uint8_t FAST_READ= 0x00;
+				uint8_t BDU      = 0x00;
+		};
+
+
+
 		Lis3mdl();
+		SensorSettings settings;
 		void write_byte(uint8_t addr, uint8_t subAddress, uint8_t data);
 		int read_byte(uint8_t addr, uint8_t subAddress);
     	int read_2bytes(uint8_t addr, uint8_t subAddress);
+    	uint8_t begin(void);
 
 	};
 #endif
