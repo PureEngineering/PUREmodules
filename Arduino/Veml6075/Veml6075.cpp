@@ -40,16 +40,17 @@ void Veml6075::write_2bytes(uint8_t addr, uint8_t subAddress, uint8_t data_LSB, 
  }
 
 uint8_t Veml6075::begin(){
-    uint8_t UV_CONF_WORD = 0;
+    uint8_t UV_CONF_WORD = 0x00;
 
-    UV_CONF_WORD = (settings.UV_IT <<4   )  & 0xE0;        
-    UV_CONF_WORD |= (settings.HD   <<3   )  & 0x80;
-    UV_CONF_WORD |= (settings.UV_TRIG<<2 )  & 0x40;
+    UV_CONF_WORD  = (settings.UV_IT   <<4)  & 0x70;        
+    UV_CONF_WORD |= (settings.HD      <<3)  & 0x08;
+    UV_CONF_WORD |= (settings.UV_TRIG <<2)  & 0x04;
     UV_CONF_WORD |= (settings.UV_AF   <<1)  & 0x02;
-    UV_CONF_WORD |= (settings.Veml6075_SD)  & 0x80;
+    UV_CONF_WORD |= (settings.Veml6075_SD)  & 0x01;
 
 
     write_2bytes(Veml6075::DEVICE_ADDRESS,Veml6075::UV_CONF,UV_CONF_WORD,0x00);
+
 
 } 
 
