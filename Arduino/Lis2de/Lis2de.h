@@ -55,10 +55,60 @@ class Lis2de
 
 		} registerAddress;
 
+
+		struct SensorSettings
+		{
+			public:
+				uint8_t TEMP_ENABLE = 0x00;
+				//CTRL1
+				uint8_t ODR = 0x00;
+				uint8_t LPEN= 0x00;
+				uint8_t ZEN = 0x01;
+				uint8_t YEN = 0x01;
+				uint8_t XEN = 0x01;
+				//CTRL2
+				uint8_t HPM = 0x00;
+				uint8_t HPCF = 0x00;
+				uint8_t FDS = 0x00;
+				uint8_t HPCLICK = 0x00;
+				uint8_t HPIS2 = 0x00;
+				uint8_t HPIS1 = 0x00;
+				//CTRL3
+				uint8_t INT1_CLICK = 0x00;
+				uint8_t INT1_IG1 = 0x00;
+				uint8_t INT1_IG2 = 0x00;
+				uint8_t INT1_DRDY1 = 0x00;
+				uint8_t INT1_DRDY2 = 0x00;
+				uint8_t INT1_WTM = 0x00;
+				uint8_t INT1_OVERRUN = 0x00;
+				//CTRL4
+				uint8_t BDU = 0x00;
+				uint8_t FS  = 0x00;
+				uint8_t ST  = 0x00;
+				uint8_t SIM = 0x00;
+				//CTRL5
+				uint8_t BOOT = 0x00;
+				uint8_t FIFO_EN = 0x00;
+				uint8_t LIR_IG1 = 0x00;
+				uint8_t D4D_IG1 = 0x00;
+				uint8_t LIR_IG2 = 0x00;
+				uint8_t D4D_IG2 = 0x00;
+				//CTRL6
+				uint8_t INT2_CLICK = 0x00;
+				uint8_t INT2_IG1 = 0x00;
+				uint8_t INT2_IG2 = 0x00;
+				uint8_t INT2_BOOT = 0x00;
+				uint8_t INT2_ACT = 0x00;
+				uint8_t H_LACTIVE = 0x00;
+		};
+
+
 		Lis2de();
+		SensorSettings settings;
 		void write_byte(uint8_t addr, uint8_t subAddress, uint8_t data);
 		int read_byte(uint8_t addr, uint8_t subAddress);
     	int read_2bytes(uint8_t addr, uint8_t subAddress);
+    	uint8_t begin(void);
 
 	};
 #endif

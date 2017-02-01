@@ -54,3 +54,65 @@ int Lis2de::read_byte(uint8_t addr, uint8_t subAddress){
     return val;                          //Return Value
  }
 
+
+uint8_t Lis2de::begin(){
+
+    uint8_t TEMPCFG_WORD = (settings.TEMP_ENABLE<<6);
+    write_byte(Lis2de::DEVICE_ADDRESS,Lis2de::TEMPCFG,TEMPCFG_WORD);
+
+    uint8_t CTRL1_WORD = 0x00;
+    CTRL1_WORD  = (settings.ODR     <<4)  & 0xF0;        
+    CTRL1_WORD |= (settings.LPEN    <<3)  & 0x08;
+    CTRL1_WORD |= (settings.ZEN     <<2)  & 0x04;
+    CTRL1_WORD |= (settings.YEN     <<1)  & 0x02;
+    CTRL1_WORD |= (settings.XEN        )  & 0x01;
+    write_byte(Lis2de::DEVICE_ADDRESS,Lis2de::CTRL1,CTRL1_WORD);
+
+
+    uint8_t CTRL2_WORD = 0x00;
+    CTRL2_WORD  = (settings.HPM     <<6)  & 0xC0;        
+    CTRL2_WORD |= (settings.HPCF    <<4)  & 0x30;
+    CTRL2_WORD |= (settings.FDS     <<3)  & 0x08;
+    CTRL2_WORD |= (settings.HPCLICK <<2)  & 0x04;
+    CTRL2_WORD |= (settings.HPIS2   <<1)  & 0x02;
+    CTRL2_WORD |= (settings.HPIS1      )  & 0x01;
+    write_byte(Lis2de::DEVICE_ADDRESS,Lis2de::CTRL2,CTRL2_WORD);
+
+    uint8_t CTRL3_WORD = 0x00;
+    CTRL3_WORD  = (settings.INT1_CLICK  <<7)  & 0x80;        
+    CTRL3_WORD |= (settings.INT1_IG1    <<6)  & 0x40;
+    CTRL3_WORD |= (settings.INT1_IG2    <<5)  & 0x20;
+    CTRL3_WORD |= (settings.INT1_DRDY1  <<4)  & 0x10;
+    CTRL3_WORD |= (settings.INT1_DRDY2  <<3)  & 0x08;
+    CTRL3_WORD |= (settings.INT1_WTM    <<2)  & 0x04;
+    CTRL3_WORD |= (settings.INT1_OVERRUN<<1)  & 0x02;
+    write_byte(Lis2de::DEVICE_ADDRESS,Lis2de::CTRL3,CTRL3_WORD);
+
+
+    uint8_t CTRL4_WORD = 0x00;
+    CTRL4_WORD  = (settings.BDU     <<7)  & 0x80;        
+    CTRL4_WORD |= (settings.FS      <<4)  & 0x30;
+    CTRL4_WORD |= (settings.ST      <<1)  & 0x06;
+    CTRL4_WORD |= (settings.SIM        )  & 0x01;
+    write_byte(Lis2de::DEVICE_ADDRESS,Lis2de::CTRL4,CTRL4_WORD);
+
+
+    uint8_t CTRL5_WORD = 0x00;
+    CTRL5_WORD  = (settings.BOOT       <<7)  & 0x80;        
+    CTRL5_WORD |= (settings.FIFO_EN    <<6)  & 0x40;
+    CTRL5_WORD |= (settings.LIR_IG1    <<3)  & 0x08;
+    CTRL5_WORD |= (settings.D4D_IG1    <<2)  & 0x04;
+    CTRL5_WORD |= (settings.LIR_IG2    <<1)  & 0x02;
+    CTRL5_WORD |= (settings.D4D_IG2       )  & 0x01;
+    write_byte(Lis2de::DEVICE_ADDRESS,Lis2de::CTRL5,CTRL5_WORD);
+
+    uint8_t CTRL6_WORD = 0x00;
+    CTRL6_WORD  = (settings.INT2_CLICK  <<7)  & 0x80;        
+    CTRL6_WORD |= (settings.INT2_IG1    <<6)  & 0x40;
+    CTRL6_WORD |= (settings.INT2_IG2    <<5)  & 0x20;
+    CTRL6_WORD |= (settings.INT2_BOOT   <<4)  & 0x10;
+    CTRL6_WORD |= (settings.INT2_ACT    <<3)  & 0x08;
+    CTRL6_WORD |= (settings.H_LACTIVE   <<1)  & 0x02;
+    write_byte(Lis2de::DEVICE_ADDRESS,Lis2de::CTRL6,CTRL6_WORD);
+
+}
