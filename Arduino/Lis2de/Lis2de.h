@@ -59,6 +59,7 @@ class Lis2de
 		struct SensorSettings
 		{
 			public:
+				
 				uint8_t TEMP_ENABLE = 0x00;
 				//CTRL1
 				uint8_t ODR = 0x00;
