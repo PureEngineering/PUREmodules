@@ -2,65 +2,80 @@
 
 Si1153 si1153;
 
-/**
- * Setup for configuration
- */
 void setup() {
-
-    uint8_t conf[4];
+  // put your setup code here, to run once:
   
-    Wire.begin();
-    Serial.begin(9600);
+  uint8_t ADCCONFIGx;
+  uint8_t ADCSENSx;
+  uint8_t ADCPOSTx;
+  uint8_t MEASCONFIGx;
+  uint8_t configurations[4];
+  Wire.begin();
+  Serial.begin(9600);
+  
+  //Configure CHAN_LIST (Each bit represents a channel). This code enables channel 1 and 3.
+  si1153.param_set(Si1153::CHAN_LIST, 0B00001010);
 
-    // Configure CHAN_LIST, enable channel 1 and 3
-    si1153.param_set(Si1153::CHAN_LIST, 0B001010 >> 2);
+  /*
+   * Configure timing parameters
+   */
+  
+  //Set base period of 800us
+  si1153.param_set(Si1153::MEASRATE_H, 0); 
+  si1153.param_set(Si1153::MEASRATE_L, 1);
 
-    /*
-     * Configure timing parameters
-     */
-    si1153.param_set(Si1153::MEASRATE_H, 0);
-    si1153.param_set(Si1153::MEASRATE_L, 1);
-    si1153.param_set(Si1153::MEASCOUNT_0, 5);
-    si1153.param_set(Si1153::MEASCOUNT_1, 10);
-    si1153.param_set(Si1153::MEASCOUNT_2, 0);
+  //These three values are used by  MEASCONFIGx per channel to decide on the period per channel
+  si1153.param_set(Si1153::MEASCOUNT_0, 5); //Selecting Meascount = 5 sets the period to 4ms
+  si1153.param_set(Si1153::MEASCOUNT_1, 10);//Selecting Meascount = 10 sets the period to 8ms
+  si1153.param_set(Si1153::MEASCOUNT_2, 10);
 
-    /*
-     * Configuration for channel 1
-     */
-    conf[0] = 0B00000000;
-    conf[1] = 0B00000010, 
-    conf[2] = 0B01000000;
-    conf[3] = 0B01000001;
-    
-    si1153.config_channel(1, conf);
+  //Setup Channel 1
+  ADCCONFIGx=  0B00000000;  //Set Decim_rate to 0.
+  ADCSENSx=    0B00000010;  //Set SW_gain to 0 and HW_GAIN to 2.
+  ADCPOSTx=    0B01000000;  
+  MEASCONFIGx= 0B01000001;  //MEASCONFIG[7:6] selects which MEASCOUNT to use for period. This selects MEASCOUNT1.
+  
+  configurations[0] = ADCCONFIGx;
+  configurations[1] = ADCSENSx;
+  configurations[2] = ADCPOSTx;
+  configurations[3] = MEASCONFIGx;
 
-    /*
-     * Configuation for channel 3
-     */
-    conf[0] = 0B00000000;
-    conf[1] = 0B00000011, 
-    conf[2] = 0B01000000;
-    conf[3] = 0B10000001;
+  si1153.config_channel(1,configurations);
 
-    si1153.config_channel(3, conf);
+  //Setup Channel 3
+  ADCCONFIGx=  0B00000000;   //Set Decim_rate to 0.
+  ADCSENSx=    0B00000010;   //Set SW_gain to 0 and HW_Gain to 2.
+  ADCPOSTx=    0B01000000;
+  MEASCONFIGx= 0B10000001;   //MEASCONFIG[7:6] selects which MEASCOUNT to use for period. This selects MEASCOUNT2.
 
-    // Send start command
-    si1153.send_command(Si1153::START);
-    
+  configurations[0] = ADCCONFIGx;
+  configurations[1] = ADCSENSx;
+  configurations[2] = ADCPOSTx;
+  configurations[3] = MEASCONFIGx;
+
+  si1153.config_channel(3,configurations);
+
+  si1153.send_command(Si1153::START);     //Start the system
 }
 
-/**
- * Loops and reads data from registers
- */
 void loop() {
-
+    Serial.println("Starting");
     uint8_t data[3];
-
-    data[0] = si1153.read_register(Si1153::DEVICE_ADDRESS, Si1153::HOSTOUT_0, 1);
-    data[1] = si1153.read_register(Si1153::DEVICE_ADDRESS, Si1153::HOSTOUT_1, 1);
-    data[2] = si1153.read_register(Si1153::DEVICE_ADDRESS, Si1153::HOSTOUT_2, 1);
-
-    Serial.println(si1153.get_int_from_bytes(data, sizeof(data)));
+    uint8_t channel3_data[3];
     
-    delay(100);
+    data[0] = si1153.read_byte(Si1153::DEVICE_ADDRESS, Si1153::HOSTOUT0);
+    data[1] = si1153.read_byte(Si1153::DEVICE_ADDRESS, Si1153::HOSTOUT1);
+    data[2] = si1153.read_byte(Si1153::DEVICE_ADDRESS, Si1153::HOSTOUT2);
+    Serial.print("Channel 1 Output: ");
+    Serial.println(si1153.bytes_to_int(data, sizeof(data)));
+
+    //Uncomment this code to see Channel 3's Output
+    /*channel3_data[0] = si1153.read_byte(Si1153::DEVICE_ADDRESS, Si1153::HOSTOUT3);
+    channel3_data[1] = si1153.read_byte(Si1153::DEVICE_ADDRESS, Si1153::HOSTOUT4);
+    channel3_data[2] = si1153.read_byte(Si1153::DEVICE_ADDRESS, Si1153::HOSTOUT5);
+    Serial.print("Channel 3 Output: ");
+    Serial.println(si1153.bytes_to_int(channel3_data, sizeof(channel3_data)));
+    */
+    delay(250);
+
 }
