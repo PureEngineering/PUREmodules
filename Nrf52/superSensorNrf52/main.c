@@ -20,6 +20,8 @@
 #include "lis2de.c"
 #include "vl53l0.c"
 #include "si1153.c"
+#include "veml6075.c"
+//#include "SparkFunBME280.h"
 
 
 /**
@@ -112,21 +114,27 @@ int main(void)
             //bsp_board_led_invert(0);
             break;
         case 'r':
-            vl53l0_init(m_twi_master);
-            run_vl53l0(m_twi_master);
-            bsp_board_led_invert(0);
-            break;         
-        case 't':
-            si1153_init(m_twi_master);
-            bsp_board_led_invert(0);
+            veml6075_init(m_twi_master);
             break;
+        case 't':
+            run_veml6075(m_twi_master);
+            break;    
         case 'y':
-            run_si1153(m_twi_master);
             bsp_board_led_invert(0);
             break;
         case 'u':
+            si1153_init(m_twi_master);
             bsp_board_led_invert(0);
             break;
+        case 'i':
+            run_si1153(m_twi_master);
+            bsp_board_led_invert(0);
+            break;
+        case 'o':
+            vl53l0_init(m_twi_master);
+            run_vl53l0(m_twi_master);
+            bsp_board_led_invert(0);
+            break;  
         default:
             NRF_LOG_RAW_INFO("You selected %c. Unknown command\r\n", (char)c); 
             break;

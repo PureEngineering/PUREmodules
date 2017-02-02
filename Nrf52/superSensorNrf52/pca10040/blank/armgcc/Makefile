@@ -40,6 +40,7 @@ SRC_FILES += \
   $(PROJ_DIR)/vl53l0.c \
   $(PROJ_DIR)/si1153.c \
   $(PROJ_DIR)/lis3mdl.c \
+  $(PROJ_DIR)/veml6075.c \
   $(PROJ_DIR)/i2c_driver.c \
 
 # Include folders common to all targets
