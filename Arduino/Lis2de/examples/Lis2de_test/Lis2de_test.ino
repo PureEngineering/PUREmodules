@@ -27,7 +27,6 @@ void setup() {
 
 
 void loop() {
-  int i;
 
   Serial.println("___________________________________________________________");
   Serial.println("LIS2DH Register's");
