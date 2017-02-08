@@ -1,4 +1,4 @@
-_build/nrf52832_xxaa_si1153.c.o: ../../../si1153.c \
+_build/nrf52832_xxaa_si1153.c.o: ../../../si1153.c ../../../si1153.h \
  ../../../../../../components/drivers_nrf/twi_master/nrf_drv_twi.h \
  ../../../../../../components/libraries/util/nordic_common.h \
  ../config/sdk_config.h \
@@ -60,7 +60,18 @@ _build/nrf52832_xxaa_si1153.c.o: ../../../si1153.c \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\include\sys\types.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\include\machine\types.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\include\sys\stdio.h \
- ../../../../../../components/libraries/util/app_error_weak.h
+ ../../../../../../components/libraries/util/app_error_weak.h \
+ ../../../../../../components/libraries/bsp/bsp.h \
+ ../../../../../../components/boards/boards.h \
+ ../../../../../../components/drivers_nrf/hal/nrf_gpio.h \
+ ../../../../../../components/libraries/util/nrf_assert.h \
+ c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\include\stdlib.h \
+ c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\include\machine\stdlib.h \
+ ../../../../../../components/boards/pca10040.h \
+ ../../../../../../components/libraries/button/app_button.h \
+ ../../../../../../components/libraries/util/app_error.h
+
+../../../si1153.h:
 
 ../../../../../../components/drivers_nrf/twi_master/nrf_drv_twi.h:
 
@@ -185,3 +196,21 @@ c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\inc
 c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\include\sys\stdio.h:
 
 ../../../../../../components/libraries/util/app_error_weak.h:
+
+../../../../../../components/libraries/bsp/bsp.h:
+
+../../../../../../components/boards/boards.h:
+
+../../../../../../components/drivers_nrf/hal/nrf_gpio.h:
+
+../../../../../../components/libraries/util/nrf_assert.h:
+
+c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\include\stdlib.h:
+
+c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\include\machine\stdlib.h:
+
+../../../../../../components/boards/pca10040.h:
+
+../../../../../../components/libraries/button/app_button.h:
+
+../../../../../../components/libraries/util/app_error.h:

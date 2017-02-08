@@ -1,33 +1,15 @@
-/******************************************************************************
-SparkFunBME280.h
-BME280 Arduino and Teensy Driver
-Marshall Taylor @ SparkFun Electronics
-May 20, 2015
-https://github.com/sparkfun/BME280_Breakout
+#ifndef BME280_H
+#define BME280_H
 
-Resources:
-Uses Wire.h for i2c operation
-Uses SPI.h for SPI operation
 
-Development environment specifics:
-Arduino IDE 1.6.4
-Teensy loader 1.23
+#include "nrf_drv_twi.h"
+#define NRF_LOG_MODULE_NAME "APP"
+#include "nrf_log.h"
+#include "nrf_log_ctrl.h"
 
-This code is released under the [MIT License](http://opensource.org/licenses/MIT).
-Please review the LICENSE.md file included with this example. If you have any questions 
-or concerns with licensing, please contact techsupport@sparkfun.com.
-Distributed as-is; no warranty is given.
-******************************************************************************/
+//#define I2C_MODE 0
 
-// Test derived class for base class SparkFunIMU
-#ifndef __BME280_H__
-#define __BME280_H__
-
-#include "stdint.h"
-
-#define I2C_MODE 0
-#define SPI_MODE 1
-
+#define BME280_DEVICE_ADDRESS           0x77
 //Register names:
 #define BME280_DIG_T1_LSB_REG			0x88
 #define BME280_DIG_T1_MSB_REG			0x89
@@ -77,23 +59,12 @@ Distributed as-is; no warranty is given.
 #define BME280_HUMIDITY_LSB_REG			  0xFE //Humidity LSB
 
 
-//Class SensorSettings.  This object is used to hold settings data.  The application
-//uses this classes' data directly.  The settings are adopted and sent to the sensor
-//at special times, such as .begin.  Some are used for doing math.
-//
-//This is a kind of bloated way to do this.  The trade-off is that the user doesn't
-//need to deal with #defines or enums with bizarre names.
-//
-//A power user would strip out SensorSettings entirely, and send specific read and
-//write command directly to the IC. (ST #defines below)
-//
-struct SensorSettings
+
+struct BME280_SensorSettings
 {
-  public:
-	
   //Main Interface and mode settings
-    uint8_t commInterface;
-    uint8_t I2CAddress;
+    //uint8_t commInterface;
+    //uint8_t I2CAddress;
     uint8_t chipSelectPin;
 	
 	uint8_t runMode;
@@ -103,13 +74,10 @@ struct SensorSettings
 	uint8_t pressOverSample;
 	uint8_t humidOverSample;
 
-};
+} BME280_settings;
 
-//Used to hold the calibration constants.  These are used
-//by the driver as measurements are being taking
 struct SensorCalibration
 {
-  public:
 	uint16_t dig_T1;
 	int16_t dig_T2;
 	int16_t dig_T3;
@@ -131,55 +99,56 @@ struct SensorCalibration
 	int16_t dig_H5;
 	uint8_t dig_H6;
 	
-};
+} calibration;
 
 //This is the man operational class of the driver.
 
-class BME280
-{
-  public:
+//class BME280
+//{
+  //public:
     //settings
-    SensorSettings settings;
-	SensorCalibration calibration;
+    //SensorSettings settings;
+	//SensorCalibration calibration;
 	int32_t t_fine;
 	
 	//Constructor generates default SensorSettings.
 	//(over-ride after construction if desired)
-    BME280( void );
+    //BME280( void );
     //~BME280() = default;
+    static void BME280_setup( void );
 	
 	//Call to apply SensorSettings.
 	//This also gets the SensorCalibration constants
-    uint8_t begin( void );
+    static uint8_t BME280_begin(nrf_drv_twi_t twi_master);
 
 	//Software reset routine
-	void reset( void );
+	static void BME280_reset(nrf_drv_twi_t twi_master);
 	
     //Returns the values as floats.
-    float readFloatPressure( void );
-	float readFloatAltitudeMeters( void );
-	float readFloatAltitudeFeet( void );
+    //float BME280_readFloatPressure( void );
+	//float BME280_readFloatAltitudeMeters( void );
+	//float BME280_readFloatAltitudeFeet( void );
 	
-	float readFloatHumidity( void );
+	//float BME280_readFloatHumidity( void );
 
 	//Temperature related methods
-    float readTempC( void );
-    float readTempF( void );
+    //float BME280_readTempC( void );
+    //float BME280_readTempF( void );
 
     //The following utilities read and write
+	static uint8_t BME280_init(nrf_drv_twi_t twi_master);
 
 	//ReadRegisterRegion takes a uint8 array address as input and reads
 	//a chunk of memory into that array.
-    void readRegisterRegion(uint8_t*, uint8_t, uint8_t );
+    //void readRegisterRegion(uint8_t*, uint8_t, uint8_t );
 	//readRegister reads one register
-    uint8_t readRegister(uint8_t);
+	static uint8_t readRegister(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress);
     //Reads two regs, LSByte then MSByte order, and concatenates them
 	//Used for two-byte reads
-	int16_t readRegisterInt16( uint8_t offset );
+	//int16_t readRegisterInt16( uint8_t offset );
 	//Writes a byte;
-    void writeRegister(uint8_t, uint8_t);
-    
-};
+	static void writeRegister(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress, uint8_t data);    
+//};
 
 
 

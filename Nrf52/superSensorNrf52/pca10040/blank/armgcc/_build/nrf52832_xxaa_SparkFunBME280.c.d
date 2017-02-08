@@ -1,4 +1,5 @@
-_build/nrf52832_xxaa_lis3mdl.c.o: ../../../lis3mdl.c ../../../lis3mdl.h \
+_build/nrf52832_xxaa_SparkFunBME280.c.o: ../../../SparkFunBME280.c \
+ ../../../SparkFunBME280.h \
  ../../../../../../components/drivers_nrf/twi_master/nrf_drv_twi.h \
  ../../../../../../components/libraries/util/nordic_common.h \
  ../config/sdk_config.h \
@@ -71,7 +72,7 @@ _build/nrf52832_xxaa_lis3mdl.c.o: ../../../lis3mdl.c ../../../lis3mdl.h \
  ../../../../../../components/libraries/button/app_button.h \
  ../../../../../../components/libraries/util/app_error.h
 
-../../../lis3mdl.h:
+../../../SparkFunBME280.h:
 
 ../../../../../../components/drivers_nrf/twi_master/nrf_drv_twi.h:
 

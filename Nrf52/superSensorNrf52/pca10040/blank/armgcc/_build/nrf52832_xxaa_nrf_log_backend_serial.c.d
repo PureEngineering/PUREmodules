@@ -56,11 +56,9 @@ _build/nrf52832_xxaa_nrf_log_backend_serial.c.o: \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\include\sys\stdio.h \
  ../../../../../../components/libraries/util/app_error_weak.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\include\ctype.h \
- ../../../../../../components/drivers_nrf/uart/nrf_drv_uart.h \
- ../../../../../../components/drivers_nrf/hal/nrf_uart.h \
- ../../../../../../components/drivers_nrf/hal/nrf_peripherals.h \
- ../../../../../../components/device/nrf52832_peripherals.h \
- ../../../../../../components/drivers_nrf/hal/nrf_uarte.h
+ ../../../../../../external/segger_rtt/SEGGER_RTT_Conf.h \
+ ../../../../../../external/segger_rtt/SEGGER_RTT.h \
+ ../../../../../../external/segger_rtt/SEGGER_RTT_Conf.h
 
 ../../../../../../components/libraries/util/sdk_common.h:
 
@@ -174,12 +172,8 @@ c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\inc
 
 c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\include\ctype.h:
 
-../../../../../../components/drivers_nrf/uart/nrf_drv_uart.h:
+../../../../../../external/segger_rtt/SEGGER_RTT_Conf.h:
 
-../../../../../../components/drivers_nrf/hal/nrf_uart.h:
+../../../../../../external/segger_rtt/SEGGER_RTT.h:
 
-../../../../../../components/drivers_nrf/hal/nrf_peripherals.h:
-
-../../../../../../components/device/nrf52832_peripherals.h:
-
-../../../../../../components/drivers_nrf/hal/nrf_uarte.h:
+../../../../../../external/segger_rtt/SEGGER_RTT_Conf.h:

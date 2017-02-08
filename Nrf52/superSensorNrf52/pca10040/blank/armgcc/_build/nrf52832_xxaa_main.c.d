@@ -73,8 +73,10 @@ _build/nrf52832_xxaa_main.c.o: ../../../main.c \
  ../../../../../../components/libraries/log/nrf_log_ctrl.h \
  ../../../../../../components/libraries/log/src/nrf_log_ctrl_internal.h \
  ../../../../../../components/drivers_nrf/delay/nrf_delay.h \
- ../../../i2c_driver.c ../../../lis3mdl.c ../../../lis2de.c \
- ../../../vl53l0.c ../../../si1153.c ../../../veml6075.c
+ ../../../i2c_driver.c ../../../lis3mdl.c ../../../lis3mdl.h \
+ ../../../lis2de.c ../../../lis2de.h ../../../vl53l0.c ../../../vl53l0.h \
+ ../../../si1153.c ../../../si1153.h ../../../veml6075.c \
+ ../../../veml6075.h ../../../bme280.c ../../../bme280.h
 
 c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\lib\gcc\arm-none-eabi\5.4.1\include\stdbool.h:
 
@@ -228,10 +230,24 @@ c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\inc
 
 ../../../lis3mdl.c:
 
+../../../lis3mdl.h:
+
 ../../../lis2de.c:
+
+../../../lis2de.h:
 
 ../../../vl53l0.c:
 
+../../../vl53l0.h:
+
 ../../../si1153.c:
 
+../../../si1153.h:
+
 ../../../veml6075.c:
+
+../../../veml6075.h:
+
+../../../bme280.c:
+
+../../../bme280.h:
