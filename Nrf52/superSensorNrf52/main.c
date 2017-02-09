@@ -181,7 +181,9 @@ int main(void)
         case 'd':
             BME280_init(m_twi_master); 
             break;
-
+        case 'f':
+            run_BME280(m_twi_master); 
+            break;
         default:
             NRF_LOG_RAW_INFO("You selected %c. Unknown command\r\n", (char)c); 
             break;
@@ -189,5 +191,3 @@ int main(void)
         NRF_LOG_FLUSH();
     }
 }
-
-/** @} */ /* End of group twi_master_with_twis_slave_example */

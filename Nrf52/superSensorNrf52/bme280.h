@@ -65,7 +65,7 @@ struct BME280_SensorSettings
   //Main Interface and mode settings
     //uint8_t commInterface;
     //uint8_t I2CAddress;
-    uint8_t chipSelectPin;
+    //uint8_t chipSelectPin;
 	
 	uint8_t runMode;
 	uint8_t tStandby;
@@ -125,29 +125,31 @@ struct SensorCalibration
 	static void BME280_reset(nrf_drv_twi_t twi_master);
 	
     //Returns the values as floats.
-    //float BME280_readFloatPressure( void );
-	//float BME280_readFloatAltitudeMeters( void );
-	//float BME280_readFloatAltitudeFeet( void );
+    static float BME280_readFloatPressure(nrf_drv_twi_t twi_master);
+	static float BME280_readFloatAltitudeMeters(nrf_drv_twi_t twi_master );
+	static float BME280_readFloatAltitudeFeet( nrf_drv_twi_t twi_master);
 	
-	//float BME280_readFloatHumidity( void );
+	static float BME280_readFloatHumidity( nrf_drv_twi_t twi_master );
 
 	//Temperature related methods
-    //float BME280_readTempC( void );
-    //float BME280_readTempF( void );
+    static float BME280_readTempC( nrf_drv_twi_t twi_master );
+    static float BME280_readTempF( nrf_drv_twi_t twi_master );
 
     //The following utilities read and write
 	static uint8_t BME280_init(nrf_drv_twi_t twi_master);
+	static uint8_t run_BME280(nrf_drv_twi_t twi_master);
+
 
 	//ReadRegisterRegion takes a uint8 array address as input and reads
 	//a chunk of memory into that array.
     //void readRegisterRegion(uint8_t*, uint8_t, uint8_t );
 	//readRegister reads one register
-	static uint8_t readRegister(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress);
+	//static uint8_t read_byte(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress);
     //Reads two regs, LSByte then MSByte order, and concatenates them
 	//Used for two-byte reads
 	//int16_t readRegisterInt16( uint8_t offset );
 	//Writes a byte;
-	static void writeRegister(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress, uint8_t data);    
+	//static void write_byte(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress, uint8_t data);    
 //};
 
 

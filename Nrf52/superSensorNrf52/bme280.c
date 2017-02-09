@@ -8,10 +8,12 @@
 
 void BME280_setup( void )
 {
-	BME280_settings.runMode = 0;
-	BME280_settings.tempOverSample = 0;
-	BME280_settings.pressOverSample = 0;
-	BME280_settings.humidOverSample = 0;
+	BME280_settings.runMode = 3;
+	BME280_settings.tStandby = 0;
+	BME280_settings.filter = 0;
+	BME280_settings.tempOverSample = 1;
+	BME280_settings.pressOverSample = 1;
+	BME280_settings.humidOverSample = 1;
 
 }
 
@@ -23,39 +25,39 @@ uint8_t BME280_begin(nrf_drv_twi_t twi_master)
 
 	//Reading all compensation data, range 0x88:A1, 0xE1:E7
 	
-	calibration.dig_T1 = ((uint16_t)((readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_T1_MSB_REG) << 8) + readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_T1_LSB_REG)));
-	calibration.dig_T2 = ((int16_t)((readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_T2_MSB_REG) << 8) + readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_T2_LSB_REG)));
-	calibration.dig_T3 = ((int16_t)((readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_T3_MSB_REG) << 8) + readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_T3_LSB_REG)));
+	calibration.dig_T1 = ((uint16_t)((read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_T1_MSB_REG) << 8) + read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_T1_LSB_REG)));
+	calibration.dig_T2 = ((int16_t)((read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_T2_MSB_REG) << 8) + read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_T2_LSB_REG)));
+	calibration.dig_T3 = ((int16_t)((read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_T3_MSB_REG) << 8) + read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_T3_LSB_REG)));
 
-	calibration.dig_P1 = ((uint16_t)((readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P1_MSB_REG) << 8) + readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P1_LSB_REG)));
-	calibration.dig_P2 = ((int16_t)((readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P2_MSB_REG) << 8) + readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P2_LSB_REG)));
-	calibration.dig_P3 = ((int16_t)((readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P3_MSB_REG) << 8) + readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P3_LSB_REG)));
-	calibration.dig_P4 = ((int16_t)((readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P4_MSB_REG) << 8) + readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P4_LSB_REG)));
-	calibration.dig_P5 = ((int16_t)((readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P5_MSB_REG) << 8) + readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P5_LSB_REG)));
-	calibration.dig_P6 = ((int16_t)((readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P6_MSB_REG) << 8) + readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P6_LSB_REG)));
-	calibration.dig_P7 = ((int16_t)((readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P7_MSB_REG) << 8) + readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P7_LSB_REG)));
-	calibration.dig_P8 = ((int16_t)((readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P8_MSB_REG) << 8) + readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P8_LSB_REG)));
-	calibration.dig_P9 = ((int16_t)((readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P9_MSB_REG) << 8) + readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P9_LSB_REG)));
+	calibration.dig_P1 = ((uint16_t)((read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P1_MSB_REG) << 8) + read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P1_LSB_REG)));
+	calibration.dig_P2 = ((int16_t)((read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P2_MSB_REG) << 8) + read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P2_LSB_REG)));
+	calibration.dig_P3 = ((int16_t)((read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P3_MSB_REG) << 8) + read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P3_LSB_REG)));
+	calibration.dig_P4 = ((int16_t)((read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P4_MSB_REG) << 8) + read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P4_LSB_REG)));
+	calibration.dig_P5 = ((int16_t)((read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P5_MSB_REG) << 8) + read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P5_LSB_REG)));
+	calibration.dig_P6 = ((int16_t)((read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P6_MSB_REG) << 8) + read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P6_LSB_REG)));
+	calibration.dig_P7 = ((int16_t)((read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P7_MSB_REG) << 8) + read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P7_LSB_REG)));
+	calibration.dig_P8 = ((int16_t)((read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P8_MSB_REG) << 8) + read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P8_LSB_REG)));
+	calibration.dig_P9 = ((int16_t)((read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P9_MSB_REG) << 8) + read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_P9_LSB_REG)));
 
-	calibration.dig_H1 = ((uint8_t)(readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_H1_REG)));
-	calibration.dig_H2 = ((int16_t)((readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_H2_MSB_REG) << 8) + readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_H2_LSB_REG)));
-	calibration.dig_H3 = ((uint8_t)(readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_H3_REG)));
-	calibration.dig_H4 = ((int16_t)((readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_H4_MSB_REG) << 4) + (readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_H4_LSB_REG) & 0x0F)));
-	calibration.dig_H5 = ((int16_t)((readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_H5_MSB_REG) << 4) + ((readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_H4_LSB_REG) >> 4) & 0x0F)));
-	calibration.dig_H6 = ((uint8_t)readRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_H6_REG));
+	calibration.dig_H1 = ((uint8_t)(read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_H1_REG)));
+	calibration.dig_H2 = ((int16_t)((read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_H2_MSB_REG) << 8) + read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_H2_LSB_REG)));
+	calibration.dig_H3 = ((uint8_t)(read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_H3_REG)));
+	calibration.dig_H4 = ((int16_t)((read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_H4_MSB_REG) << 4) + (read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_H4_LSB_REG) & 0x0F)));
+	calibration.dig_H5 = ((int16_t)((read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_H5_MSB_REG) << 4) + ((read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_H4_LSB_REG) >> 4) & 0x0F)));
+	calibration.dig_H6 = ((uint8_t)read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_DIG_H6_REG));
 
 	//Set the oversampling control words.
 	//config will only be writeable in sleep mode, so first insure that.
-	writeRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_CTRL_MEAS_REG, 0x00);
+	write_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_CTRL_MEAS_REG, 0x00);
 	
 	//Set the config word
 	dataToWrite = (BME280_settings.tStandby << 0x5) & 0xE0;
 	dataToWrite |= (BME280_settings.filter << 0x02) & 0x1C;
-	writeRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_CONFIG_REG, dataToWrite);
+	write_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_CONFIG_REG, dataToWrite);
 	
 	//Set ctrl_hum first, then ctrl_meas to activate ctrl_hum
 	dataToWrite = BME280_settings.humidOverSample & 0x07; //all other bits can be ignored
-	writeRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_CTRL_HUMIDITY_REG, dataToWrite);
+	write_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_CTRL_HUMIDITY_REG, dataToWrite);
 	
 	//set ctrl_meas
 	//First, set temp oversampling
@@ -65,15 +67,15 @@ uint8_t BME280_begin(nrf_drv_twi_t twi_master)
 	//Last, set mode
 	dataToWrite |= (BME280_settings.runMode) & 0x03;
 	//Load the byte
-	writeRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_CTRL_MEAS_REG, dataToWrite);
+	write_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_CTRL_MEAS_REG, dataToWrite);
 	
-	return readRegister(twi_master,BME280_DEVICE_ADDRESS,0xD0);
+	return read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_CHIP_ID_REG);
 }
 
 //Strictly resets.  Run .begin() afterwards
 void BME280_reset(nrf_drv_twi_t twi_master)
 {
-	writeRegister(twi_master,BME280_DEVICE_ADDRESS,BME280_RST_REG, 0xB6);
+	write_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_RST_REG, 0xB6);
 	
 }
 
@@ -92,15 +94,33 @@ uint8_t BME280_init(nrf_drv_twi_t twi_master){
 }
 
 
+uint8_t run_BME280(nrf_drv_twi_t twi_master){
+	uint8_t who_am_i = read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_CHIP_ID_REG);
+    NRF_LOG_RAW_INFO("BME280 ID: %x.\r\n", who_am_i);
+
+	uint8_t tempF = BME280_readTempF(twi_master);
+    NRF_LOG_RAW_INFO("BME280 Temp: %d F.\r\n", tempF);
+
+	uint8_t pressure = BME280_readFloatPressure(twi_master);
+    NRF_LOG_RAW_INFO("BME280 Pressure: %d(Pa).\r\n", pressure);
+
+	uint8_t altitude = BME280_readFloatAltitudeFeet(twi_master);
+    NRF_LOG_RAW_INFO("BME280 Altitude: %d ft.\r\n", altitude);
+
+	uint8_t humidity = BME280_readFloatHumidity(twi_master);
+    NRF_LOG_RAW_INFO("BME280 Humidity: %d percent\r\n", humidity);
 
 
-/*
-float BME280_readFloatPressure( void )
+
+}
+
+
+float BME280_readFloatPressure(nrf_drv_twi_t twi_master)
 {
 
 	// Returns pressure in Pa as unsigned 32 bit integer in Q24.8 format (24 integer bits and 8 fractional bits).
 	// Output value of “24674867” represents 24674867/256 = 96386.2 Pa = 963.862 hPa
-	int32_t adc_P = ((uint32_t)readRegister(BME280_PRESSURE_MSB_REG) << 12) | ((uint32_t)readRegister(BME280_PRESSURE_LSB_REG) << 4) | ((readRegister(BME280_PRESSURE_XLSB_REG) >> 4) & 0x0F);
+	int32_t adc_P = ((uint32_t)read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_PRESSURE_MSB_REG) << 12) | ((uint32_t)read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_PRESSURE_LSB_REG) << 4) | ((read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_PRESSURE_XLSB_REG) >> 4) & 0x0F);
 	
 	int64_t var1, var2, p_acc;
 	var1 = ((int64_t)t_fine) - 128000;
@@ -123,30 +143,30 @@ float BME280_readFloatPressure( void )
 	
 }
 
-float BME280_readFloatAltitudeMeters( void )
+float BME280_readFloatAltitudeMeters(nrf_drv_twi_t twi_master)
 {
 	float heightOutput = 0;
 	
-	heightOutput = ((float)-45846.2)*(pow(((float)readFloatPressure()/(float)101325), 0.190263) - (float)1);
+	heightOutput = ((float)-45846.2)*(pow(((float)BME280_readFloatPressure(twi_master)/(float)101325), 0.190263) - (float)1);
 	return heightOutput;
 	
 }
 
-float BME280_readFloatAltitudeFeet( void )
+float BME280_readFloatAltitudeFeet(nrf_drv_twi_t twi_master)
 {
 	float heightOutput = 0;
 	
-	heightOutput = readFloatAltitudeMeters() * 3.28084;
+	heightOutput = BME280_readFloatAltitudeMeters(twi_master) * 3.28084;
 	return heightOutput;
 	
 }
 
-float BME280_readFloatHumidity( void )
+float BME280_readFloatHumidity(nrf_drv_twi_t twi_master)
 {
 	
 	// Returns humidity in %RH as unsigned 32 bit integer in Q22. 10 format (22 integer and 10 fractional bits).
 	// Output value of “47445” represents 47445/1024 = 46. 333 %RH
-	int32_t adc_H = ((uint32_t)readRegister(BME280_HUMIDITY_MSB_REG) << 8) | ((uint32_t)readRegister(BME280_HUMIDITY_LSB_REG));
+	int32_t adc_H = ((uint32_t)read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_HUMIDITY_MSB_REG) << 8) | ((uint32_t)read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_HUMIDITY_LSB_REG));
 	
 	int32_t var1;
 	var1 = (t_fine - ((int32_t)76800));
@@ -161,13 +181,13 @@ float BME280_readFloatHumidity( void )
 
 }
 
-float BME280_readTempC( void )
+float BME280_readTempC(nrf_drv_twi_t twi_master)
 {
 	// Returns temperature in DegC, resolution is 0.01 DegC. Output value of “5123” equals 51.23 DegC.
 	// t_fine carries fine temperature as global value
 
 	//get the reading (adc_T);
-	int32_t adc_T = ((uint32_t)readRegister(BME280_TEMPERATURE_MSB_REG) << 12) | ((uint32_t)readRegister(BME280_TEMPERATURE_LSB_REG) << 4) | ((readRegister(BME280_TEMPERATURE_XLSB_REG) >> 4) & 0x0F);
+	int32_t adc_T = ((uint32_t)read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_TEMPERATURE_MSB_REG) << 12) | ((uint32_t)read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_TEMPERATURE_LSB_REG) << 4) | ((read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_TEMPERATURE_XLSB_REG) >> 4) & 0x0F);
 
 	//By datasheet, calibrate
 	int64_t var1, var2;
@@ -183,111 +203,11 @@ float BME280_readTempC( void )
 	return output;
 }
 
-float BME280_readTempF( void )
+float BME280_readTempF(nrf_drv_twi_t twi_master)
 {
-	float output = readTempC();
+	float output = BME280_readTempC(twi_master);
 	output = (output * 9) / 5 + 32;
 
 	return output;
 }
-*/
-//****************************************************************************//
-//
-//  Utility
-//
-//****************************************************************************//
-/*void readRegisterRegion(uint8_t *outputPointer , uint8_t offset, uint8_t length)
-{
-	//define pointer that will point to the external space
-	uint8_t i = 0;
-	char c = 0;
 
-		Wire.beginTransmission(settings.I2CAddress);
-		Wire.write(offset);
-		Wire.endTransmission();
-
-		// request bytes from slave device
-		Wire.requestFrom(settings.I2CAddress, length);
-		while ( (Wire.available()) && (i < length))  // slave may send less than requested
-		{
-			c = Wire.read(); // receive a byte as character
-			*outputPointer = c;
-			outputPointer++;
-			i++;
-		}
-		
-
-}
-
-uint8_t readRegister(uint8_t offset)
-{
-	//Return value
-	uint8_t result;
-	uint8_t numBytes = 1;
-
-	Wire.beginTransmission(settings.I2CAddress);
-	Wire.write(offset);
-	Wire.endTransmission();
-
-	Wire.requestFrom(settings.I2CAddress, numBytes);
-	while ( Wire.available() ) // slave may send less than requested
-	{
-		result = Wire.read(); // receive a byte as a proper uint8_t
-	}
-	return result;
-}*/
-
-
-uint8_t readRegister(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress){
-    ret_code_t ret;
-    uint8_t data;
-    uint8_t buffer[1];
-    buffer[0] = subAddress;
-
-
-    ret = nrf_drv_twi_tx(&twi_master, addr, buffer, 1, false);
-    if (NRF_SUCCESS != ret){
-        NRF_LOG_WARNING("Communication error when asking for byte\r\n");
-        return (uint8_t)ret;
-    }
-    ret = nrf_drv_twi_rx(&twi_master, addr, &data, 1);
-    if (NRF_SUCCESS != ret){
-        NRF_LOG_WARNING("Communication error when reading byte back\r\n");
-        return (uint8_t)ret;
-    }
-    //NRF_LOG_RAW_INFO("Read Byte: ");
-    //NRF_LOG_RAW_INFO("%.2x: \r\n", data);
-    return data;	
-}
-
-
-/*
-int16_t readRegisterInt16( uint8_t offset )
-{
-	uint8_t myBuffer[2];
-	readRegisterRegion(myBuffer, offset, 2);  //Does memory transfer
-	int16_t output = (int16_t)myBuffer[0] | int16_t(myBuffer[1] << 8);
-	
-	return output;
-}*/
-
-/*void writeRegister(uint8_t offset, uint8_t dataToWrite)
-{
-		Wire.beginTransmission(settings.I2CAddress);
-		Wire.write(offset);
-		Wire.write(dataToWrite);
-		Wire.endTransmission();
-}*/
-
-void writeRegister(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress, uint8_t data)
-{
-    ret_code_t ret;
-    uint8_t buffer[2]; 
-    buffer[0] = subAddress;
-    buffer[1] = data;
-    ret = nrf_drv_twi_tx(&twi_master, addr, buffer, 2, false);
-    if (NRF_SUCCESS != ret){
-        NRF_LOG_WARNING("Communication error when Writing\r\n");
-        return;
-    }    
-}
