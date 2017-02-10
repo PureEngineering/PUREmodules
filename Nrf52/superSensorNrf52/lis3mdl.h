@@ -31,9 +31,35 @@ extern "C" {
 #define Lis3mdl_INT_THS_L                0x32
 #define Lis3mdl_INT_THS_R                0x33
 
-/** @} */    
+/** @} */   
+
+struct Lis3mdl_SensorSettings
+{
+	uint8_t TEMP_EN;
+	uint8_t OM;
+	uint8_t DO;
+	uint8_t FAST_ODR;
+	uint8_t ST;
+	//CTRL2
+	uint8_t FS;
+	uint8_t REBOOT;
+	uint8_t SOFT_RST;
+	//CTRL3
+	uint8_t LP;
+	uint8_t SIM;
+	uint8_t MD;
+	//CTRL4
+	uint8_t OMZ;
+	uint8_t BLE;
+	//CTRL5
+	uint8_t FAST_READ;
+	uint8_t BDU;
+
+} Lis3mdl_settings;
 
 
+static void Lis3mdl_begin(nrf_drv_twi_t twi_master);
+static void lis3mdl_setup();
 static uint8_t run_lis3mdl(nrf_drv_twi_t twi_master);
 static uint8_t lis3mdl_init(nrf_drv_twi_t twi_master);
 
