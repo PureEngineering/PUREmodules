@@ -7,15 +7,6 @@ void setup(){
   Serial.begin(115200);
   Wire.begin();
 
-  //Turn on Temp Sensor, Set X and Y mode to Ultra-high-Performance, 10 Hz data rate
-  //lis3mdl.write_byte(Lis3mdl::DEVICE_ADDRESS, Lis3mdl::CTRL_REG1,0xf0);
-  //Set communication mode to I2C and to Continuous-conversion Mode
-  //lis3mdl.write_byte(Lis3mdl::DEVICE_ADDRESS, Lis3mdl::CTRL_REG3,0x00);
-  //Set Z mode to Ultra-high-Performance. 
-  //lis3mdl.write_byte(Lis3mdl::DEVICE_ADDRESS, Lis3mdl::CTRL_REG4,0x0E);
-  //Turn on FAST_READ and set up Block data update
-  //lis3mdl.write_byte(Lis3mdl::DEVICE_ADDRESS, Lis3mdl::CTRL_REG5,0xc0);  
- 
   //Temp Sensor
   //0 = off, 1 = on
   lis3mdl.settings.TEMP_EN = 1;

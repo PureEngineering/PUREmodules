@@ -55,7 +55,7 @@ int Lis2de::read_byte(uint8_t addr, uint8_t subAddress){
  }
 
 
-uint8_t Lis2de::begin(){
+void Lis2de::begin(){
 
     uint8_t TEMPCFG_WORD = (settings.TEMP_ENABLE<<6);
     write_byte(Lis2de::DEVICE_ADDRESS,Lis2de::TEMPCFG,TEMPCFG_WORD);

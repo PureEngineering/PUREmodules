@@ -109,7 +109,7 @@ class Lis2de
 		void write_byte(uint8_t addr, uint8_t subAddress, uint8_t data);
 		int read_byte(uint8_t addr, uint8_t subAddress);
     	int read_2bytes(uint8_t addr, uint8_t subAddress);
-    	uint8_t begin(void);
+    	void begin(void);
 
 	};
 #endif
