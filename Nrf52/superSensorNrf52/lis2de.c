@@ -44,14 +44,9 @@ static uint8_t run_lis2de(nrf_drv_twi_t twi_master){
 }
 
 static uint8_t lis2de_init(nrf_drv_twi_t twi_master){
-    uint8_t CTRL1_Word =   0x17;
-    uint8_t TEMPCFG_Word = 0xC0; 
-    uint8_t CTRL4_Word =   0x00;
 
-
-    write_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_CTRL1,CTRL1_Word);
-    write_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_TEMPCFG,TEMPCFG_Word);
-    write_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_CTRL4,CTRL4_Word);
+    Lis2de_setup();
+    Lis2de_begin(twi_master);
 
     uint8_t who_am_i = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_WHO_AM_I);
     
@@ -63,4 +58,111 @@ static uint8_t lis2de_init(nrf_drv_twi_t twi_master){
     }
 
     return who_am_i;
+}
+
+static void Lis2de_setup(void){
+    Lis2de_settings.TEMP_ENABLE = 3;
+    //CTRL1
+    Lis2de_settings.ODR = 1;
+    Lis2de_settings.LPEN= 0;
+    Lis2de_settings.ZEN = 1;
+    Lis2de_settings.YEN = 1;
+    Lis2de_settings.XEN = 1;
+    //CTRL2
+    Lis2de_settings.HPM = 0;
+    Lis2de_settings.HPCF = 0;
+    Lis2de_settings.FDS = 0;
+    Lis2de_settings.HPCLICK = 0;
+    Lis2de_settings.HPIS2 = 0;
+    Lis2de_settings.HPIS1 = 0;
+    //CTRL3
+    Lis2de_settings.INT1_CLICK = 0;
+    Lis2de_settings.INT1_IG1 = 0;
+    Lis2de_settings.INT1_IG2 = 0;
+    Lis2de_settings.INT1_DRDY1 = 0;
+    Lis2de_settings.INT1_DRDY2 = 0;
+    Lis2de_settings.INT1_WTM = 0;
+    Lis2de_settings.INT1_OVERRUN = 0;
+    //CTRL4
+    Lis2de_settings.BDU = 0;
+    Lis2de_settings.FS  = 0;
+    Lis2de_settings.ST  = 0;
+    Lis2de_settings.SIM = 0;
+    //CTRL5
+    Lis2de_settings.BOOT = 0;
+    Lis2de_settings.FIFO_EN = 0;
+    Lis2de_settings.LIR_IG1 = 0;
+    Lis2de_settings.D4D_IG1 = 0;
+    Lis2de_settings.LIR_IG2 = 0;
+    Lis2de_settings.D4D_IG2 = 0;
+    //CTRL6
+    Lis2de_settings.INT2_CLICK = 0;
+    Lis2de_settings.INT2_IG1 = 0;
+    Lis2de_settings.INT2_IG2 = 0;
+    Lis2de_settings.INT2_BOOT = 0;
+    Lis2de_settings.INT2_ACT = 0;
+    Lis2de_settings.H_LACTIVE = 0;
+}
+
+
+static void Lis2de_begin(nrf_drv_twi_t twi_master){
+
+    uint8_t TEMPCFG_WORD = (Lis2de_settings.TEMP_ENABLE<<6);
+    write_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_TEMPCFG,TEMPCFG_WORD);
+
+    uint8_t CTRL1_WORD = 0x00;
+    CTRL1_WORD  = (Lis2de_settings.ODR     <<4)  & 0xF0;        
+    CTRL1_WORD |= (Lis2de_settings.LPEN    <<3)  & 0x08;
+    CTRL1_WORD |= (Lis2de_settings.ZEN     <<2)  & 0x04;
+    CTRL1_WORD |= (Lis2de_settings.YEN     <<1)  & 0x02;
+    CTRL1_WORD |= (Lis2de_settings.XEN        )  & 0x01;
+    write_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_CTRL1,CTRL1_WORD);
+
+
+    uint8_t CTRL2_WORD = 0x00;
+    CTRL2_WORD  = (Lis2de_settings.HPM     <<6)  & 0xC0;        
+    CTRL2_WORD |= (Lis2de_settings.HPCF    <<4)  & 0x30;
+    CTRL2_WORD |= (Lis2de_settings.FDS     <<3)  & 0x08;
+    CTRL2_WORD |= (Lis2de_settings.HPCLICK <<2)  & 0x04;
+    CTRL2_WORD |= (Lis2de_settings.HPIS2   <<1)  & 0x02;
+    CTRL2_WORD |= (Lis2de_settings.HPIS1      )  & 0x01;
+    write_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_CTRL2,CTRL2_WORD);
+
+    uint8_t CTRL3_WORD = 0x00;
+    CTRL3_WORD  = (Lis2de_settings.INT1_CLICK  <<7)  & 0x80;        
+    CTRL3_WORD |= (Lis2de_settings.INT1_IG1    <<6)  & 0x40;
+    CTRL3_WORD |= (Lis2de_settings.INT1_IG2    <<5)  & 0x20;
+    CTRL3_WORD |= (Lis2de_settings.INT1_DRDY1  <<4)  & 0x10;
+    CTRL3_WORD |= (Lis2de_settings.INT1_DRDY2  <<3)  & 0x08;
+    CTRL3_WORD |= (Lis2de_settings.INT1_WTM    <<2)  & 0x04;
+    CTRL3_WORD |= (Lis2de_settings.INT1_OVERRUN<<1)  & 0x02;
+    write_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_CTRL3,CTRL3_WORD);
+
+
+    uint8_t CTRL4_WORD = 0x00;
+    CTRL4_WORD  = (Lis2de_settings.BDU     <<7)  & 0x80;        
+    CTRL4_WORD |= (Lis2de_settings.FS      <<4)  & 0x30;
+    CTRL4_WORD |= (Lis2de_settings.ST      <<1)  & 0x06;
+    CTRL4_WORD |= (Lis2de_settings.SIM        )  & 0x01;
+    write_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_CTRL4,CTRL4_WORD);
+
+
+    uint8_t CTRL5_WORD = 0x00;
+    CTRL5_WORD  = (Lis2de_settings.BOOT       <<7)  & 0x80;        
+    CTRL5_WORD |= (Lis2de_settings.FIFO_EN    <<6)  & 0x40;
+    CTRL5_WORD |= (Lis2de_settings.LIR_IG1    <<3)  & 0x08;
+    CTRL5_WORD |= (Lis2de_settings.D4D_IG1    <<2)  & 0x04;
+    CTRL5_WORD |= (Lis2de_settings.LIR_IG2    <<1)  & 0x02;
+    CTRL5_WORD |= (Lis2de_settings.D4D_IG2       )  & 0x01;
+    write_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_CTRL5,CTRL5_WORD);
+
+    uint8_t CTRL6_WORD = 0x00;
+    CTRL6_WORD  = (Lis2de_settings.INT2_CLICK  <<7)  & 0x80;        
+    CTRL6_WORD |= (Lis2de_settings.INT2_IG1    <<6)  & 0x40;
+    CTRL6_WORD |= (Lis2de_settings.INT2_IG2    <<5)  & 0x20;
+    CTRL6_WORD |= (Lis2de_settings.INT2_BOOT   <<4)  & 0x10;
+    CTRL6_WORD |= (Lis2de_settings.INT2_ACT    <<3)  & 0x08;
+    CTRL6_WORD |= (Lis2de_settings.H_LACTIVE   <<1)  & 0x02;
+    write_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_CTRL6,CTRL6_WORD);
+
 }

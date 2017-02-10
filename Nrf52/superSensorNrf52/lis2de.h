@@ -47,8 +47,58 @@ extern "C" {
 #define Lis2de_ACTTHS            0x3E
 #define Lis2de_ACTDUR            0x3F
 
+
+
+struct Lis2de_SensorSettings
+{
+		
+		uint8_t TEMP_ENABLE;
+		//CTRL1
+		uint8_t ODR;
+		uint8_t LPEN;
+		uint8_t ZEN;
+		uint8_t YEN;
+		uint8_t XEN;
+		//CTRL2
+		uint8_t HPM;
+		uint8_t HPCF;
+		uint8_t FDS;
+		uint8_t HPCLICK;
+		uint8_t HPIS2;
+		uint8_t HPIS1;
+		//CTRL3
+		uint8_t INT1_CLICK;
+		uint8_t INT1_IG1;
+		uint8_t INT1_IG2;
+		uint8_t INT1_DRDY1;
+		uint8_t INT1_DRDY2;
+		uint8_t INT1_WTM;
+		uint8_t INT1_OVERRUN;
+		//CTRL4
+		uint8_t BDU;
+		uint8_t FS;
+		uint8_t ST;
+		uint8_t SIM;
+		//CTRL5
+		uint8_t BOOT;
+		uint8_t FIFO_EN;
+		uint8_t LIR_IG1;
+		uint8_t D4D_IG1;
+		uint8_t LIR_IG2;
+		uint8_t D4D_IG2;
+		//CTRL6
+		uint8_t INT2_CLICK;
+		uint8_t INT2_IG1;
+		uint8_t INT2_IG2;
+		uint8_t INT2_BOOT;
+		uint8_t INT2_ACT;
+		uint8_t H_LACTIVE;
+} Lis2de_settings;
+
 /** @} */
 
+static void Lis2de_setup(void);
+static void Lis2de_begin(nrf_drv_twi_t twi_master);
 static uint8_t run_lis2de(nrf_drv_twi_t twi_master);
 static uint8_t lis2de_init(nrf_drv_twi_t twi_master);
 
