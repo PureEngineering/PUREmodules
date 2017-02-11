@@ -103,6 +103,8 @@ static ss_response test_SuperSensor_run(nrf_drv_twi_t twi_master){
     run_veml6075(twi_master);
     //uint8_t prox_ID = 
     run_si1153(twi_master);
+    //uint8_t bme_ID = 
+    run_BME280(m_twi_master); 
 
     return SS_SUCCESSFUL;
 
