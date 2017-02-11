@@ -8,7 +8,6 @@ class Veml6075
 {
 	public:
 
-
 		typedef enum {
 			
 			DEVICE_ADDRESS = 0x10
@@ -46,5 +45,11 @@ class Veml6075
 		void write_2bytes(uint8_t addr, uint8_t subAddress, uint8_t data_LSB,uint8_t data_MSB);
     	int read_2bytes(uint8_t addr, uint8_t subAddress);
     	uint8_t begin(void);
+
+    	uint16_t whoami(void);
+		uint16_t readUV_CONF(void);
+		uint16_t readUVA_DATA(void);
+		uint16_t readUVB_DATA(void);
+
 	};
 #endif

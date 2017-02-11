@@ -29,14 +29,14 @@ void loop() {
   Serial.println("Start Program");
   // put your main code here, to run repeatedly:
   Serial.print("Veml6075 ID: ");
-  Serial.println(veml6075.read_2bytes(Veml6075::DEVICE_ADDRESS,Veml6075::ID),HEX);
+  Serial.println(veml6075.whoami(),HEX);
   Serial.print("Veml6075 CTRL: ");
-  Serial.println(veml6075.read_2bytes(Veml6075::DEVICE_ADDRESS,Veml6075::UV_CONF),HEX);
+  Serial.println(veml6075.readUV_CONF(),HEX);
   Serial.println();
   Serial.print("Veml6075 UVA: ");
-  Serial.println(veml6075.read_2bytes(Veml6075::DEVICE_ADDRESS,Veml6075::UVA_DATA),HEX);
+  Serial.println(veml6075.readUVA_DATA(),HEX);
   Serial.print("Veml6075 UVB: ");
-  Serial.println(veml6075.read_2bytes(Veml6075::DEVICE_ADDRESS,Veml6075::UVB_DATA),HEX);
+  Serial.println(veml6075.readUVB_DATA(),HEX);
   Serial.println();
   delay(1000);
 }

@@ -48,9 +48,26 @@ uint8_t Veml6075::begin(){
     UV_CONF_WORD |= (settings.UV_AF   <<1)  & 0x02;
     UV_CONF_WORD |= (settings.Veml6075_SD)  & 0x01;
 
-
     write_2bytes(Veml6075::DEVICE_ADDRESS,Veml6075::UV_CONF,UV_CONF_WORD,0x00);
-
 
 } 
 
+uint16_t Veml6075::whoami(){
+    uint16_t who_am_i = read_2bytes(Veml6075::DEVICE_ADDRESS,Veml6075::ID);
+    return who_am_i;
+}
+
+uint16_t Veml6075::readUV_CONF(){
+    uint16_t UV_CONF = read_2bytes(Veml6075::DEVICE_ADDRESS,Veml6075::UV_CONF);
+    return UV_CONF;
+}
+
+uint16_t Veml6075::readUVA_DATA(){
+    uint16_t UVA_data = read_2bytes(Veml6075::DEVICE_ADDRESS,Veml6075::UVA_DATA);
+    return UVA_data;
+}
+
+uint16_t Veml6075::readUVB_DATA(){
+    uint16_t UVB_data = read_2bytes(Veml6075::DEVICE_ADDRESS,Veml6075::UVB_DATA);
+    return UVB_data;
+}
