@@ -43,30 +43,25 @@ void setup(){
 }
 
 void loop(){
-  int whoAmI_response;
-  int16_t output_X;
-  int16_t output_Y;
-  int16_t output_Z;
-  int output_temp;
   
   Serial.print("Lis3mdl WHO_AM_I (Should be 0x3D) ");
-  whoAmI_response = lis3mdl.read_byte(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::WHO_AM_I);
-  Serial.println(whoAmI_response,HEX);
+  uint8_t whoAmI = lis3mdl.whoami();
+  Serial.println(whoAmI,HEX);
   
   Serial.print("X direction output: ");
-  output_X = lis3mdl.read_2bytes(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::OUT_X_L);
+  int8_t output_X = lis3mdl.readOUT_X_L();
   Serial.println(output_X);
 
   Serial.print("Y direction output: ");
-  output_Y = lis3mdl.read_2bytes(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::OUT_Y_L);
+  int8_t output_Y = lis3mdl.readOUT_Y_L();
   Serial.println(output_Y);
 
   Serial.print("Z direction output: ");
-  output_Z = lis3mdl.read_2bytes(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::OUT_Z_L);
+  int8_t output_Z = lis3mdl.readOUT_Z_L();
   Serial.println(output_Z);
 
   Serial.print("Temperature Output: ");
-  output_temp = lis3mdl.read_2bytes(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::TEMP_OUT_L);
+  int8_t output_temp = lis3mdl.readTEMP_L();
   Serial.println(output_temp);
   
   Serial.println();

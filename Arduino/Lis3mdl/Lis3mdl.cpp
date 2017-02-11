@@ -91,3 +91,43 @@ uint8_t Lis3mdl::begin(){
     write_byte(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::CTRL_REG5,CTRL5_WORD);
 
 }
+
+
+
+uint8_t Lis3mdl::whoami(){
+      uint8_t who_am_i = read_byte(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::WHO_AM_I);
+      return who_am_i;
+}
+
+int8_t Lis3mdl::readOUT_X_L(){
+      int8_t OUT_X_L = read_byte(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::OUT_X_L);
+      return OUT_X_L;
+}
+int8_t Lis3mdl::readOUT_X_H(){
+      int8_t OUT_X_H = read_byte(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::OUT_X_H);
+      return OUT_X_H;
+}
+int8_t Lis3mdl::readOUT_Y_L(){
+      int8_t OUT_Y_L = read_byte(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::OUT_Y_L);
+      return OUT_Y_L;
+}
+int8_t Lis3mdl::readOUT_Y_H(){
+      int8_t OUT_Y_H = read_byte(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::OUT_Y_H);
+      return OUT_Y_H;
+}
+int8_t Lis3mdl::readOUT_Z_L(){
+      int8_t OUT_Z_L = read_byte(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::OUT_Z_L);
+      return OUT_Z_L;
+}
+int8_t Lis3mdl::readOUT_Z_H(){
+      int8_t OUT_Z_H = read_byte(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::OUT_Z_H);
+      return OUT_Z_H;
+}
+int8_t Lis3mdl::readTEMP_L(){
+      int8_t temp_L = read_byte(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::TEMP_OUT_L);
+      return temp_L;
+}
+int8_t Lis3mdl::readTEMP_H(){
+      int8_t temp_H = read_byte(Lis3mdl::DEVICE_ADDRESS,Lis3mdl::TEMP_OUT_H);
+      return temp_H;
+}
