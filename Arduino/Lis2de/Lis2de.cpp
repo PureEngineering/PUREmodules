@@ -55,7 +55,7 @@ int Lis2de::read_byte(uint8_t addr, uint8_t subAddress){
  }
 
 
-void Lis2de::begin(){
+uint8_t Lis2de::begin(){
 
     uint8_t TEMPCFG_WORD = (settings.TEMP_ENABLE<<6);
     write_byte(Lis2de::DEVICE_ADDRESS,Lis2de::TEMPCFG,TEMPCFG_WORD);
@@ -115,4 +115,56 @@ void Lis2de::begin(){
     CTRL6_WORD |= (settings.H_LACTIVE   <<1)  & 0x02;
     write_byte(Lis2de::DEVICE_ADDRESS,Lis2de::CTRL6,CTRL6_WORD);
 
+}
+
+uint8_t Lis2de::whoami(){
+    uint8_t who_am_i = read_byte(Lis2de::DEVICE_ADDRESS,Lis2de::WHOAMI);
+    return who_am_i;
+}
+
+uint8_t Lis2de::readStatus(){
+    uint8_t status = read_byte(Lis2de::DEVICE_ADDRESS,Lis2de::STATUS);
+    return status;
+}
+
+int8_t Lis2de::readOUT_X(){
+    int8_t OUT_X = read_byte(Lis2de::DEVICE_ADDRESS,Lis2de::OUT_X);
+    return OUT_X;
+}
+
+int8_t Lis2de::readOUT_Y(){
+    int8_t OUT_Y = read_byte(Lis2de::DEVICE_ADDRESS,Lis2de::OUT_Y);
+    return OUT_Y;
+}
+
+int8_t Lis2de::readOUT_Z(){
+    int8_t OUT_Z = read_byte(Lis2de::DEVICE_ADDRESS,Lis2de::OUT_Z);
+    return OUT_Z;
+}
+
+/*
+//This code toggles LED0 when the Accelerometer is flipped vertically
+void Lis2de::toggleLED_when_Flipped(int8_t OUT_Y){
+    if(OUT_Y==1){
+        //Returns 1 if no communication so this will toggle
+        bsp_board_led_invert(0);
+    }
+    else{
+        if(OUT_Y>0){
+            bsp_board_led_off(0);
+        }
+        else{
+            bsp_board_led_on(0);
+        }
+    }
+}*/
+
+int8_t Lis2de::readTEMP_L(){
+    int8_t temp = read_byte(Lis2de::DEVICE_ADDRESS,Lis2de::TEMP_L);
+    return temp;
+}
+
+int8_t Lis2de::readTEMP_H(){
+    int8_t temp = read_byte(Lis2de::DEVICE_ADDRESS,Lis2de::TEMP_H);
+    return temp;
 }

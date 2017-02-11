@@ -59,7 +59,6 @@ class Lis2de
 		struct SensorSettings
 		{
 			public:
-				
 				uint8_t TEMP_ENABLE = 0x00;
 				//CTRL1
 				uint8_t ODR = 0x00;
@@ -109,7 +108,17 @@ class Lis2de
 		void write_byte(uint8_t addr, uint8_t subAddress, uint8_t data);
 		int read_byte(uint8_t addr, uint8_t subAddress);
     	int read_2bytes(uint8_t addr, uint8_t subAddress);
-    	void begin(void);
+    	uint8_t begin(void);
+
+		 uint8_t whoami(void);
+		 uint8_t readStatus(void);
+		 int8_t readOUT_X(void);
+		 int8_t readOUT_Y(void);
+		 int8_t readOUT_Z(void);
+		 //void lis2de_toggleLED_when_Flipped(int8_t OUT_Y);
+		 int8_t readTEMP_L(void);
+		 int8_t readTEMP_H(void);
+
 
 	};
 #endif
