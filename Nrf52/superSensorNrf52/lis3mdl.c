@@ -6,18 +6,59 @@
 #include "bsp.h"
 
 
+
+static uint8_t lis3mdl_whoami(nrf_drv_twi_t twi_master){
+      uint8_t who_am_i = read_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_WHO_AM_I);
+      return who_am_i;
+}
+
+static uint8_t lis3mdl_readOUT_X_L(nrf_drv_twi_t twi_master){
+      uint8_t OUT_X_L = read_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_OUT_X_L);
+      return OUT_X_L;
+}
+static uint8_t lis3mdl_readOUT_Y_L(nrf_drv_twi_t twi_master){
+      uint8_t OUT_Y_L = read_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_OUT_Y_L);
+      return OUT_Y_L;
+}
+static uint8_t lis3mdl_readOUT_Z_L(nrf_drv_twi_t twi_master){
+      uint8_t OUT_Z_L = read_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_OUT_Z_L);
+      return OUT_Z_L;
+}
+
+static uint8_t lis3mdl_readOUT_X_H(nrf_drv_twi_t twi_master){
+      uint8_t OUT_X_H = read_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_OUT_X_H);
+      return OUT_X_H;
+}
+static uint8_t lis3mdl_readOUT_Y_H(nrf_drv_twi_t twi_master){
+      uint8_t OUT_Y_H = read_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_OUT_Y_H);
+      return OUT_Y_H;
+}
+static uint8_t lis3mdl_readOUT_Z_H(nrf_drv_twi_t twi_master){
+      uint8_t OUT_Z_H = read_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_OUT_Z_H);
+      return OUT_Z_H;
+}
+static uint8_t lis3mdl_readTEMP_L(nrf_drv_twi_t twi_master){
+      uint8_t OUT_Y_H = read_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_TEMP_OUT_L);
+      return OUT_Y_H;
+}
+static uint8_t lis3mdl_readTEMP_H(nrf_drv_twi_t twi_master){
+      uint8_t OUT_Z_H = read_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_TEMP_OUT_H);
+      return OUT_Z_H;
+}
+
+
 static uint8_t run_lis3mdl(nrf_drv_twi_t twi_master){
-    uint8_t who_am_i = read_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_WHO_AM_I);
+    uint8_t who_am_i = lis3mdl_whoami(twi_master);
     NRF_LOG_RAW_INFO("Magnetometer WhoamI: %x.\r\n", who_am_i);
 
-    uint8_t OUT_X = read_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_OUT_X_L);
+    uint8_t OUT_X = lis3mdl_readOUT_X_L(twi_master);
     NRF_LOG_RAW_INFO("Magnetometer OUT_X: %x.\r\n", OUT_X);
-    uint8_t OUT_Y = read_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_OUT_Y_L);
+    uint8_t OUT_Y = lis3mdl_readOUT_Y_L(twi_master);
     NRF_LOG_RAW_INFO("Magnetometer OUT_Y: %x.\r\n", OUT_Y);
-    uint8_t OUT_Z = read_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_OUT_Z_L);
+    uint8_t OUT_Z = lis3mdl_readOUT_Z_L(twi_master);
     NRF_LOG_RAW_INFO("Magnetometer OUT_Z: %x.\r\n", OUT_Z);
 
-    uint8_t temp = read_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_TEMP_OUT_L);
+    uint8_t temp = lis3mdl_readTEMP_L(twi_master);
     NRF_LOG_RAW_INFO("Magnetometer TEMP: %x.\r\n", temp);
     NRF_LOG_RAW_INFO("\r\n");
 
@@ -45,7 +86,7 @@ static uint8_t lis3mdl_init(nrf_drv_twi_t twi_master){
 static void lis3mdl_setup(){
   //Temp Sensor
   //0 = off, 1 = on
-  Lis3mdl_settings.TEMP_EN = 1;
+  Lis3mdl_settings.TEMP_EN = 0;
   //X and Y Power Mode
   //0 = Low-power Mode, 1= Medium Performance Mode, 2=High Perf Mode, 3 = Ultra high Perf Mode
   Lis3mdl_settings.OM = 3;
@@ -90,7 +131,7 @@ static void lis3mdl_setup(){
 static void Lis3mdl_begin(nrf_drv_twi_t twi_master){
     
     uint8_t CTRL1_WORD = 0x00;
-    CTRL1_WORD  = (Lis3mdl_settings.TEMP_EN  <<7)  & 0xF0;        
+    CTRL1_WORD  = (Lis3mdl_settings.TEMP_EN  <<7)  & 0x80;        
     CTRL1_WORD |= (Lis3mdl_settings.OM       <<5)  & 0x60;
     CTRL1_WORD |= (Lis3mdl_settings.DO       <<2)  & 0x1C;
     CTRL1_WORD |= (Lis3mdl_settings.FAST_ODR <<1)  & 0x02;

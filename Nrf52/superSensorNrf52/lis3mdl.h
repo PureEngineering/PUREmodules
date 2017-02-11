@@ -64,6 +64,18 @@ static uint8_t run_lis3mdl(nrf_drv_twi_t twi_master);
 static uint8_t lis3mdl_init(nrf_drv_twi_t twi_master);
 
 
+static uint8_t lis3mdl_whoami(nrf_drv_twi_t twi_master);
+static uint8_t lis3mdl_readOUT_X_L(nrf_drv_twi_t twi_master);
+static uint8_t lis3mdl_readOUT_Y_L(nrf_drv_twi_t twi_master);
+static uint8_t lis3mdl_readOUT_Z_L(nrf_drv_twi_t twi_master);
+static uint8_t lis3mdl_readOUT_X_H(nrf_drv_twi_t twi_master);
+static uint8_t lis3mdl_readOUT_Y_H(nrf_drv_twi_t twi_master);
+static uint8_t lis3mdl_readOUT_Z_H(nrf_drv_twi_t twi_master);
+static uint8_t lis3mdl_readTEMP_L(nrf_drv_twi_t twi_master);
+static uint8_t lis3mdl_readTEMP_H(nrf_drv_twi_t twi_master);
+
+
+
 #ifdef __cplusplus
 }
 #endif
