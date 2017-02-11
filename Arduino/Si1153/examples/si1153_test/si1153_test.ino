@@ -11,7 +11,7 @@ void setup() {
   uint8_t MEASCONFIGx;
   uint8_t configurations[4];
   Wire.begin();
-  Serial.begin(9600);
+  Serial.begin(115200);
   
   //Configure CHAN_LIST (Each bit represents a channel). This code enables channel 1 and 3.
   si1153.param_set(Si1153::CHAN_LIST, 0B00001010);
@@ -70,12 +70,12 @@ void loop() {
     Serial.println(si1153.bytes_to_int(data, sizeof(data)));
 
     //Uncomment this code to see Channel 3's Output
-    /*channel3_data[0] = si1153.read_byte(Si1153::DEVICE_ADDRESS, Si1153::HOSTOUT3);
+    channel3_data[0] = si1153.read_byte(Si1153::DEVICE_ADDRESS, Si1153::HOSTOUT3);
     channel3_data[1] = si1153.read_byte(Si1153::DEVICE_ADDRESS, Si1153::HOSTOUT4);
     channel3_data[2] = si1153.read_byte(Si1153::DEVICE_ADDRESS, Si1153::HOSTOUT5);
     Serial.print("Channel 3 Output: ");
     Serial.println(si1153.bytes_to_int(channel3_data, sizeof(channel3_data)));
-    */
+    
     delay(250);
 
 }
