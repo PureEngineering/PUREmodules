@@ -33,7 +33,7 @@ static int8_t lis2de_readOUT_Z(nrf_drv_twi_t twi_master){
 }
 
 //This code toggles LED0 when the Accelerometer is flipped vertically
-static void lis2de_toggleLED_when_Flipped(OUT_Y){
+static void lis2de_toggleLED_when_Flipped(int8_t OUT_Y){
     if(OUT_Y==1){
         //Returns 1 if no communication so this will toggle
         bsp_board_led_invert(0);

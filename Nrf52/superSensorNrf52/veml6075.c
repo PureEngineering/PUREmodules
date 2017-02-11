@@ -76,17 +76,17 @@ static uint16_t veml6075_init(nrf_drv_twi_t twi_master){
 }
 
 static uint16_t veml6075_whoami(nrf_drv_twi_t twi_master){
-    uint16_t who_am_i = Veml6075_read_2bytes(twi_master,Veml6075_DEVICE_ADDRESS,Veml6075_ID);
+    uint16_t who_am_i = veml6075_read_2bytes(twi_master,Veml6075_DEVICE_ADDRESS,Veml6075_ID);
     return who_am_i;
 }
 
 static uint16_t veml6075_readUVA(nrf_drv_twi_t twi_master){
-    uint16_t UVA_data = Veml6075_read_2bytes(twi_master,Veml6075_DEVICE_ADDRESS,Veml6075_UVA_DATA);
+    uint16_t UVA_data = veml6075_read_2bytes(twi_master,Veml6075_DEVICE_ADDRESS,Veml6075_UVA_DATA);
     return UVA_data;
 }
 
 static uint16_t veml6075_readUVB(nrf_drv_twi_t twi_master){
-    uint16_t UVB_data = Veml6075_read_2bytes(twi_master,Veml6075_DEVICE_ADDRESS,Veml6075_UVB_DATA);
+    uint16_t UVB_data = veml6075_read_2bytes(twi_master,Veml6075_DEVICE_ADDRESS,Veml6075_UVB_DATA);
     return UVB_data;
 }
 
@@ -94,9 +94,9 @@ static uint16_t run_veml6075(nrf_drv_twi_t twi_master){
     uint16_t who_am_i = veml6075_whoami(twi_master);
     NRF_LOG_RAW_INFO("UVA Sensor ID: %.4x.\r\n", who_am_i);
 
-    uint16_t UVA_data = Veml6075_read_2bytes(twi_master);
+    uint16_t UVA_data = veml6075_readUVA(twi_master);
     NRF_LOG_RAW_INFO("UVA Sensor UVA: %.4x.\r\n", UVA_data);
-    uint16_t UVB_data = Veml6075_read_2bytes(twi_master);
+    uint16_t UVB_data = veml6075_readUVB(twi_master);
     NRF_LOG_RAW_INFO("UVA Sensor UVB: %.4x.\r\n", UVB_data);
     NRF_LOG_RAW_INFO("\r\n");
 
