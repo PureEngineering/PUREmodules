@@ -102,6 +102,16 @@ static void Lis2de_begin(nrf_drv_twi_t twi_master);
 static uint8_t run_lis2de(nrf_drv_twi_t twi_master);
 static uint8_t lis2de_init(nrf_drv_twi_t twi_master);
 
+static uint8_t lis2de_whoami(nrf_drv_twi_t twi_master);
+static uint8_t lis2de_readStatus(nrf_drv_twi_t twi_master);
+static int8_t lis2de_readOUT_X(nrf_drv_twi_t twi_master);
+static int8_t lis2de_readOUT_Y(nrf_drv_twi_t twi_master);
+static int8_t lis2de_readOUT_Z(nrf_drv_twi_t twi_master);
+static void lis2de_toggleLED_when_Flipped(OUT_Y);
+static int8_t lis2de_readTEMP_L(nrf_drv_twi_t twi_master);
+static int8_t lis2de_readTEMP_H(nrf_drv_twi_t twi_master);
+
+
 
 
 #ifdef __cplusplus

@@ -7,20 +7,35 @@
 #include "bsp.h"
 
 
-
-
-static uint8_t run_lis2de(nrf_drv_twi_t twi_master){
+static uint8_t lis2de_whoami(nrf_drv_twi_t twi_master){
     uint8_t who_am_i = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_WHO_AM_I);
-    NRF_LOG_RAW_INFO("Accelerometer WhoamI: %x.\r\n", who_am_i);
-    uint8_t status = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_STATUS);
-    NRF_LOG_RAW_INFO("Accelerometer Status: %x.\r\n", status);
-    
-    int8_t OUT_X = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_OUT_X);
-    NRF_LOG_RAW_INFO("Accelerometer OUTX: %d.\r\n", OUT_X);
-    int8_t OUT_Y = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_OUT_Y);
-    NRF_LOG_RAW_INFO("Accelerometer OUTY: %d.\r\n", OUT_Y);
+    return who_am_i;
+}
 
+static uint8_t lis2de_readStatus(nrf_drv_twi_t twi_master){
+    uint8_t status = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_STATUS);
+    return status;
+}
+
+static int8_t lis2de_readOUT_X(nrf_drv_twi_t twi_master){
+    int8_t OUT_X = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_OUT_X);
+    return OUT_X;
+}
+
+static int8_t lis2de_readOUT_Y(nrf_drv_twi_t twi_master){
+    int8_t OUT_Y = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_OUT_Y);
+    return OUT_Y;
+}
+
+static int8_t lis2de_readOUT_Z(nrf_drv_twi_t twi_master){
+    int8_t OUT_Z = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_OUT_Z);
+    return OUT_Z;
+}
+
+//This code toggles LED0 when the Accelerometer is flipped vertically
+static void lis2de_toggleLED_when_Flipped(OUT_Y){
     if(OUT_Y==1){
+        //Returns 1 if no communication so this will toggle
         bsp_board_led_invert(0);
     }
     else{
@@ -31,11 +46,35 @@ static uint8_t run_lis2de(nrf_drv_twi_t twi_master){
             bsp_board_led_on(0);
         }
     }
+}
 
-    int8_t OUT_Z = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_OUT_Z);
+static int8_t lis2de_readTEMP_L(nrf_drv_twi_t twi_master){
+    int8_t temp = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_TEMP_L);
+    return temp;
+}
+
+static int8_t lis2de_readTEMP_H(nrf_drv_twi_t twi_master){
+    int8_t temp = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_TEMP_H);
+    return temp;
+}
+
+static uint8_t run_lis2de(nrf_drv_twi_t twi_master){
+    uint8_t who_am_i = lis2de_whoami(twi_master);
+    NRF_LOG_RAW_INFO("Accelerometer WhoamI: %x.\r\n", who_am_i);
+    uint8_t status = lis2de_readStatus(twi_master);
+    NRF_LOG_RAW_INFO("Accelerometer Status: %x.\r\n", status);
+    
+    int8_t OUT_X = lis2de_readOUT_X(twi_master);
+    NRF_LOG_RAW_INFO("Accelerometer OUTX: %d.\r\n", OUT_X);
+    int8_t OUT_Y = lis2de_readOUT_Y(twi_master);
+    NRF_LOG_RAW_INFO("Accelerometer OUTY: %d.\r\n", OUT_Y);
+
+    lis2de_toggleLED_when_Flipped(OUT_Y);
+
+    int8_t OUT_Z = lis2de_readOUT_Z(twi_master);
     NRF_LOG_RAW_INFO("Accelerometer OUTZ: %d.\r\n", OUT_Z);
 
-    int8_t temp = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_TEMP_L);
+    int8_t temp = lis2de_readTEMP_L(twi_master);
     NRF_LOG_RAW_INFO("Accelerometer Temp: %x.\r\n", temp);
     NRF_LOG_RAW_INFO("\r\n");
 
@@ -48,7 +87,7 @@ static uint8_t lis2de_init(nrf_drv_twi_t twi_master){
     Lis2de_setup();
     Lis2de_begin(twi_master);
 
-    uint8_t who_am_i = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_WHO_AM_I);
+    uint8_t who_am_i =  lis2de_whoami(twi_master);
     
     if(who_am_i==0x33){
         NRF_LOG_RAW_INFO("Accelerometer Initialized %x \r\n", who_am_i);
