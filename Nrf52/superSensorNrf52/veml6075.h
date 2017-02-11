@@ -30,10 +30,14 @@ struct Veml6075_SensorSettings
 
 
 
-static uint16_t Veml6075_read_2bytes(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress);
-static void begin(nrf_drv_twi_t twi_master);
+static uint16_t veml6075_read_2bytes(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress);
+static void veml6075_begin(nrf_drv_twi_t twi_master);
 static uint16_t veml6075_init(nrf_drv_twi_t twi_master);
 static uint16_t run_veml6075(nrf_drv_twi_t twi_master);
+
+static uint16_t veml6075_whoami(nrf_drv_twi_t twi_master);
+static uint16_t veml6075_readUVA(nrf_drv_twi_t twi_master);
+static uint16_t veml6075_readUVB(nrf_drv_twi_t twi_master);
 
 
 #ifdef __cplusplus
