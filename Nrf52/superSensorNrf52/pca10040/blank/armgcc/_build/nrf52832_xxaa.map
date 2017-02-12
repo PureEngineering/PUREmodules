@@ -5002,7 +5002,7 @@ OUTPUT(_build/nrf52832_xxaa.out elf32-littlearm)
  .debug_macro   0x0001560d       0x34 _build/nrf52832_xxaa_SEGGER_RTT.c.o
  .debug_macro   0x00015641       0xf5 _build/nrf52832_xxaa_system_nrf52.c.o
 
-.debug_line     0x00000000     0xad12
+.debug_line     0x00000000     0xaca3
  .debug_line    0x00000000      0x7d9 _build/nrf52832_xxaa_nrf_log_backend_serial.c.o
  .debug_line    0x000007d9      0xa66 _build/nrf52832_xxaa_nrf_log_frontend.c.o
  .debug_line    0x0000123f      0x64d _build/nrf52832_xxaa_app_error.c.o
@@ -5016,9 +5016,9 @@ OUTPUT(_build/nrf52832_xxaa.out elf32-littlearm)
  .debug_line    0x000055b1      0xfa1 _build/nrf52832_xxaa_nrf_drv_twi.c.o
  .debug_line    0x00006552      0xe1b _build/nrf52832_xxaa_nrf_drv_twis.c.o
  .debug_line    0x0000736d     0x11a3 _build/nrf52832_xxaa_nrf_drv_uart.c.o
- .debug_line    0x00008510     0x1475 _build/nrf52832_xxaa_main.c.o
- .debug_line    0x00009985      0xf13 _build/nrf52832_xxaa_SEGGER_RTT.c.o
- .debug_line    0x0000a898      0x47a _build/nrf52832_xxaa_system_nrf52.c.o
+ .debug_line    0x00008510     0x1406 _build/nrf52832_xxaa_main.c.o
+ .debug_line    0x00009916      0xf13 _build/nrf52832_xxaa_SEGGER_RTT.c.o
+ .debug_line    0x0000a829      0x47a _build/nrf52832_xxaa_system_nrf52.c.o
 
 .debug_str      0x00000000    0x70054
  .debug_str     0x00000000    0x63e35 _build/nrf52832_xxaa_nrf_log_backend_serial.c.o

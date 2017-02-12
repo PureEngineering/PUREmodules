@@ -8,11 +8,29 @@
 
 void BME280_setup( void )
 {
+	//Mode Settings
+	//0 = Sleep Mode, 1 or 2 Forced Mode, 3 = Normal Mode
 	BME280_settings.runMode = 3;
+
+	//tstandby Settings
+	//0 = 0.5ms, 1 = 62.5ms, 2 = 125ms, 3 = 250ms
+	//4 = 500ms, 5 = 1000ms, 6 = 10ms, 7 = 20ms
 	BME280_settings.tStandby = 0;
+
+	//Filter Coefficient Settings
+	//0 = Filter off, 1 = 2, 2 = 4, 3 = 8, 4 = 16
 	BME280_settings.filter = 0;
+
+	//Temp Oversampling
+	//0 = Skipped, 1 = x1 , 2 = x2, 3 = x4, 4 = x8, 5 = x16
 	BME280_settings.tempOverSample = 1;
+
+	//Pressure Oversampling
+	//0 = Skipped, 1 = x1 , 2 = x2, 3 = x4, 4 = x8, 5 = x16
 	BME280_settings.pressOverSample = 1;
+
+	//Humidity Oversampling
+	//0 = Skipped, 1 = x1 , 2 = x2, 3 = x4, 4 = x8, 5 = x16
 	BME280_settings.humidOverSample = 1;
 
 }
@@ -109,8 +127,6 @@ uint8_t run_BME280(nrf_drv_twi_t twi_master){
 
 	uint8_t humidity = BME280_readFloatHumidity(twi_master);
     NRF_LOG_RAW_INFO("BME280 Humidity: %d percent\r\n", humidity);
-
-
 
 }
 

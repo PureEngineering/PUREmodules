@@ -94,15 +94,34 @@ static void lis3mdl_setup(){
   //4 = 10Hz, 5 = 20Hz, 6 = 40Hz, 7 = 80Hz
   Lis3mdl_settings.DO = 4;
 
+  //FAST_ODR enables data rates higher than 80Hz
+  //0 = FAST_ODR disabled, 1 = FAST_ODR enabled
   Lis3mdl_settings.FAST_ODR = 0;
+
+  //Self-test enable
+  //0 = disabled, 1 = enabled
   Lis3mdl_settings.ST = 0;
 
-
+  //Full-scale selection
+  //0 = +-4 gauss, 1 = +-8 gauss,
+  //2 = +-12 gauss, 3 = +- 16 gauss
   Lis3mdl_settings.FS =0;
+
+  //Reboot memory content
+  //0 = normal mode, 1 = reboot memory content
   Lis3mdl_settings.REBOOT = 0;
+
+  //Configuration regsiters and user register reset function
+  //0 = Default, 1 = Reset Operation
   Lis3mdl_settings.SOFT_RST = 0;
 
+  //Low power mode configuration
+  //0 = DOp2:0] used to decide frequency
+  //1 = DO[2:0] ignored and frequency set to 0.625 Hz.
   Lis3mdl_settings.LP = 0;
+
+  //SPI serial interface mode selection
+  //0 = 4 wire interface, 1 = 3 wire interface
   Lis3mdl_settings.SIM = 0;
 
 

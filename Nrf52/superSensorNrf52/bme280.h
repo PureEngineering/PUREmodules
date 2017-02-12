@@ -7,7 +7,6 @@
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 
-//#define I2C_MODE 0
 
 #define BME280_DEVICE_ADDRESS           0x77
 //Register names:
@@ -61,12 +60,7 @@
 
 
 struct BME280_SensorSettings
-{
-  //Main Interface and mode settings
-    //uint8_t commInterface;
-    //uint8_t I2CAddress;
-    //uint8_t chipSelectPin;
-	
+{	
 	uint8_t runMode;
 	uint8_t tStandby;
 	uint8_t filter;
@@ -101,26 +95,11 @@ struct SensorCalibration
 	
 } calibration;
 
-//This is the man operational class of the driver.
 
-//class BME280
-//{
-  //public:
-    //settings
-    //SensorSettings settings;
-	//SensorCalibration calibration;
 	int32_t t_fine;
-	
-	//Constructor generates default SensorSettings.
-	//(over-ride after construction if desired)
-    //BME280( void );
-    //~BME280() = default;
-    static void BME280_setup( void );
-	
-	//Call to apply SensorSettings.
-	//This also gets the SensorCalibration constants
-    static uint8_t BME280_begin(nrf_drv_twi_t twi_master);
 
+    static void BME280_setup( void );
+    static uint8_t BME280_begin(nrf_drv_twi_t twi_master);
 	//Software reset routine
 	static void BME280_reset(nrf_drv_twi_t twi_master);
 	
@@ -140,18 +119,4 @@ struct SensorCalibration
 	static uint8_t run_BME280(nrf_drv_twi_t twi_master);
 
 
-	//ReadRegisterRegion takes a uint8 array address as input and reads
-	//a chunk of memory into that array.
-    //void readRegisterRegion(uint8_t*, uint8_t, uint8_t );
-	//readRegister reads one register
-	//static uint8_t read_byte(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress);
-    //Reads two regs, LSByte then MSByte order, and concatenates them
-	//Used for two-byte reads
-	//int16_t readRegisterInt16( uint8_t offset );
-	//Writes a byte;
-	//static void write_byte(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress, uint8_t data);    
-//};
-
-
-
-#endif  // End of __BME280_H__ definition check
+#endif 
