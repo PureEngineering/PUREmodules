@@ -1,8 +1,8 @@
 1- Run 'make' in this directory. ('PureModules/Nrf52/').
       This will download the "nRF5_SDK_12.2.0_f012efa" Nordic SDK. 
       
-Match your ARM GCC Version in this project to the one your computer is using.
- 2- Open '..PureModules\Nrf52\nRF5_SDK_12.2.0_f012efa\components\toolchain\gcc\Makefile.windows.   
+2- Match your ARM GCC Version in this project to the one your computer is using:     
+      Open '..PureModules\Nrf52\nRF5_SDK_12.2.0_f012efa\components\toolchain\gcc\Makefile.windows.   
 
  3- Change the settings to match your computer's GCC settings. 
 ie- Mine is:   \r\n
