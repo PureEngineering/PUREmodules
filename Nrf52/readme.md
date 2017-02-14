@@ -18,4 +18,8 @@ ie- Mine is:   \r\n
      
  5- Run 'make' in this directory. This will compile the code. 
  
- 6- Run 'program' to flash the nrf52 board with the project code
+6- Setup program.bat file by changing the directory locations of your softdevice and compiled hex file:
+      softdevice: [YOURDIRECTORY]\nRF5_SDK_12.2.0_f012efa\components\softdevice\s132\hex\s132_nrf52_3.0.0_softdevice.hex
+      
+
+7- Run 'program' to flash the nrf52 board with the project code
