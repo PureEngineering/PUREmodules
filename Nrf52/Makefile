@@ -29,7 +29,7 @@ export $(SDK_HOME)
 
 all: bootstrap #fw bootloader
 
-bootstrap: $(SDK_FILE) $(SDK_DIR) #$(SDK_DIR)/external/micro-ecc/micro-ecc
+bootstrap: $(SDK_FILE) $(SDK_DIR) $(SDK_DIR)/external/micro-ecc/micro-ecc
 	@echo SDK_HOME = ${SDK_HOME}
 
 $(SDK_DIR):
@@ -40,6 +40,6 @@ $(SDK_FILE):
 	@echo downloading SDK zip...
 	$(DOWNLOAD_CMD) $(SDK_FILE) $(SDK_URL)/$(SDK_FILE)
 
-#$(SDK_DIR)/external/micro-ecc/micro-ecc:
-#	git clone https://github.com/kmackay/micro-ecc.git $(SDK_DIR)/external/micro-ecc/micro-ecc
-#	$(MAKE) -C $(SDK_DIR)/external/micro-ecc/nrf52_armgcc/armgcc
+$(SDK_DIR)/external/micro-ecc/micro-ecc:
+	git clone https://github.com/kmackay/micro-ecc.git $(SDK_DIR)/external/micro-ecc/micro-ecc
+	$(MAKE) -C $(SDK_DIR)/external/micro-ecc/nrf52_armgcc/armgcc
