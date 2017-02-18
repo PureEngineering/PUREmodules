@@ -186,5 +186,10 @@ flash: $(OUTPUT_DIRECTORY)/nrf52832_xxaa_s132.hex
 	nrfjprog --program $< -f nrf52 --sectorerase
 	nrfjprog --reset -f nrf52
 
+flash_softdevice:
+	@echo Flashing: s132_nrf52_3.0.0_softdevice.hex
+	nrfjprog --program $(SDK_ROOT)/components/softdevice/s132/hex/s132_nrf52_3.0.0_softdevice.hex -f nrf52 --sectorerase 
+	nrfjprog --reset -f nrf52
+
 erase:
 	nrfjprog --eraseall -f nrf52
