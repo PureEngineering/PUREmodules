@@ -78,7 +78,7 @@ int read_i2c_16bit(int address,int subaddress) {
 
 void setup() {
 	// put your setup code here, to run once:
-	Serial.begin(9600);  
+	Serial.begin(115200);  
 	Wire.begin();  
 
 	write_i2c(I2C_DEVICE_ADDRESS,LIS3MDL_CTRL_REG1,0xf0); //enable temp sensor,  (ultra-high-performance mode for X and Y); DO = 100 (10 Hz ODR)
