@@ -11,7 +11,10 @@ ie- Mine is:   \r\n
             GNU_VERSION := 5.4
             GNU_PREFIX := arm-none-eabi
             
-          
+ 4-  Run the Makefile in the micro-ecc library:
+     Goto:   nRF5_SDK_12.2.0_f012efa\external\micro-ecc\nrf52_armgcc\armgcc 
+     Run 'make' in this directory
+         
  4- Open the Example Project directory you wish to program. 
      ie- To open SuperSensorNrf52 Project go to: 
      ..PureModules\Nrf52\Modules_examples\superSensorNrf52\pca10040\blank\armgcc
