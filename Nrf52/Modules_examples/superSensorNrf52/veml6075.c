@@ -66,10 +66,10 @@ static uint16_t veml6075_init(nrf_drv_twi_t twi_master){
     
 
     if(who_am_i==0x0026){
-        NRF_LOG_RAW_INFO("UVA Sensor Initialized %x \r\n", who_am_i);
+        NRF_LOG_RAW_INFO("Veml6075 UVA Sensor Initialization: Pass %x \r\n", who_am_i);
     }
     else{
-        NRF_LOG_RAW_INFO("UVA Sensor Initialization Failed %x \r\n", who_am_i);
+        NRF_LOG_RAW_INFO("Veml6075 UVA Sensor Initialization: Fail %x \r\n", who_am_i);
     }
     return who_am_i;
 

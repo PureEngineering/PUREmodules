@@ -152,10 +152,10 @@ static uint8_t si1153_init(nrf_drv_twi_t twi_master){
     uint8_t who_am_i = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_PART_ID);
 
     if(who_am_i==0x53){
-        NRF_LOG_RAW_INFO("Proximity Sensor Initialized %x \r\n", who_am_i);
+        NRF_LOG_RAW_INFO("Si1153 Proximity Sensor Initialization: Pass %x \r\n", who_am_i);
     }
     else{
-        NRF_LOG_RAW_INFO("Proximity Sensor Initialization Failed %x \r\n", who_am_i);
+        NRF_LOG_RAW_INFO("Si1153 Proximity Sensor Initialization: Pass %x \r\n", who_am_i);
     }
 
     return who_am_i;

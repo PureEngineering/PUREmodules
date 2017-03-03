@@ -103,10 +103,10 @@ uint8_t BME280_init(nrf_drv_twi_t twi_master){
 	BME280_setup();
 	who_am_i = BME280_begin(twi_master);
     if(who_am_i==0x60){
-        NRF_LOG_RAW_INFO("BME280 Initialized %x \r\n", who_am_i);
+        NRF_LOG_RAW_INFO("BME280 Initialization: Pass %x \r\n", who_am_i);
     }
     else{
-        NRF_LOG_RAW_INFO("BME280 Initialization Failed %x \r\n", who_am_i);
+        NRF_LOG_RAW_INFO("BME280 Initialization: Fail %x \r\n", who_am_i);
     }
 	return who_am_i;
 }

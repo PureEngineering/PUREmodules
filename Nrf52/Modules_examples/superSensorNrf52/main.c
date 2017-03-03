@@ -129,6 +129,8 @@ int main(void)
 
     /* Welcome message */
     NRF_LOG_RAW_INFO("\r\nStarted Super Sensor\r\n");
+    test_SuperSensor_init(m_twi_master); 
+
 
     NRF_LOG_FLUSH();
     while (1)

@@ -90,10 +90,10 @@ static uint8_t lis2de_init(nrf_drv_twi_t twi_master){
     uint8_t who_am_i =  lis2de_whoami(twi_master);
     
     if(who_am_i==0x33){
-        NRF_LOG_RAW_INFO("Accelerometer Initialized %x \r\n", who_am_i);
+        NRF_LOG_RAW_INFO("Lis2de Accelerometer Initialization: Pass %x \r\n", who_am_i);
     }
     else{
-        NRF_LOG_RAW_INFO("Accelerometer Initialization Failed %x \r\n", who_am_i);
+        NRF_LOG_RAW_INFO("Lis2de Accelerometer Initialization: Fail %x \r\n", who_am_i);
     }
 
     return who_am_i;
