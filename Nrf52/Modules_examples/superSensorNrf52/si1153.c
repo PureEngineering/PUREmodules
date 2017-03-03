@@ -91,7 +91,7 @@ static uint8_t run_si1153(nrf_drv_twi_t twi_master){
     data[1] = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT1);
     data[2] = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT2);
     int int_data = bytes_to_int(data, sizeof(data));
-    NRF_LOG_RAW_INFO("Proximity Data: %.4d: \r\n",int_data);
+    NRF_LOG_RAW_INFO("Proximity Data: %.4d: \r\n\n",int_data);
 
     return who_am_i;
 
