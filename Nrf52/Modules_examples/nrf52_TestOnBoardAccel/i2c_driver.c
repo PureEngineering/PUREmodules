@@ -28,6 +28,20 @@ static void write_byte(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress
     }     
 }
 
+//Writes LSB first and then MSB
+static void write_2bytes(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress, uint8_t data_LSB, uint8_t data_MSB){
+    ret_code_t ret;
+    uint8_t buffer[3]; 
+    buffer[0] = subAddress;
+    buffer[1] = data_LSB;
+    buffer[2] = data_MSB;
+    ret = nrf_drv_twi_tx(&twi_master, addr, buffer, 3, false);
+    if (NRF_SUCCESS != ret){
+        NRF_LOG_WARNING("Communication error when Writing\r\n");
+        return;
+    }     
+}
+
 static uint8_t read_byte(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress){
     ret_code_t ret;
     uint8_t data;

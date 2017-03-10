@@ -1,4 +1,4 @@
-PROJECT_NAME     := twi_master_with_twis_slave_pca10040
+PROJECT_NAME     := supersensor
 TARGETS          := nrf52832_xxaa
 OUTPUT_DIRECTORY := _build
 
@@ -36,11 +36,16 @@ SRC_FILES += \
   $(SDK_ROOT)/external/segger_rtt/SEGGER_RTT_printf.c \
   $(SDK_ROOT)/components/toolchain/gcc/gcc_startup_nrf52.S \
   $(SDK_ROOT)/components/toolchain/system_nrf52.c \
+  $(PROJ_DIR)/i2c_driver.c \
   $(PROJ_DIR)/lis2de.c \
   $(PROJ_DIR)/vl53l0.c \
   $(PROJ_DIR)/si1153.c \
   $(PROJ_DIR)/lis3mdl.c \
-  $(PROJ_DIR)/i2c_driver.c \
+  $(PROJ_DIR)/veml6075.c \
+  $(PROJ_DIR)/bme280.c \
+
+
+
 
 # Include folders common to all targets
 INC_FOLDERS += \
@@ -72,6 +77,7 @@ INC_FOLDERS += \
 
 # Libraries common to all targets
 LIB_FILES += \
+
 
 # C flags common to all targets
 CFLAGS += -DNRF52_PAN_12
