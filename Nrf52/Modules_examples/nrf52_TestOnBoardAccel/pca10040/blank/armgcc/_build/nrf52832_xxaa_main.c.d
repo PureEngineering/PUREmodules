@@ -73,10 +73,19 @@ _build/nrf52832_xxaa_main.c.o: ../../../main.c \
  ../../../../../nRF5_SDK_12.2.0_f012efa/components/libraries/log/nrf_log_ctrl.h \
  ../../../../../nRF5_SDK_12.2.0_f012efa/components/libraries/log/src/nrf_log_ctrl_internal.h \
  ../../../../../nRF5_SDK_12.2.0_f012efa/components/drivers_nrf/delay/nrf_delay.h \
- ../../../i2c_driver.c ../../../lis3mdl.c ../../../lis3mdl.h \
- ../../../lis2de.c ../../../lis2de.h ../../../vl53l0.c ../../../vl53l0.h \
- ../../../si1153.c ../../../si1153.h ../../../veml6075.c \
- ../../../veml6075.h ../../../bme280.c ../../../bme280.h
+ ../../../../../Modules_libraries/i2c_driver.c ../../../config.h \
+ ../../../../../Modules_libraries/lis3mdl.c \
+ ../../../../../Modules_libraries/lis3mdl.h \
+ ../../../../../Modules_libraries/lis2de.c \
+ ../../../../../Modules_libraries/lis2de.h \
+ ../../../../../Modules_libraries/vl53l0.c \
+ ../../../../../Modules_libraries/vl53l0.h \
+ ../../../../../Modules_libraries/si1153.c \
+ ../../../../../Modules_libraries/si1153.h \
+ ../../../../../Modules_libraries/veml6075.c \
+ ../../../../../Modules_libraries/veml6075.h \
+ ../../../../../Modules_libraries/bme280.c \
+ ../../../../../Modules_libraries/bme280.h
 
 c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\lib\gcc\arm-none-eabi\5.4.1\include\stdbool.h:
 
@@ -226,28 +235,30 @@ c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\inc
 
 ../../../../../nRF5_SDK_12.2.0_f012efa/components/drivers_nrf/delay/nrf_delay.h:
 
-../../../i2c_driver.c:
+../../../../../Modules_libraries/i2c_driver.c:
 
-../../../lis3mdl.c:
+../../../config.h:
 
-../../../lis3mdl.h:
+../../../../../Modules_libraries/lis3mdl.c:
 
-../../../lis2de.c:
+../../../../../Modules_libraries/lis3mdl.h:
 
-../../../lis2de.h:
+../../../../../Modules_libraries/lis2de.c:
 
-../../../vl53l0.c:
+../../../../../Modules_libraries/lis2de.h:
 
-../../../vl53l0.h:
+../../../../../Modules_libraries/vl53l0.c:
 
-../../../si1153.c:
+../../../../../Modules_libraries/vl53l0.h:
 
-../../../si1153.h:
+../../../../../Modules_libraries/si1153.c:
 
-../../../veml6075.c:
+../../../../../Modules_libraries/si1153.h:
 
-../../../veml6075.h:
+../../../../../Modules_libraries/veml6075.c:
 
-../../../bme280.c:
+../../../../../Modules_libraries/veml6075.h:
 
-../../../bme280.h:
+../../../../../Modules_libraries/bme280.c:
+
+../../../../../Modules_libraries/bme280.h:

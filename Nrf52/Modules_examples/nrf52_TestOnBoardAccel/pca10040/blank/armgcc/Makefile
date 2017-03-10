@@ -4,6 +4,7 @@ OUTPUT_DIRECTORY := _build
 
 SDK_ROOT := ../../../../../nRF5_SDK_12.2.0_f012efa
 PROJ_DIR := ../../..
+LIB_DIR  := ../../../../../Modules_libraries
 
 $(OUTPUT_DIRECTORY)/nrf52832_xxaa.out: \
   LINKER_SCRIPT  := twi_master_with_twis_slave_gcc_nrf52.ld
@@ -30,19 +31,12 @@ SRC_FILES += \
   $(SDK_ROOT)/components/drivers_nrf/uart/nrf_drv_uart.c \
   $(SDK_ROOT)/components/libraries/bsp/bsp.c \
   $(SDK_ROOT)/components/libraries/bsp/bsp_nfc.c \
-  $(PROJ_DIR)/main.c \
   $(SDK_ROOT)/external/segger_rtt/RTT_Syscalls_GCC.c \
   $(SDK_ROOT)/external/segger_rtt/SEGGER_RTT.c \
   $(SDK_ROOT)/external/segger_rtt/SEGGER_RTT_printf.c \
   $(SDK_ROOT)/components/toolchain/gcc/gcc_startup_nrf52.S \
   $(SDK_ROOT)/components/toolchain/system_nrf52.c \
-  $(PROJ_DIR)/i2c_driver.c \
-  $(PROJ_DIR)/lis2de.c \
-  $(PROJ_DIR)/vl53l0.c \
-  $(PROJ_DIR)/si1153.c \
-  $(PROJ_DIR)/lis3mdl.c \
-  $(PROJ_DIR)/veml6075.c \
-  $(PROJ_DIR)/bme280.c \
+  $(PROJ_DIR)/main.c \
 
 
 
@@ -74,6 +68,7 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/drivers_nrf/common \
   $(SDK_ROOT)/components/drivers_nrf/twis_slave \
   $(SDK_ROOT)/components/libraries/log/src \
+  $(LIB_DIR) \
 
 # Libraries common to all targets
 LIB_FILES += \
