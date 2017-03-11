@@ -116,6 +116,7 @@ static ss_response test_SuperSensor_run(nrf_drv_twi_t twi_master){
  */
 int main(void)
 {
+    int i = 0;
     ret_code_t err_code;
     /* Initialization of UART */
     bsp_board_leds_init();
@@ -126,19 +127,21 @@ int main(void)
     err_code = twi_master_init();
     APP_ERROR_CHECK(err_code);
 
+  override_defaut_lis2de_address(0x19);  ////0x18 for Super Sensor Accel. 0x19 for Nrf52 onboard Accel.
 
     /* Welcome message */
     NRF_LOG_RAW_INFO("\r\nStarted Super Sensor\r\n");
     //test_SuperSensor_init(m_twi_master); 
    lis2de_init(m_twi_master);
 
-  
+
     while (1)
     {
 
     NRF_LOG_FLUSH();   
 
 
+    NRF_LOG_RAW_INFO("%d------------------------\r\n",i++);
     nrf_delay_ms(1000);
 
     run_lis2de(m_twi_master);

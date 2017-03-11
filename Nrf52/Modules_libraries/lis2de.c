@@ -6,29 +6,35 @@
 #include "nrf_drv_twi.h"
 #include "bsp.h"
 
+static uint8_t defaut_lis2de_address = Lis2de_DEVICE_ADDRESS;
+
+static void override_defaut_lis2de_address(uint8_t new_address)
+{
+	defaut_lis2de_address = new_address;
+}
 
 static uint8_t lis2de_whoami(nrf_drv_twi_t twi_master){
-    uint8_t who_am_i = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_WHO_AM_I);
+    uint8_t who_am_i = read_byte(twi_master,defaut_lis2de_address,Lis2de_WHO_AM_I);
     return who_am_i;
 }
 
 static uint8_t lis2de_readStatus(nrf_drv_twi_t twi_master){
-    uint8_t status = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_STATUS);
+    uint8_t status = read_byte(twi_master,defaut_lis2de_address,Lis2de_STATUS);
     return status;
 }
 
 static int8_t lis2de_readOUT_X(nrf_drv_twi_t twi_master){
-    int8_t OUT_X = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_OUT_X);
+    int8_t OUT_X = read_byte(twi_master,defaut_lis2de_address,Lis2de_OUT_X);
     return OUT_X;
 }
 
 static int8_t lis2de_readOUT_Y(nrf_drv_twi_t twi_master){
-    int8_t OUT_Y = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_OUT_Y);
+    int8_t OUT_Y = read_byte(twi_master,defaut_lis2de_address,Lis2de_OUT_Y);
     return OUT_Y;
 }
 
 static int8_t lis2de_readOUT_Z(nrf_drv_twi_t twi_master){
-    int8_t OUT_Z = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_OUT_Z);
+    int8_t OUT_Z = read_byte(twi_master,defaut_lis2de_address,Lis2de_OUT_Z);
     return OUT_Z;
 }
 
@@ -49,12 +55,12 @@ static void lis2de_toggleLED_when_Flipped(int8_t OUT_Y){
 }
 
 static int8_t lis2de_readTEMP_L(nrf_drv_twi_t twi_master){
-    int8_t temp = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_TEMP_L);
+    int8_t temp = read_byte(twi_master,defaut_lis2de_address,Lis2de_TEMP_L);
     return temp;
 }
 
 static int8_t lis2de_readTEMP_H(nrf_drv_twi_t twi_master){
-    int8_t temp = read_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_TEMP_H);
+    int8_t temp = read_byte(twi_master,defaut_lis2de_address,Lis2de_TEMP_H);
     return temp;
 }
 
@@ -147,7 +153,7 @@ static void Lis2de_setup(void){
 static void Lis2de_begin(nrf_drv_twi_t twi_master){
 
     uint8_t TEMPCFG_WORD = (Lis2de_settings.TEMP_ENABLE<<6);
-    write_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_TEMPCFG,TEMPCFG_WORD);
+    write_byte(twi_master,defaut_lis2de_address,Lis2de_TEMPCFG,TEMPCFG_WORD);
 
     uint8_t CTRL1_WORD = 0x00;
     CTRL1_WORD  = (Lis2de_settings.ODR     <<4)  & 0xF0;        
@@ -155,7 +161,7 @@ static void Lis2de_begin(nrf_drv_twi_t twi_master){
     CTRL1_WORD |= (Lis2de_settings.ZEN     <<2)  & 0x04;
     CTRL1_WORD |= (Lis2de_settings.YEN     <<1)  & 0x02;
     CTRL1_WORD |= (Lis2de_settings.XEN        )  & 0x01;
-    write_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_CTRL1,CTRL1_WORD);
+    write_byte(twi_master,defaut_lis2de_address,Lis2de_CTRL1,CTRL1_WORD);
 
 
     uint8_t CTRL2_WORD = 0x00;
@@ -165,7 +171,7 @@ static void Lis2de_begin(nrf_drv_twi_t twi_master){
     CTRL2_WORD |= (Lis2de_settings.HPCLICK <<2)  & 0x04;
     CTRL2_WORD |= (Lis2de_settings.HPIS2   <<1)  & 0x02;
     CTRL2_WORD |= (Lis2de_settings.HPIS1      )  & 0x01;
-    write_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_CTRL2,CTRL2_WORD);
+    write_byte(twi_master,defaut_lis2de_address,Lis2de_CTRL2,CTRL2_WORD);
 
     uint8_t CTRL3_WORD = 0x00;
     CTRL3_WORD  = (Lis2de_settings.INT1_CLICK  <<7)  & 0x80;        
@@ -175,7 +181,7 @@ static void Lis2de_begin(nrf_drv_twi_t twi_master){
     CTRL3_WORD |= (Lis2de_settings.INT1_DRDY2  <<3)  & 0x08;
     CTRL3_WORD |= (Lis2de_settings.INT1_WTM    <<2)  & 0x04;
     CTRL3_WORD |= (Lis2de_settings.INT1_OVERRUN<<1)  & 0x02;
-    write_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_CTRL3,CTRL3_WORD);
+    write_byte(twi_master,defaut_lis2de_address,Lis2de_CTRL3,CTRL3_WORD);
 
 
     uint8_t CTRL4_WORD = 0x00;
@@ -183,7 +189,7 @@ static void Lis2de_begin(nrf_drv_twi_t twi_master){
     CTRL4_WORD |= (Lis2de_settings.FS      <<4)  & 0x30;
     CTRL4_WORD |= (Lis2de_settings.ST      <<1)  & 0x06;
     CTRL4_WORD |= (Lis2de_settings.SIM        )  & 0x01;
-    write_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_CTRL4,CTRL4_WORD);
+    write_byte(twi_master,defaut_lis2de_address,Lis2de_CTRL4,CTRL4_WORD);
 
 
     uint8_t CTRL5_WORD = 0x00;
@@ -193,7 +199,7 @@ static void Lis2de_begin(nrf_drv_twi_t twi_master){
     CTRL5_WORD |= (Lis2de_settings.D4D_IG1    <<2)  & 0x04;
     CTRL5_WORD |= (Lis2de_settings.LIR_IG2    <<1)  & 0x02;
     CTRL5_WORD |= (Lis2de_settings.D4D_IG2       )  & 0x01;
-    write_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_CTRL5,CTRL5_WORD);
+    write_byte(twi_master,defaut_lis2de_address,Lis2de_CTRL5,CTRL5_WORD);
 
     uint8_t CTRL6_WORD = 0x00;
     CTRL6_WORD  = (Lis2de_settings.INT2_CLICK  <<7)  & 0x80;        
@@ -202,6 +208,6 @@ static void Lis2de_begin(nrf_drv_twi_t twi_master){
     CTRL6_WORD |= (Lis2de_settings.INT2_BOOT   <<4)  & 0x10;
     CTRL6_WORD |= (Lis2de_settings.INT2_ACT    <<3)  & 0x08;
     CTRL6_WORD |= (Lis2de_settings.H_LACTIVE   <<1)  & 0x02;
-    write_byte(twi_master,Lis2de_DEVICE_ADDRESS,Lis2de_CTRL6,CTRL6_WORD);
+    write_byte(twi_master,defaut_lis2de_address,Lis2de_CTRL6,CTRL6_WORD);
 
 }
