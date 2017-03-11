@@ -110,10 +110,10 @@ extern "C" {
 #define Si1153_BURST                       0x2B
 
 /** @} */
-static void param_set(nrf_drv_twi_t twi_master,uint8_t loc, uint8_t val);
+static int param_set(nrf_drv_twi_t twi_master,uint8_t loc, uint8_t val);
 static int param_query(nrf_drv_twi_t twi_master,uint8_t loc);
 static void config_channel(nrf_drv_twi_t twi_master,uint8_t index, uint8_t *conf);
-static void send_command(nrf_drv_twi_t twi_master,uint8_t code);
+static int send_command(nrf_drv_twi_t twi_master,uint8_t code);
 static int bytes_to_int(uint8_t *data, size_t len);
 static uint8_t run_si1153(nrf_drv_twi_t twi_master);
 static uint8_t si1153_init(nrf_drv_twi_t twi_master);
