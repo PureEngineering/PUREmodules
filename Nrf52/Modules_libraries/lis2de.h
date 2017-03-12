@@ -50,7 +50,7 @@ extern "C" {
 
 
 
-struct Lis2de_SensorSettings
+static struct Lis2de_SensorSettings
 {
 		
 		uint8_t TEMP_ENABLE;
@@ -98,20 +98,20 @@ struct Lis2de_SensorSettings
 
 /** @} */
 
-static void override_defaut_lis2de_address(uint8_t new_address);
-static void Lis2de_setup(void);
-static void Lis2de_begin(nrf_drv_twi_t twi_master);
-static uint8_t run_lis2de(nrf_drv_twi_t twi_master);
-static uint8_t lis2de_init(nrf_drv_twi_t twi_master);
+void override_defaut_lis2de_address(uint8_t new_address);
+void Lis2de_setup(void);
+void Lis2de_begin(nrf_drv_twi_t twi_master);
+uint8_t run_lis2de(nrf_drv_twi_t twi_master);
+uint8_t lis2de_init(nrf_drv_twi_t twi_master);
 
-static uint8_t lis2de_whoami(nrf_drv_twi_t twi_master);
-static uint8_t lis2de_readStatus(nrf_drv_twi_t twi_master);
-static int8_t lis2de_readOUT_X(nrf_drv_twi_t twi_master);
-static int8_t lis2de_readOUT_Y(nrf_drv_twi_t twi_master);
-static int8_t lis2de_readOUT_Z(nrf_drv_twi_t twi_master);
-static void lis2de_toggleLED_when_Flipped(int8_t OUT_Y);
-static int8_t lis2de_readTEMP_L(nrf_drv_twi_t twi_master);
-static int8_t lis2de_readTEMP_H(nrf_drv_twi_t twi_master);
+uint8_t lis2de_whoami(nrf_drv_twi_t twi_master);
+uint8_t lis2de_readStatus(nrf_drv_twi_t twi_master);
+int8_t lis2de_readOUT_X(nrf_drv_twi_t twi_master);
+int8_t lis2de_readOUT_Y(nrf_drv_twi_t twi_master);
+int8_t lis2de_readOUT_Z(nrf_drv_twi_t twi_master);
+void lis2de_toggleLED_when_Flipped(int8_t OUT_Y);
+int8_t lis2de_readTEMP_L(nrf_drv_twi_t twi_master);
+int8_t lis2de_readTEMP_H(nrf_drv_twi_t twi_master);
 
 
 

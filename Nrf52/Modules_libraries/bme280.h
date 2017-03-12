@@ -75,7 +75,7 @@ struct SensorCalibration
 	uint16_t dig_T1;
 	int16_t dig_T2;
 	int16_t dig_T3;
-	
+
 	uint16_t dig_P1;
 	int16_t dig_P2;
 	int16_t dig_P3;
@@ -85,38 +85,38 @@ struct SensorCalibration
 	int16_t dig_P7;
 	int16_t dig_P8;
 	int16_t dig_P9;
-	
+
 	uint8_t dig_H1;
 	int16_t dig_H2;
 	uint8_t dig_H3;
 	int16_t dig_H4;
 	int16_t dig_H5;
 	uint8_t dig_H6;
-	
+
 } calibration;
 
 
-	int32_t t_fine;
+int32_t t_fine;
 
-    static void BME280_setup( void );
-    static uint8_t BME280_begin(nrf_drv_twi_t twi_master);
-	//Software reset routine
-	static void BME280_reset(nrf_drv_twi_t twi_master);
-	
-    //Returns the values as floats.
-    static float BME280_readFloatPressure(nrf_drv_twi_t twi_master);
-	static float BME280_readFloatAltitudeMeters(nrf_drv_twi_t twi_master );
-	static float BME280_readFloatAltitudeFeet( nrf_drv_twi_t twi_master);
-	
-	static float BME280_readFloatHumidity( nrf_drv_twi_t twi_master );
+void BME280_setup( void );
+uint8_t BME280_begin(nrf_drv_twi_t twi_master);
+//Software reset routine
+void BME280_reset(nrf_drv_twi_t twi_master);
 
-	//Temperature related methods
-    static float BME280_readTempC( nrf_drv_twi_t twi_master );
-    static float BME280_readTempF( nrf_drv_twi_t twi_master );
+//Returns the values as floats.
+float BME280_readFloatPressure(nrf_drv_twi_t twi_master);
+float BME280_readFloatAltitudeMeters(nrf_drv_twi_t twi_master );
+float BME280_readFloatAltitudeFeet( nrf_drv_twi_t twi_master);
 
-    //The following utilities read and write
-	static uint8_t BME280_init(nrf_drv_twi_t twi_master);
-	static uint8_t run_BME280(nrf_drv_twi_t twi_master);
+float BME280_readFloatHumidity( nrf_drv_twi_t twi_master );
+
+//Temperature related methods
+float BME280_readTempC( nrf_drv_twi_t twi_master );
+float BME280_readTempF( nrf_drv_twi_t twi_master );
+
+//The following utilities read and write
+uint8_t BME280_init(nrf_drv_twi_t twi_master);
+uint8_t run_BME280(nrf_drv_twi_t twi_master);
 
 
 #endif 

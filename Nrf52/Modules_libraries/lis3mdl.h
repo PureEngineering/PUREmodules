@@ -33,7 +33,7 @@ extern "C" {
 
 /** @} */   
 
-struct Lis3mdl_SensorSettings
+static struct Lis3mdl_SensorSettings
 {
 	uint8_t TEMP_EN;
 	uint8_t OM;
@@ -58,21 +58,21 @@ struct Lis3mdl_SensorSettings
 } Lis3mdl_settings;
 
 
-static void Lis3mdl_begin(nrf_drv_twi_t twi_master);
-static void lis3mdl_setup();
-static uint8_t run_lis3mdl(nrf_drv_twi_t twi_master);
-static uint8_t lis3mdl_init(nrf_drv_twi_t twi_master);
+ void Lis3mdl_begin(nrf_drv_twi_t twi_master);
+ void lis3mdl_setup();
+ uint8_t run_lis3mdl(nrf_drv_twi_t twi_master);
+ uint8_t lis3mdl_init(nrf_drv_twi_t twi_master);
 
 
-static uint8_t lis3mdl_whoami(nrf_drv_twi_t twi_master);
-static int8_t lis3mdl_readOUT_X_L(nrf_drv_twi_t twi_master);
-static int8_t lis3mdl_readOUT_Y_L(nrf_drv_twi_t twi_master);
-static int8_t lis3mdl_readOUT_Z_L(nrf_drv_twi_t twi_master);
-static int8_t lis3mdl_readOUT_X_H(nrf_drv_twi_t twi_master);
-static int8_t lis3mdl_readOUT_Y_H(nrf_drv_twi_t twi_master);
-static int8_t lis3mdl_readOUT_Z_H(nrf_drv_twi_t twi_master);
-static int8_t lis3mdl_readTEMP_L(nrf_drv_twi_t twi_master);
-static int8_t lis3mdl_readTEMP_H(nrf_drv_twi_t twi_master);
+ uint8_t lis3mdl_whoami(nrf_drv_twi_t twi_master);
+ int8_t lis3mdl_readOUT_X_L(nrf_drv_twi_t twi_master);
+ int8_t lis3mdl_readOUT_Y_L(nrf_drv_twi_t twi_master);
+ int8_t lis3mdl_readOUT_Z_L(nrf_drv_twi_t twi_master);
+ int8_t lis3mdl_readOUT_X_H(nrf_drv_twi_t twi_master);
+ int8_t lis3mdl_readOUT_Y_H(nrf_drv_twi_t twi_master);
+ int8_t lis3mdl_readOUT_Z_H(nrf_drv_twi_t twi_master);
+ int8_t lis3mdl_readTEMP_L(nrf_drv_twi_t twi_master);
+ int8_t lis3mdl_readTEMP_H(nrf_drv_twi_t twi_master);
 
 
 

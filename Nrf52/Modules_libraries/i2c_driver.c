@@ -16,7 +16,7 @@
 
 
 
-static void write_byte(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress, uint8_t data){
+ void write_byte(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress, uint8_t data){
     ret_code_t ret;
     uint8_t buffer[2]; 
     buffer[0] = subAddress;
@@ -29,7 +29,7 @@ static void write_byte(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress
 }
 
 //Writes LSB first and then MSB
-static void write_2bytes(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress, uint8_t data_LSB, uint8_t data_MSB){
+ void write_2bytes(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress, uint8_t data_LSB, uint8_t data_MSB){
     ret_code_t ret;
     uint8_t buffer[3]; 
     buffer[0] = subAddress;
@@ -42,7 +42,7 @@ static void write_2bytes(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddre
     }     
 }
 
-static uint8_t read_byte(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress){
+ uint8_t read_byte(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress){
     ret_code_t ret;
     uint8_t data;
     uint8_t buffer[1];
@@ -65,7 +65,7 @@ static uint8_t read_byte(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddre
 
 }
 
-static uint16_t read_2bytes(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress){
+ uint16_t read_2bytes(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress){
     ret_code_t ret;
     uint8_t data_MSB;
     uint8_t data_LSB;

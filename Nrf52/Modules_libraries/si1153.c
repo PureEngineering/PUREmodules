@@ -8,7 +8,7 @@
 
 
 
-static int param_set(nrf_drv_twi_t twi_master,uint8_t loc, uint8_t val){
+ int param_set(nrf_drv_twi_t twi_master,uint8_t loc, uint8_t val){
 
         int CMMD_CTR = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_RESPONSE0);
 
@@ -21,7 +21,7 @@ static int param_set(nrf_drv_twi_t twi_master,uint8_t loc, uint8_t val){
 	return response;
 }
 
-static int param_query(nrf_drv_twi_t twi_master,uint8_t loc){
+ int param_query(nrf_drv_twi_t twi_master,uint8_t loc){
     int result = -1;
 
         int CMMD_CTR = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_RESPONSE0);
@@ -36,7 +36,7 @@ static int param_query(nrf_drv_twi_t twi_master,uint8_t loc){
     return -1;
 }
 
-static void config_channel(nrf_drv_twi_t twi_master,uint8_t index, uint8_t *conf){
+ void config_channel(nrf_drv_twi_t twi_master,uint8_t index, uint8_t *conf){
     int len = sizeof(conf);
 
     if(len!=4 || index < 0 || index > 5){
@@ -51,7 +51,7 @@ static void config_channel(nrf_drv_twi_t twi_master,uint8_t index, uint8_t *conf
     param_set(twi_master,Si1153_MEASCONFIG_0+ inc, conf[3]);
 }
 
-static int send_command(nrf_drv_twi_t twi_master,uint8_t code){
+ int send_command(nrf_drv_twi_t twi_master,uint8_t code){
         int CMMD_CTR = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_RESPONSE0);
 
         write_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_COMMAND,code);
@@ -62,7 +62,7 @@ static int send_command(nrf_drv_twi_t twi_master,uint8_t code){
 	return response;
 }
 
-static int bytes_to_int(uint8_t *data, size_t len){
+ int bytes_to_int(uint8_t *data, size_t len){
     int result = 0;
     int shift = 8*len;
 
@@ -74,7 +74,7 @@ static int bytes_to_int(uint8_t *data, size_t len){
 }
 
 
-static uint8_t run_si1153(nrf_drv_twi_t twi_master){
+ uint8_t run_si1153(nrf_drv_twi_t twi_master){
     uint8_t data[3];
     //uint8_t channel3_data[3];
     uint8_t who_am_i = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_PART_ID);
@@ -90,7 +90,7 @@ static uint8_t run_si1153(nrf_drv_twi_t twi_master){
 
 }
 
-static uint8_t si1153_init(nrf_drv_twi_t twi_master){
+ uint8_t si1153_init(nrf_drv_twi_t twi_master){
     
     NRF_LOG_RAW_INFO("Proximity Sensor Start\r\n");
     uint8_t ADCCONFIGx;
