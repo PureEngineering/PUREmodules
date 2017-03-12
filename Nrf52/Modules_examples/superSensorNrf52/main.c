@@ -141,6 +141,7 @@ int main(void)
         {
         case '\n':
         case '\r':
+            NRF_LOG_RAW_INFO("You select a  command\r\n"); 
             break;
         case 'q':
             lis3mdl_init(m_twi_master);

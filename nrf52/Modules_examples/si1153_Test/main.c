@@ -76,7 +76,7 @@ typedef enum ss_response {
 } ss_response;
 
 
-static ss_response test_SuperSensor_init(nrf_drv_twi_t twi_master){
+ ss_response test_SuperSensor_init(nrf_drv_twi_t twi_master){
     //uint8_t magnet_ID = 
     lis3mdl_init(twi_master);
     //uint8_t accel_ID = 
@@ -93,7 +93,7 @@ static ss_response test_SuperSensor_init(nrf_drv_twi_t twi_master){
 
 }
 
-static ss_response test_SuperSensor_run(nrf_drv_twi_t twi_master){
+ ss_response test_SuperSensor_run(nrf_drv_twi_t twi_master){
     //uint8_t magnet_ID = 
     run_lis3mdl(twi_master);
     //uint8_t accel_ID = 
@@ -116,6 +116,7 @@ static ss_response test_SuperSensor_run(nrf_drv_twi_t twi_master){
 int main(void)
 {
     int i = 0;
+    int si1153_data;
     ret_code_t err_code;
     /* Initialization of UART */
     bsp_board_leds_init();
@@ -132,8 +133,13 @@ int main(void)
     NRF_LOG_RAW_INFO("\r\nStarted Super Sensor\r\n");
     NRF_LOG_FLUSH();   
     //test_SuperSensor_init(m_twi_master); 
-   lis2de_init(m_twi_master);
     NRF_LOG_FLUSH();   
+
+   si1153_init(m_twi_master);
+
+    param_set(m_twi_master, Si1153_LED1_A, 0x3F);
+    param_set(m_twi_master, Si1153_LED2_A, 0x3F);
+    param_set(m_twi_master, Si1153_LED3_A, 0x3F);
 
     NRF_LOG_FLUSH();   
 
@@ -141,14 +147,25 @@ int main(void)
     {
 
     NRF_LOG_FLUSH();   
-    NRF_LOG_RAW_INFO("%d------------------------\r\n",i++);
-    nrf_delay_ms(1000);
 
-    run_lis2de(m_twi_master);
+    si1153_data = si1153_get_data(m_twi_master);
+    NRF_LOG_RAW_INFO("%06d:",si1153_data );
+    for(i=0;i<((si1153_data/4)%70);i++)
+    {
+    NRF_LOG_RAW_INFO("-");
+    NRF_LOG_FLUSH();   
+    }
+    NRF_LOG_RAW_INFO("*\n\r");
+    NRF_LOG_FLUSH();   
+
+    //NRF_LOG_RAW_INFO("%d------------------------\r\n",i++);
+    nrf_delay_ms(10);
+
+    //run_si1153(m_twi_master);
     bsp_board_led_invert(0);
 
 
 
    NRF_LOG_FLUSH();
     }
-}
+}I2C_INTERRUPT_H

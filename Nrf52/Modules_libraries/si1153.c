@@ -74,7 +74,7 @@
 }
 
 
- uint8_t run_si1153(nrf_drv_twi_t twi_master){
+uint8_t run_si1153(nrf_drv_twi_t twi_master){
     uint8_t data[3];
     //uint8_t channel3_data[3];
     uint8_t who_am_i = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_PART_ID);
@@ -86,8 +86,18 @@
     NRF_LOG_RAW_INFO("Proximity Data: %.4d: who_am_i 0x%x\r\n\n",int_data,who_am_i);
 
     return who_am_i;
+}
 
+int si1153_get_data(nrf_drv_twi_t twi_master){
+    uint8_t data[3];
+    //uint8_t channel3_data[3];
+    uint8_t who_am_i = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_PART_ID);
 
+    data[0] = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT0);
+    data[1] = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT1);
+    data[2] = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT2);
+    int int_data = bytes_to_int(data, sizeof(data));
+    return int_data;
 }
 
  uint8_t si1153_init(nrf_drv_twi_t twi_master){
