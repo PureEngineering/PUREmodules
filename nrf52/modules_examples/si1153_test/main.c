@@ -187,12 +187,22 @@ int main(void)
 
 		si1153_data = si1153_get_channel_data(m_twi_master,0);
 		send_command(m_twi_master,Si1153_FORCE);
+		NRF_LOG_RAW_INFO("%06d ",si1153_data );
 
-		NRF_LOG_RAW_INFO("%06d ",si1153_data );
+		for(i=0;i<((si1153_data/4)%70);i++)
+		{
+			NRF_LOG_RAW_INFO("-");
+			NRF_LOG_FLUSH();   
+		}
+		NRF_LOG_RAW_INFO("*\n\r");
+		NRF_LOG_FLUSH();   
+
 		si1153_data = si1153_get_channel_data(m_twi_master,1);
-		NRF_LOG_RAW_INFO("%06d ",si1153_data );
+		//NRF_LOG_RAW_INFO("%06d ",si1153_data );
 		si1153_data = si1153_get_channel_data(m_twi_master,2);
-		NRF_LOG_RAW_INFO("%06d \n\r",si1153_data );
+		//NRF_LOG_RAW_INFO("%06d \n\r",si1153_data );
+
+
 
 		NRF_LOG_FLUSH();
 	}
