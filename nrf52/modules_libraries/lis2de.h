@@ -10,9 +10,9 @@ extern "C" {
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 
-//0x18 for Super Sensor Accel. 0x19 for Nrf52 onboard Accel.
+	//0x18 for Super Sensor Accel. 0x19 for Nrf52 onboard Accel.
 #define Lis2de_DEVICE_ADDRESS    0x18
-//#define Lis2de_DEVICE_ADDRESS    0x19
+	//#define Lis2de_DEVICE_ADDRESS    0x19
 #define Lis2de_AUX               0x07
 #define Lis2de_TEMP_L            0x0C
 #define Lis2de_TEMP_H            0x0D
@@ -50,9 +50,9 @@ extern "C" {
 
 
 
-static struct Lis2de_SensorSettings
-{
-		
+	static struct Lis2de_SensorSettings
+	{
+
 		uint8_t TEMP_ENABLE;
 		//CTRL1
 		uint8_t ODR;
@@ -94,9 +94,9 @@ static struct Lis2de_SensorSettings
 		uint8_t INT2_BOOT;
 		uint8_t INT2_ACT;
 		uint8_t H_LACTIVE;
-} Lis2de_settings;
+	} Lis2de_settings;
 
-/** @} */
+	/** @} */
 
 void override_defaut_lis2de_address(uint8_t new_address);
 void Lis2de_setup(void);
