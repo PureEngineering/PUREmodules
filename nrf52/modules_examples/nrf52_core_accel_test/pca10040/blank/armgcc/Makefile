@@ -6,6 +6,7 @@ SDK_ROOT := ../../../../../nRF5_SDK_12.2.0_f012efa
 PROJ_DIR := ../../..
 LIB_DIR  := ../../../../../modules_libraries
 
+
 $(OUTPUT_DIRECTORY)/nrf52832_xxaa.out: \
   LINKER_SCRIPT  := twi_master_with_twis_slave_gcc_nrf52.ld
 
