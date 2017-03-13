@@ -6,6 +6,8 @@
 #include "nrf_drv_twi.h"
 #include "bsp.h"
 
+#include "i2c_driver.h"
+
 uint8_t defaut_lis2de_address = Lis2de_DEVICE_ADDRESS;
 
 void override_defaut_lis2de_address(uint8_t new_address)

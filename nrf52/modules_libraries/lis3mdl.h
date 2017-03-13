@@ -33,7 +33,7 @@ extern "C" {
 
 /** @} */   
 
-static struct Lis3mdl_SensorSettings
+struct Lis3mdl_SensorSettings
 {
 	uint8_t TEMP_EN;
 	uint8_t OM;

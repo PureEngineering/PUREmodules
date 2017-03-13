@@ -50,7 +50,7 @@ extern "C" {
 
 
 
-	static struct Lis2de_SensorSettings
+	struct Lis2de_SensorSettings
 	{
 
 		uint8_t TEMP_ENABLE;

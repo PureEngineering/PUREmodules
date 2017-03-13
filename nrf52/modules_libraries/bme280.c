@@ -4,6 +4,9 @@
 #include "nrf_log_ctrl.h"
 #include "nrf_drv_twi.h"
 #include "bsp.h"
+#include <math.h>
+
+#include "i2c_driver.h"
 
 
 void BME280_setup( void )
@@ -127,6 +130,8 @@ uint8_t run_BME280(nrf_drv_twi_t twi_master){
 
 	uint8_t humidity = BME280_readFloatHumidity(twi_master);
     NRF_LOG_RAW_INFO("BME280 Humidity: %d percent\r\n", humidity);
+
+    return who_am_i;
 
 }
 

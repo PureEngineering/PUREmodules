@@ -6,11 +6,11 @@
 #include "nrf_drv_twi.h"
 #include "bsp.h"
 
-
+#include "i2c_driver.h"
 
 int param_set(nrf_drv_twi_t twi_master,uint8_t loc, uint8_t val){
 
-	int CMMD_CTR = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_RESPONSE0);
+	//int CMMD_CTR = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_RESPONSE0);
 
 	write_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTIN0,val);
 
@@ -33,7 +33,7 @@ int param_query(nrf_drv_twi_t twi_master,uint8_t loc){
 	if(response > CMMD_CTR){
 		result = read_byte(twi_master, Si1153_DEVICE_ADDRESS,Si1153_RESPONSE1);
 	}
-	return -1;
+	return result;
 }
 
 void config_channel(nrf_drv_twi_t twi_master,uint8_t index, uint8_t *conf){
@@ -91,7 +91,7 @@ uint8_t run_si1153(nrf_drv_twi_t twi_master){
 int si1153_get_data(nrf_drv_twi_t twi_master){
 	uint8_t data[3];
 	//uint8_t channel3_data[3];
-	uint8_t who_am_i = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_PART_ID);
+	//uint8_t who_am_i = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_PART_ID);
 
 	data[0] = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT0);
 	data[1] = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT1);

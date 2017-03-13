@@ -18,7 +18,7 @@ extern "C" {
 #define Veml6075_UVCOMP2_DATA    0X0B
 #define Veml6075_ID              0X0C
 
-static struct Veml6075_SensorSettings
+struct Veml6075_SensorSettings
 {    
   //Main Interface and mode settings
     uint8_t UV_IT;

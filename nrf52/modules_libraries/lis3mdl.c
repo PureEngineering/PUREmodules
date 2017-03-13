@@ -5,6 +5,7 @@
 #include "nrf_drv_twi.h"
 #include "bsp.h"
 
+#include "i2c_driver.h"
 
 
 uint8_t lis3mdl_whoami(nrf_drv_twi_t twi_master){

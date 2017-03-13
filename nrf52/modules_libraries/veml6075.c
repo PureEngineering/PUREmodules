@@ -6,7 +6,7 @@
 #include "nrf_drv_twi.h"
 #include "bsp.h"
 
-
+#include "i2c_driver.h"
 
 
 //Different read function than the others
@@ -26,7 +26,7 @@
         NRF_LOG_WARNING("Communication error when asking to read\r\n");
         return (uint8_t)ret;
     }
-    ret = nrf_drv_twi_rx(&twi_master, addr, &return_buffer, 2);
+    ret = nrf_drv_twi_rx(&twi_master, addr, return_buffer, 2);
     if (NRF_SUCCESS != ret){
         NRF_LOG_WARNING("Communication error when reading first byte\r\n");
         return (uint8_t)ret;

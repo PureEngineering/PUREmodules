@@ -6,6 +6,7 @@
 #include "nrf_drv_twi.h"
 #include "bsp.h"
 
+#include "i2c_driver.h"
 
 
  void run_vl53l0(nrf_drv_twi_t twi_master){
