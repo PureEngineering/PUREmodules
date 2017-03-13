@@ -11,8 +11,8 @@ extern "C" {
 #include "nrf_log_ctrl.h"
 
 	//0x18 for Super Sensor Accel. 0x19 for Nrf52 onboard Accel.
-#define Lis2de_DEVICE_ADDRESS    0x18
-	//#define Lis2de_DEVICE_ADDRESS    0x19
+#define Lis2de_DEVICE_ADDRESS       0x18
+#define Lis2de_CORE_DEVICE_ADDRESS  0x19
 #define Lis2de_AUX               0x07
 #define Lis2de_TEMP_L            0x0C
 #define Lis2de_TEMP_H            0x0D
@@ -120,4 +120,4 @@ int8_t lis2de_readTEMP_H(nrf_drv_twi_t twi_master);
 }
 #endif
 
-#endif // LIS3MDL_H
+#endif // LIS2DE_H
