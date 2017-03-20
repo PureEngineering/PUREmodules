@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
-#include "config.h"
+//#include "config.h"
 #include "nrf_drv_twi.h"
 #include "nrf_gpio.h"
 #include "app_error.h"
@@ -13,6 +13,7 @@
 #define NRF_LOG_MODULE_NAME "APP"
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
+#include "nrf_drv_twi.h"
 #include "i2c_driver.h"
 
 

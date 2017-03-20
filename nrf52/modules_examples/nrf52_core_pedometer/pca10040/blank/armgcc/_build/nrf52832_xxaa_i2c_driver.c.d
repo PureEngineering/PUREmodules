@@ -27,7 +27,6 @@ _build/nrf52832_xxaa_i2c_driver.c.o: \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\include\ctype.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\include\string.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\include\sys\string.h \
- ../../../config.h \
  ../../../../../nRF5_SDK_12.2.0_f012efa/components/drivers_nrf/twi_master/nrf_drv_twi.h \
  ../../../../../nRF5_SDK_12.2.0_f012efa/components/libraries/util/nordic_common.h \
  ../config/sdk_config.h \
@@ -128,8 +127,6 @@ c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\inc
 c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\include\string.h:
 
 c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\5.4\ 2016q3\arm-none-eabi\include\sys\string.h:
-
-../../../config.h:
 
 ../../../../../nRF5_SDK_12.2.0_f012efa/components/drivers_nrf/twi_master/nrf_drv_twi.h:
 
