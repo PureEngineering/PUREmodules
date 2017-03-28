@@ -23,7 +23,6 @@
 
 #include <stdint.h>
 #include <string.h>
-#include "nrf_drv_twi.h"
 #include "nordic_common.h"
 #include "nrf.h"
 #include "ble_hci.h"
@@ -45,6 +44,7 @@
 //#include "config.h"
 #include "nrf_gpio.h"
 #include "app_error.h"
+#include "nrf_drv_twi.h"
 #include "bsp.h"
 #define NRF_LOG_MODULE_NAME "APP"
 #include "nrf_log.h"
@@ -58,6 +58,7 @@
 #include "veml6075.h"
 #include "bme280.h"
 #include "supersensor.h"
+#include "ble_driver.h"
 
 
 
@@ -72,7 +73,7 @@
 #define CENTRAL_LINK_COUNT              0                                           /**< Number of central links used by the application. When changing this number remember to adjust the RAM settings*/
 #define PERIPHERAL_LINK_COUNT           1                                           /**< Number of peripheral links used by the application. When changing this number remember to adjust the RAM settings*/
 
-#define DEVICE_NAME                     "Nordic_UART"                               /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME                     "PureEngineering-CoreModule"                               /**< Name of device. Will be included in the advertising data. */
 #define NUS_SERVICE_UUID_TYPE           BLE_UUID_TYPE_VENDOR_BEGIN                  /**< UUID type for the Nordic UART Service (vendor specific). */
 
 #define APP_ADV_INTERVAL                64                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
@@ -103,6 +104,181 @@ static ble_nus_t                        m_nus;                                  
 static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;    /**< Handle of the current connection. */
 
 static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_NUS_SERVICE, NUS_SERVICE_UUID_TYPE}};  /**< Universally unique service identifier. */
+
+bool ble_on = true;
+bool lis2de_on = false;
+bool lis3mdl_on = false;
+bool bme280_on = false;
+bool veml6075_on = false; 
+bool si1153_on = false;
+bool vl53l0_on = false;
+
+/**
+ * @brief TWI master instance
+ *
+ * Instance of TWI master driver that would be used for communication with simulated
+ * eeprom memory.
+ */
+//TW0_USE_EAY added in nrf_drv_twi line 80
+static const nrf_drv_twi_t m_twi_master = NRF_DRV_TWI_INSTANCE(MASTER_TWI_INST);
+
+
+
+uint8_t ORIENTATION_X = 0;
+uint8_t ORIENTATION_Y = 1;
+uint8_t ORIENTATION_Z = 2;
+
+bool did_sign_change(int value, int prev_value){
+    if (value >= 0){
+        return prev_value < 0;
+    }
+    else{
+        return prev_value >= 0;
+    }
+}
+
+
+uint8_t check_orientation(int x_cycle_count, int y_cycle_count, int z_cycle_count){
+    if(x_cycle_count>=y_cycle_count){
+        if(x_cycle_count>=z_cycle_count){
+            return ORIENTATION_X;
+        }
+        else{
+            return ORIENTATION_Z;
+        }
+    }
+    else{
+        if(y_cycle_count>=z_cycle_count){
+            return ORIENTATION_Y;
+        }
+        else{
+            return ORIENTATION_Z;
+        }
+    }
+}
+
+int step_incrementer(int step_count, uint8_t current_orientation, bool x_changed, bool y_changed,bool z_changed){
+
+    if(current_orientation==ORIENTATION_X){
+        if(x_changed){
+            bsp_board_led_invert(0);
+            return step_count + 1;
+        }
+        else{
+            return step_count;
+        }
+    }
+    else if(current_orientation==ORIENTATION_Y){
+        if(y_changed){
+            bsp_board_led_invert(0);
+            return step_count + 1;
+        }
+        else{
+            return step_count;
+        }
+    }
+    else{
+        if(z_changed){
+            bsp_board_led_invert(0);
+            return step_count + 1;
+        }
+        else{
+            return step_count;
+        }
+    }
+}
+
+
+
+void lis2de_stepcounter(){
+    //uint8_t debug_counter = 0;
+    int counter = 0;
+
+    int x_cycle_count = 0;
+    int y_cycle_count = 0;
+    int z_cycle_count = 0;
+
+    int8_t prev_outx = 0;
+    int8_t prev_outy = 0;
+    int8_t prev_outz = 0;
+
+    bool x_changed = 0; 
+    bool y_changed = 0;
+    bool z_changed = 0;
+
+    uint8_t current_orientation = 0;
+
+    int step_count = 0;
+
+    //uint8_t length = 1;
+    //uint8_t data_array[length];
+
+    while(1){
+
+    //debug_counter++;
+    counter++;
+
+    int8_t outx =  lis2de_readOUT_X(m_twi_master);
+    int8_t outy =  lis2de_readOUT_Y(m_twi_master);
+    int8_t outz =  lis2de_readOUT_Z(m_twi_master);
+
+
+
+    current_orientation = check_orientation(x_cycle_count,y_cycle_count,z_cycle_count);
+
+    if(did_sign_change(outx, prev_outx)){
+        x_changed = 1;
+        x_cycle_count++;
+    }
+    else{
+        x_changed = 0;
+    }
+    if(did_sign_change(outy, prev_outy)){
+        y_changed = 1;
+        y_cycle_count++;
+    }
+    else{
+        y_changed = 0;
+    }
+    if(did_sign_change(outz, prev_outz)){
+        z_changed = 1;
+        z_cycle_count++;
+    }
+    else{
+        z_changed = 0;
+    }
+
+    step_count = step_incrementer(step_count, current_orientation, x_changed, y_changed, z_changed);
+
+
+
+    prev_outx = outx;
+    prev_outy = outy;
+    prev_outz = outz;
+
+    //NRF_LOG_RAW_INFO("-----------------------");
+    NRF_LOG_RAW_INFO("STEP Count : %x.\r\n\r\n", step_count);
+    //NRF_LOG_RAW_INFO("Orientation: %x.\r\n", current_orientation);
+    //NRF_LOG_RAW_INFO("X cycle    : %x.\r\n", x_cycle_count);
+    //NRF_LOG_RAW_INFO("Y cycle    : %x.\r\n", y_cycle_count);
+    //NRF_LOG_RAW_INFO("Z cycle    : %x.\r\n", z_cycle_count);
+
+    if(counter == 25){
+        char step_count_string[20];
+        sprintf(step_count_string,"Step Count = %d",step_count);
+        puts(step_count_string);
+        //data_array[0] = step_count_string;
+        printf("\r\n Step Count: %d \r\n",step_count);
+
+        //send_ble_data(step_count_string,20);
+        counter = 0;
+    }
+
+    nrf_delay_ms(100);
+    NRF_LOG_FLUSH();
+    }
+}
+
 
 
 /**@brief Function for assert macro callback.
@@ -164,12 +340,54 @@ static void gap_params_init(void)
 /**@snippet [Handling the data received over BLE] */
 static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
 {
-    for (uint32_t i = 0; i < length; i++)
-    {
+    
+    //Parses the input from the android app to turn on or off
+    //the different sensors. 
+
+    if(p_data[0]=='1'){
+        lis2de_init(m_twi_master);
+        lis2de_on = true;
+        //send_ble_data(m_nus,ble_string,10);
+    }
+    if(p_data[0]=='2'){
+        lis2de_on = false;
+    }
+    if(p_data[0]=='3'){
+        lis3mdl_init(m_twi_master);
+        lis3mdl_on = true;
+    }
+    if(p_data[0]=='4'){
+        lis3mdl_on = false;
+    }
+    if(p_data[0]=='5'){
+        BME280_init(m_twi_master);
+        bme280_on = true;
+    }
+    if(p_data[0]=='6'){
+        bme280_on = false;
+    }
+    if(p_data[0]=='7'){
+        veml6075_init(m_twi_master);
+        veml6075_on = true;
+    }
+    if(p_data[0]=='8'){
+        veml6075_on = false;
+    }
+    if(p_data[0]=='9'){
+        si1153_init(m_twi_master);
+        si1153_on = true;
+    }
+    if(p_data[0]=='a'){
+        si1153_on = false;
+    }
+
+    /*for (uint32_t i = 0; i < length; i++)
+    {       
         while (app_uart_put(p_data[i]) != NRF_SUCCESS);
     }
     while (app_uart_put('\r') != NRF_SUCCESS);
-    while (app_uart_put('\n') != NRF_SUCCESS);
+    while (app_uart_put('\n') != NRF_SUCCESS);*/
+
 }
 /**@snippet [Handling the data received over BLE] */
 
@@ -611,37 +829,6 @@ static void power_manage(void)
     APP_ERROR_CHECK(err_code);
 }*/
 
-static void send_ble_data(){
-    static uint8_t data_array[BLE_NUS_MAX_DATA_LEN];
-    static uint8_t index = 0;
-    //uint32_t       err_code;
-
-    data_array[0] = 'a';
-    index++;
-    data_array[1] = 'b';
-    index++;
-    data_array[2] = 'c';
-    index++;
-    data_array[3] = 'd';
-    index++;
-    ble_nus_string_send(&m_nus, data_array, index);
-
-    //err_code = ble_nus_string_send(&m_nus, data_array, index);
-
-    nrf_delay_ms(2000);
-}
-
-#define TWI0_USE_EASY_DMA 0
-
-
-/**
- * @brief TWI master instance
- *
- * Instance of TWI master driver that would be used for communication with simulated
- * eeprom memory.
- */
-//TW0_USE_EAY added in nrf_drv_twi line 80
-static const nrf_drv_twi_t m_twi_master = NRF_DRV_TWI_INSTANCE(MASTER_TWI_INST);
 
 
 /**
@@ -673,139 +860,28 @@ static ret_code_t twi_master_init(void)
     return ret;
 }
 
-
-uint8_t ORIENTATION_X = 0;
-uint8_t ORIENTATION_Y = 1;
-uint8_t ORIENTATION_Z = 2;
-
-bool did_sign_change(int value, int prev_value){
-    if (value >= 0){
-        return prev_value < 0;
+//BLE INTERRUPT sets these bools
+void print_to_ble(){
+    //printf("inside the printer \r\n");
+    if(lis2de_on){
+        run_lis2de_ble(m_twi_master,m_nus);
     }
-    else{
-        return prev_value >= 0;
+    if(lis3mdl_on){
+        run_lis3mdl_ble(m_twi_master,m_nus);
     }
-}
-
-
-uint8_t check_orientation(int x_cycle_count, int y_cycle_count, int z_cycle_count){
-    if(x_cycle_count>=y_cycle_count){
-        if(x_cycle_count>=z_cycle_count){
-            return ORIENTATION_X;
-        }
-        else{
-            return ORIENTATION_Z;
-        }
+    if(bme280_on){
+        run_BME280_ble(m_twi_master,m_nus);
     }
-    else{
-        if(y_cycle_count>=z_cycle_count){
-            return ORIENTATION_Y;
-        }
-        else{
-            return ORIENTATION_Z;
-        }
+    if(veml6075_on){
+        run_veml6075_ble(m_twi_master,m_nus);
     }
-}
-
-int step_incrementer(int step_count, uint8_t current_orientation, bool x_changed, bool y_changed,bool z_changed){
-
-    if(current_orientation==ORIENTATION_X){
-        if(x_changed){
-            bsp_board_led_invert(0);
-            return step_count + 1;
-        }
-        else{
-            return step_count;
-        }
+    if(si1153_on){
+        run_si1153_ble(m_twi_master,m_nus);
     }
-    else if(current_orientation==ORIENTATION_Y){
-        if(y_changed){
-            bsp_board_led_invert(0);
-            return step_count + 1;
-        }
-        else{
-            return step_count;
-        }
-    }
-    else{
-        if(z_changed){
-            bsp_board_led_invert(0);
-            return step_count + 1;
-        }
-        else{
-            return step_count;
-        }
-    }
-}
-
-
-
-void lis2de_stepcounter(){
-    int x_cycle_count = 0;
-    int y_cycle_count = 0;
-    int z_cycle_count = 0;
-
-    int8_t prev_outx = 0;
-    int8_t prev_outy = 0;
-    int8_t prev_outz = 0;
-
-    bool x_changed = 0; 
-    bool y_changed = 0;
-    bool z_changed = 0;
-
-    uint8_t current_orientation = 0;
-
-    int step_count = 0;
-
-    while(1){
-
-
-    int8_t outx =  lis2de_readOUT_X(m_twi_master);
-    int8_t outy =  lis2de_readOUT_Y(m_twi_master);
-    int8_t outz =  lis2de_readOUT_Z(m_twi_master);
-
-    current_orientation = check_orientation(x_cycle_count,y_cycle_count,z_cycle_count);
-
-    if(did_sign_change(outx, prev_outx)){
-        x_changed = 1;
-        x_cycle_count++;
-    }
-    else{
-        x_changed = 0;
-    }
-    if(did_sign_change(outy, prev_outy)){
-        y_changed = 1;
-        y_cycle_count++;
-    }
-    else{
-        y_changed = 0;
-    }
-    if(did_sign_change(outz, prev_outz)){
-        z_changed = 1;
-        z_cycle_count++;
-    }
-    else{
-        z_changed = 0;
+    if(vl53l0_on){
+        //run_BME280_ble(m_twi_master,m_nus);
     }
 
-    step_count = step_incrementer(step_count, current_orientation, x_changed, y_changed, z_changed);
-
-
-
-    prev_outx = outx;
-    prev_outy = outy;
-    prev_outz = outz;
-
-    //NRF_LOG_RAW_INFO("-----------------------");
-    NRF_LOG_RAW_INFO("STEP Count : %x.\r\n\r\n", step_count);
-    //NRF_LOG_RAW_INFO("Orientation: %x.\r\n", current_orientation);
-    //NRF_LOG_RAW_INFO("X cycle    : %x.\r\n", x_cycle_count);
-    //NRF_LOG_RAW_INFO("Y cycle    : %x.\r\n", y_cycle_count);
-    //NRF_LOG_RAW_INFO("Z cycle    : %x.\r\n", z_cycle_count);
-
-    nrf_delay_ms(100);
-    NRF_LOG_FLUSH();
-    }
 }
 
 
@@ -837,23 +913,14 @@ int main(void)
     APP_ERROR_CHECK(err_code);
 
 
-
-    //lis2de_init(m_twi_master);
-
-
-    bool run_ble = false;
     NRF_LOG_FLUSH();
 
     // Enter main loop.
     for (;;)
     {
-        
-        if(run_ble){
-            lis2de_stepcounter();
-            send_ble_data();
-        }
+        print_to_ble();   
+        nrf_delay_ms(3000);  //Send data every 3 seconds   
 
-        //power_manage();
     }
 }
 

@@ -9,6 +9,8 @@ extern "C" {
 #define NRF_LOG_MODULE_NAME "APP"
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
+#include "ble_nus.h"
+
 
 #define Si1153_DEVICE_ADDRESS       0x53
 #define Si1153_RESET_CMD_CTR        0x00
@@ -115,8 +117,10 @@ extern "C" {
 	int send_command(nrf_drv_twi_t twi_master,uint8_t code);
 	int bytes_to_int(uint8_t *data, size_t len);
 	uint8_t run_si1153(nrf_drv_twi_t twi_master);
+	uint8_t run_si1153_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus);
 	int si1153_get_data(nrf_drv_twi_t twi_master);
 	uint8_t si1153_init(nrf_drv_twi_t twi_master);
+	uint8_t si1153_whoami(nrf_drv_twi_t twi_master);
 
 
 

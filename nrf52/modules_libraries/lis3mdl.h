@@ -9,6 +9,8 @@ extern "C" {
 #define NRF_LOG_MODULE_NAME "APP"
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
+#include "ble_nus.h"
+
 
 #define Lis3mdl_DEVICE_ADDRESS           0x1E
 #define Lis3mdl_WHO_AM_I                 0x0F
@@ -61,6 +63,7 @@ struct Lis3mdl_SensorSettings
  void Lis3mdl_begin(nrf_drv_twi_t twi_master);
  void lis3mdl_setup();
  uint8_t run_lis3mdl(nrf_drv_twi_t twi_master);
+ uint8_t run_lis3mdl_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus);
  uint8_t lis3mdl_init(nrf_drv_twi_t twi_master);
 
 

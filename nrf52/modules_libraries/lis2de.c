@@ -5,8 +5,9 @@
 #include "nrf_log_ctrl.h"
 #include "nrf_drv_twi.h"
 #include "bsp.h"
-
 #include "i2c_driver.h"
+#include "ble_driver.h"
+#include "ble_nus.h"
 
 uint8_t defaut_lis2de_address = Lis2de_DEVICE_ADDRESS;
 
@@ -69,6 +70,7 @@ int8_t lis2de_readTEMP_H(nrf_drv_twi_t twi_master){
 uint8_t run_lis2de(nrf_drv_twi_t twi_master){
 	uint8_t who_am_i = lis2de_whoami(twi_master);
 	NRF_LOG_RAW_INFO("Accelerometer WhoamI: %x.\r\n", who_am_i);
+
 	uint8_t status = lis2de_readStatus(twi_master);
 	NRF_LOG_RAW_INFO("Accelerometer Status: %x.\r\n", status);
 
@@ -77,7 +79,7 @@ uint8_t run_lis2de(nrf_drv_twi_t twi_master){
 	int8_t OUT_Y = lis2de_readOUT_Y(twi_master);
 	NRF_LOG_RAW_INFO("Accelerometer OUTY: %d.\r\n", OUT_Y);
 
-	lis2de_toggleLED_when_Flipped(OUT_Y);
+	//lis2de_toggleLED_when_Flipped(OUT_Y);
 
 	int8_t OUT_Z = lis2de_readOUT_Z(twi_master);
 	NRF_LOG_RAW_INFO("Accelerometer OUTZ: %d.\r\n", OUT_Z);
@@ -86,6 +88,31 @@ uint8_t run_lis2de(nrf_drv_twi_t twi_master){
 	NRF_LOG_RAW_INFO("Accelerometer Temp: %x.\r\n", temp);
 	NRF_LOG_RAW_INFO("\r\n");
 
+	return who_am_i;
+
+}
+
+
+
+uint8_t run_lis2de_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
+	uint8_t length = 15;
+	uint8_t ble_string[length];
+
+	uint8_t who_am_i = lis2de_whoami(twi_master);
+    sprintf(ble_string, "lis2deid: %x\r\n",who_am_i);
+    send_ble_data(m_nus,ble_string,length);
+
+	int8_t OUT_X = lis2de_readOUT_X(twi_master);
+    sprintf(ble_string, "lis2dex: %d\r\n",OUT_X);
+    send_ble_data(m_nus,ble_string,length);
+
+	int8_t OUT_Y = lis2de_readOUT_Y(twi_master);
+    sprintf(ble_string, "lis2dey: %d\r\n",OUT_Y);
+	send_ble_data(m_nus,ble_string,length);
+
+	int8_t OUT_Z = lis2de_readOUT_Z(twi_master);
+    sprintf(ble_string, "lis2dez: %d\r\n",OUT_Z);
+    send_ble_data(m_nus,ble_string,length);
 	return who_am_i;
 
 }

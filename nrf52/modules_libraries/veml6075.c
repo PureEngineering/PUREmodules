@@ -7,7 +7,8 @@
 #include "bsp.h"
 
 #include "i2c_driver.h"
-
+#include "ble_driver.h"
+#include "ble_nus.h"
 
 //Different read function than the others
   uint16_t veml6075_read_2bytes(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress){
@@ -96,6 +97,7 @@
 
     uint16_t UVA_data = veml6075_readUVA(twi_master);
     NRF_LOG_RAW_INFO("UVA Sensor UVA: %.4x.\r\n", UVA_data);
+
     uint16_t UVB_data = veml6075_readUVB(twi_master);
     NRF_LOG_RAW_INFO("UVA Sensor UVB: %.4x.\r\n", UVB_data);
     NRF_LOG_RAW_INFO("\r\n");
@@ -103,3 +105,23 @@
     return who_am_i;
 }
 
+
+uint8_t run_veml6075_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
+    uint8_t length = 18;
+    uint8_t ble_string[length];
+
+    uint16_t who_am_i = veml6075_whoami(twi_master);
+    sprintf(ble_string, "veml6075id: %x\r\n",who_am_i);
+    send_ble_data(m_nus,ble_string,length);
+
+    uint16_t UVA_data = veml6075_readUVA(twi_master);
+    sprintf(ble_string, "veml6075a: %d\r\n",UVA_data);
+    send_ble_data(m_nus,ble_string,length);
+
+    uint16_t UVB_data = veml6075_readUVB(twi_master);
+    sprintf(ble_string, "veml6075b: %d\r\n",UVB_data);
+    send_ble_data(m_nus,ble_string,length);
+
+    return who_am_i;
+
+}

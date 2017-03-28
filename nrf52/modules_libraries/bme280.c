@@ -7,6 +7,8 @@
 #include <math.h>
 
 #include "i2c_driver.h"
+#include "ble_driver.h"
+#include "ble_nus.h"
 
 
 void BME280_setup( void )
@@ -132,6 +134,39 @@ uint8_t run_BME280(nrf_drv_twi_t twi_master){
     NRF_LOG_RAW_INFO("BME280 Humidity: %d percent\r\n", humidity);
 
     return who_am_i;
+
+}
+
+uint8_t run_BME280_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
+	uint8_t length = 18;
+	uint8_t ble_string[length];
+
+	uint8_t who_am_i = read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_CHIP_ID_REG);
+    sprintf(ble_string, "bme280id: %x\r\n",who_am_i);
+    send_ble_data(m_nus,ble_string,length);
+
+	uint8_t tempF = BME280_readTempF(twi_master);
+    sprintf(ble_string, "bme280tempf: %d\r\n",tempF);
+    send_ble_data(m_nus,ble_string,length);
+
+	uint8_t tempc = BME280_readTempC(twi_master);
+    sprintf(ble_string, "bme280tempc: %d\r\n",tempc);
+    send_ble_data(m_nus,ble_string,length);
+
+	uint8_t pressure = BME280_readFloatPressure(twi_master);
+    sprintf(ble_string, "bme280press: %d\r\n",pressure);
+	send_ble_data(m_nus,ble_string,length);
+
+	uint8_t altitude = BME280_readFloatAltitudeFeet(twi_master);
+    sprintf(ble_string, "bme280alt: %d\r\n",altitude);
+    send_ble_data(m_nus,ble_string,length);
+
+	uint8_t humidity = BME280_readFloatHumidity(twi_master);
+    sprintf(ble_string, "bme280hum: %d\r\n",humidity);
+    send_ble_data(m_nus,ble_string,length);
+
+
+	return who_am_i;
 
 }
 

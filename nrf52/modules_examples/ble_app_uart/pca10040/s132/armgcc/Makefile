@@ -55,6 +55,10 @@ SRC_FILES += \
   $(LIB_DIR)/si1153.c \
   $(LIB_DIR)/veml6075.c \
   $(LIB_DIR)/bme280.c \
+  $(LIB_DIR)/ble_driver.c \
+  $(LIB_DIR)/supersensor.c \
+
+
 
 # Include folders common to all targets
 INC_FOLDERS += \
@@ -164,6 +168,7 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/drivers_nrf/nrf_soc_nosd \
   $(LIB_DIR) \
   $(PROJ_DIR) \
+
 
 
 

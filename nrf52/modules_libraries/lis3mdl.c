@@ -6,6 +6,8 @@
 #include "bsp.h"
 
 #include "i2c_driver.h"
+#include "ble_driver.h"
+#include "ble_nus.h"
 
 
 uint8_t lis3mdl_whoami(nrf_drv_twi_t twi_master){
@@ -63,6 +65,29 @@ uint8_t run_lis3mdl(nrf_drv_twi_t twi_master){
 	NRF_LOG_RAW_INFO("Magnetometer TEMP: %x.\r\n", temp);
 	NRF_LOG_RAW_INFO("\r\n");
 
+	return who_am_i;
+
+}
+
+uint8_t run_lis3mdl_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
+	uint8_t length = 15;
+	uint8_t ble_string[length];
+
+	uint8_t who_am_i = lis3mdl_whoami(twi_master);
+    sprintf(ble_string, "lis3mdlid: %x\r\n",who_am_i);
+    send_ble_data(m_nus,ble_string,length);
+
+	int8_t OUT_X = lis3mdl_readOUT_X_L(twi_master);
+    sprintf(ble_string, "lis3mdlx: %d\r\n",OUT_X);
+    send_ble_data(m_nus,ble_string,length);
+
+	int8_t OUT_Y = lis3mdl_readOUT_Y_L(twi_master);
+    sprintf(ble_string, "lis3mdly: %d\r\n",OUT_Y);
+	send_ble_data(m_nus,ble_string,length);
+
+	int8_t OUT_Z = lis3mdl_readOUT_Z_L(twi_master);
+    sprintf(ble_string, "lis3mdlz: %d\r\n",OUT_Z);
+    send_ble_data(m_nus,ble_string,length);
 	return who_am_i;
 
 }

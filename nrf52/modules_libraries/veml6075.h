@@ -9,6 +9,7 @@ extern "C" {
 #define NRF_LOG_MODULE_NAME "APP"
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
+#include "ble_nus.h"
 
 #define Veml6075_DEVICE_ADDRESS  0x10
 #define Veml6075_UV_CONF         0x00
@@ -34,6 +35,8 @@ struct Veml6075_SensorSettings
  void veml6075_begin(nrf_drv_twi_t twi_master);
  uint16_t veml6075_init(nrf_drv_twi_t twi_master);
  uint16_t run_veml6075(nrf_drv_twi_t twi_master);
+ uint8_t run_veml6075_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus);
+
 
  uint16_t veml6075_whoami(nrf_drv_twi_t twi_master);
  uint16_t veml6075_readUVA(nrf_drv_twi_t twi_master);

@@ -83,10 +83,42 @@ uint8_t run_si1153(nrf_drv_twi_t twi_master){
 	data[1] = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT1);
 	data[2] = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT2);
 	int int_data = bytes_to_int(data, sizeof(data));
-	NRF_LOG_RAW_INFO("Proximity Data: %.4d: who_am_i 0x%x\r\n\n",int_data,who_am_i);
+	NRF_LOG_RAW_INFO("Si1153: %.4d \r\n",int_data); 
+	NRF_LOG_RAW_INFO("Si1153id 0x%x \r\n",who_am_i);
 
 	return who_am_i;
 }
+
+
+uint8_t si1153_whoami(nrf_drv_twi_t twi_master){
+		uint8_t who_am_i = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_PART_ID);
+		return who_am_i;
+}
+
+uint8_t run_si1153_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
+	uint8_t length = 15;
+	uint8_t ble_string[length];
+
+	uint8_t who_am_i = si1153_whoami(twi_master);
+    sprintf(ble_string, "si1153id: %x\r\n",who_am_i);
+    send_ble_data(m_nus,ble_string,length);
+
+	uint8_t data[3];
+	//uint8_t channel3_data[3];
+	data[0] = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT0);
+	data[1] = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT1);
+	data[2] = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT2);
+	int int_data = bytes_to_int(data, sizeof(data));
+
+    sprintf(ble_string, "si1153x: %.4d \r\n",int_data);
+    send_ble_data(m_nus,ble_string,length);
+
+
+	return who_am_i;
+
+
+}
+
 
 int si1153_get_data(nrf_drv_twi_t twi_master){
 	uint8_t data[3];

@@ -6,6 +6,8 @@
 #define NRF_LOG_MODULE_NAME "APP"
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
+#include "ble_nus.h"
+
 
 
 #define BME280_DEVICE_ADDRESS           0x77
@@ -107,7 +109,6 @@ void BME280_reset(nrf_drv_twi_t twi_master);
 float BME280_readFloatPressure(nrf_drv_twi_t twi_master);
 float BME280_readFloatAltitudeMeters(nrf_drv_twi_t twi_master );
 float BME280_readFloatAltitudeFeet( nrf_drv_twi_t twi_master);
-
 float BME280_readFloatHumidity( nrf_drv_twi_t twi_master );
 
 //Temperature related methods
@@ -117,6 +118,7 @@ float BME280_readTempF( nrf_drv_twi_t twi_master );
 //The following utilities read and write
 uint8_t BME280_init(nrf_drv_twi_t twi_master);
 uint8_t run_BME280(nrf_drv_twi_t twi_master);
+uint8_t run_BME280_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus);
 
 
 #endif 
