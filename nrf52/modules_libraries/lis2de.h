@@ -115,6 +115,7 @@ int8_t lis2de_readOUT_Z(nrf_drv_twi_t twi_master);
 void lis2de_toggleLED_when_Flipped(int8_t OUT_Y);
 int8_t lis2de_readTEMP_L(nrf_drv_twi_t twi_master);
 int8_t lis2de_readTEMP_H(nrf_drv_twi_t twi_master);
+uint8_t lis2de_powerdown(nrf_drv_twi_t twi_master);
 
 
 

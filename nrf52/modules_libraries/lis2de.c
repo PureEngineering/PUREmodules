@@ -240,3 +240,15 @@ void Lis2de_begin(nrf_drv_twi_t twi_master){
 	write_byte(twi_master,defaut_lis2de_address,Lis2de_CTRL6,CTRL6_WORD);
 
 }
+
+
+uint8_t lis2de_powerdown(nrf_drv_twi_t twi_master){
+	uint8_t who_am_i =  lis2de_whoami(twi_master);
+
+	uint8_t CTRL1_WORD = 0x00;
+
+	write_byte(twi_master,defaut_lis2de_address,Lis2de_CTRL1,CTRL1_WORD);
+
+
+	return who_am_i;
+}
