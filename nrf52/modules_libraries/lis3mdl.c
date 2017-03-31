@@ -71,7 +71,7 @@ uint8_t run_lis3mdl(nrf_drv_twi_t twi_master){
 
 uint8_t run_lis3mdl_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
 	uint8_t length = 15;
-	uint8_t ble_string[length];
+	int8_t ble_string[length];
 
 	uint8_t who_am_i = lis3mdl_whoami(twi_master);
     sprintf(ble_string, "lis3mdlid: %x\r\n",who_am_i);
@@ -209,3 +209,12 @@ void Lis3mdl_begin(nrf_drv_twi_t twi_master){
 	write_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_CTRL_REG5,CTRL5_WORD);
 
 }
+
+
+ uint8_t lis3mdl_powerdown(nrf_drv_twi_t twi_master){
+	
+	int who_am_i = read_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_WHO_AM_I);
+	uint8_t CTRL3_WORD = 0x00;
+	write_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_CTRL_REG3,CTRL3_WORD);
+	return who_am_i;
+ }

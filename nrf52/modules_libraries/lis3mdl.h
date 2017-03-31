@@ -76,6 +76,7 @@ struct Lis3mdl_SensorSettings
  int8_t lis3mdl_readOUT_Z_H(nrf_drv_twi_t twi_master);
  int8_t lis3mdl_readTEMP_L(nrf_drv_twi_t twi_master);
  int8_t lis3mdl_readTEMP_H(nrf_drv_twi_t twi_master);
+ uint8_t lis3mdl_powerdown(nrf_drv_twi_t twi_master);
 
 
 
