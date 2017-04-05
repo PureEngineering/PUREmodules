@@ -27,6 +27,12 @@
 #include "supersensor.h"
 
 
+
+#include "nrf_drv_timer.h"
+
+
+const nrf_drv_timer_t TIMER_DATA = NRF_DRV_TIMER_INSTANCE(0);
+
 /**
  * @brief TWI master instance
  *
@@ -65,10 +71,39 @@ static ret_code_t twi_master_init(void)
 }
 
 /**
+ * @brief Handler for timer events.
+ */
+void timer_event_handler(nrf_timer_event_t event_type, void* p_context)
+{
+    static uint32_t i;
+    uint32_t led_to_invert = ((i++) % LEDS_NUMBER);
+
+    switch (event_type)
+    {
+        case NRF_TIMER_EVENT_COMPARE0:
+            bsp_board_led_invert(led_to_invert);
+            NRF_LOG_RAW_INFO("\r\nTimer Hit %d \r\n",i);
+            //run_lis2de(m_twi_master);
+            break;
+
+        default:
+            //Do nothing.
+            NRF_LOG_RAW_INFO("\r\nTimer Hit inside %d \r\n",i);
+
+            break;
+    }
+}
+
+/**
  *  The begin of the journey
  */
 int main(void)
 {
+
+    uint32_t time_ms = 5000; //Time(in miliseconds) between consecutive compare events.
+    uint32_t time_ticks;
+
+
     ret_code_t err_code;
     /* Initialization of UART */
     bsp_board_leds_init();
@@ -82,13 +117,26 @@ int main(void)
 
     /* Welcome message */
     NRF_LOG_RAW_INFO("\r\nStarted Super Sensor\r\n");
-    test_SuperSensor_init(m_twi_master); 
+    //test_SuperSensor_init(m_twi_master); 
 
+    nrf_drv_timer_config_t timer_cfg = NRF_DRV_TIMER_DEFAULT_CONFIG;
+    err_code = nrf_drv_timer_init(&TIMER_DATA, &timer_cfg, timer_event_handler);
+    APP_ERROR_CHECK(err_code);
+
+    time_ticks = nrf_drv_timer_ms_to_ticks(&TIMER_DATA, time_ms);
+
+    nrf_drv_timer_extended_compare(
+         &TIMER_DATA, NRF_TIMER_CC_CHANNEL0, time_ticks, NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK, true);
+
+    nrf_drv_timer_enable(&TIMER_DATA);
 
     NRF_LOG_FLUSH();
+
     while (1)
     {
 
+
+        //__WFI();
         uint8_t c = NRF_LOG_GETCHAR();
         switch ((char)c)
         {

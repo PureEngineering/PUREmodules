@@ -48,6 +48,7 @@ SRC_FILES += \
   $(SDK_ROOT)/components/toolchain/system_nrf52.c \
   $(SDK_ROOT)/components/ble/ble_services/ble_nus/ble_nus.c \
   $(SDK_ROOT)/components/softdevice/common/softdevice_handler/softdevice_handler.c \
+  $(SDK_ROOT)/components/drivers_nrf/timer/nrf_drv_timer.c \
   $(LIB_DIR)/i2c_driver.c \
   $(LIB_DIR)/lis3mdl.c \
   $(LIB_DIR)/lis2de.c \
