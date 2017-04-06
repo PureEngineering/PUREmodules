@@ -29,6 +29,8 @@ typedef enum ss_response {
 
 ss_response test_SuperSensor_init(nrf_drv_twi_t twi_master);
 ss_response test_SuperSensor_run(nrf_drv_twi_t twi_master);
+void test_SuperSensor(nrf_drv_twi_t twi_master);
+bool test_individual_sensors(nrf_drv_twi_t twi_master);
 
 
 

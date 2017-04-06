@@ -37,6 +37,7 @@
 
 }
 
+
  void veml6075_begin(nrf_drv_twi_t twi_master){
     uint8_t UV_CONF_WORD = 0x00;
 
@@ -65,16 +66,27 @@
     veml6075_begin(twi_master);
     uint16_t who_am_i = veml6075_whoami(twi_master);
     
-
-    if(who_am_i==0x0026){
-        NRF_LOG_RAW_INFO("Veml6075 UVA Sensor Initialization: Pass %x \r\n", who_am_i);
-    }
-    else{
-        NRF_LOG_RAW_INFO("Veml6075 UVA Sensor Initialization: Fail %x \r\n", who_am_i);
-    }
     return who_am_i;
 
 }
+
+
+
+bool veml6075_pass(nrf_drv_twi_t twi_master){
+        
+    uint16_t who_am_i = veml6075_whoami(twi_master);
+    
+    if(who_am_i==0x0026){
+        NRF_LOG_RAW_INFO("Veml6075: Pass %x \r\n", who_am_i);
+        return true;
+    }
+    else{
+        NRF_LOG_RAW_INFO("Veml6075: Fail %x \r\n", who_am_i);
+        return false;
+    }
+}
+
+
 
  uint16_t veml6075_whoami(nrf_drv_twi_t twi_master){
     uint16_t who_am_i = veml6075_read_2bytes(twi_master,Veml6075_DEVICE_ADDRESS,Veml6075_ID);

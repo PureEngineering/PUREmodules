@@ -121,6 +121,7 @@ extern "C" {
 	int si1153_get_data(nrf_drv_twi_t twi_master);
 	uint8_t si1153_init(nrf_drv_twi_t twi_master);
 	uint8_t si1153_whoami(nrf_drv_twi_t twi_master);
+	bool si1153_pass(nrf_drv_twi_t twi_master);
 
 
 

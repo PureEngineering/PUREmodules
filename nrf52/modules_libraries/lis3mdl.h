@@ -65,6 +65,8 @@ struct Lis3mdl_SensorSettings
  uint8_t run_lis3mdl(nrf_drv_twi_t twi_master);
  uint8_t run_lis3mdl_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus);
  uint8_t lis3mdl_init(nrf_drv_twi_t twi_master);
+ bool lis3mdl_pass(nrf_drv_twi_t twi_master);
+
 
 
  uint8_t lis3mdl_whoami(nrf_drv_twi_t twi_master);

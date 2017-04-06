@@ -98,14 +98,22 @@ uint8_t lis3mdl_init(nrf_drv_twi_t twi_master){
 
 	int who_am_i = read_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_WHO_AM_I);
 
-	if(who_am_i==0x3d){
-		NRF_LOG_RAW_INFO("Lis3mdl Magnetometer Initialization: Pass %x \r\n", who_am_i);
-	}
-	else{
-		NRF_LOG_RAW_INFO("Lis3mdl Magnetometer Initialization: Fail %x \r\n", who_am_i);
-	}
-
 	return who_am_i;
+
+}
+
+bool lis3mdl_pass(nrf_drv_twi_t twi_master){
+
+	int who_am_i = read_byte(twi_master,Lis3mdl_DEVICE_ADDRESS,Lis3mdl_WHO_AM_I);
+    
+    if(who_am_i==0x3d){
+        NRF_LOG_RAW_INFO("Lis3mdl: Pass %x \r\n", who_am_i);
+        return true;
+    }
+    else{
+        NRF_LOG_RAW_INFO("Lis3mdl: Fail %x \r\n", who_am_i);
+        return false;
+    }
 
 }
 

@@ -100,25 +100,27 @@ struct SensorCalibration
 
 int32_t t_fine;
 
-void BME280_setup( void );
-uint8_t BME280_begin(nrf_drv_twi_t twi_master);
+void bme280_setup( void );
+uint8_t bme280_begin(nrf_drv_twi_t twi_master);
 //Software reset routine
-void BME280_reset(nrf_drv_twi_t twi_master);
+void bme280_reset(nrf_drv_twi_t twi_master);
+bool bme280_pass(nrf_drv_twi_t twi_master);
+uint8_t bme280_whoami(nrf_drv_twi_t twi_master);
 
 //Returns the values as floats.
-float BME280_readFloatPressure(nrf_drv_twi_t twi_master);
-float BME280_readFloatAltitudeMeters(nrf_drv_twi_t twi_master );
-float BME280_readFloatAltitudeFeet( nrf_drv_twi_t twi_master);
-float BME280_readFloatHumidity( nrf_drv_twi_t twi_master );
+float bme280_readFloatPressure(nrf_drv_twi_t twi_master);
+float bme280_readFloatAltitudeMeters(nrf_drv_twi_t twi_master );
+float bme280_readFloatAltitudeFeet( nrf_drv_twi_t twi_master);
+float bme280_readFloatHumidity( nrf_drv_twi_t twi_master );
 
 //Temperature related methods
-float BME280_readTempC( nrf_drv_twi_t twi_master );
-float BME280_readTempF( nrf_drv_twi_t twi_master );
+float bme280_readTempC( nrf_drv_twi_t twi_master );
+float bme280_readTempF( nrf_drv_twi_t twi_master );
 
 //The following utilities read and write
-uint8_t BME280_init(nrf_drv_twi_t twi_master);
-uint8_t run_BME280(nrf_drv_twi_t twi_master);
-uint8_t run_BME280_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus);
+uint8_t bme280_init(nrf_drv_twi_t twi_master);
+uint8_t run_bme280(nrf_drv_twi_t twi_master);
+uint8_t run_bme280_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus);
 
 
 #endif 

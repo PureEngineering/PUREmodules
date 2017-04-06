@@ -11,7 +11,7 @@
 #include "ble_nus.h"
 
 
-void BME280_setup( void )
+void bme280_setup( void )
 {
 	//Mode Settings
 	//0 = Sleep Mode, 1 or 2 Forced Mode, 3 = Normal Mode
@@ -40,8 +40,12 @@ void BME280_setup( void )
 
 }
 
+uint8_t bme280_whoami(nrf_drv_twi_t twi_master){
+	return read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_CHIP_ID_REG);	
+}
 
-uint8_t BME280_begin(nrf_drv_twi_t twi_master)
+
+uint8_t bme280_begin(nrf_drv_twi_t twi_master)
 {
 	//Check the settings structure values to determine how to setup the device
 	uint8_t dataToWrite = 0;  //Temporary variable
@@ -92,21 +96,21 @@ uint8_t BME280_begin(nrf_drv_twi_t twi_master)
 	//Load the byte
 	write_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_CTRL_MEAS_REG, dataToWrite);
 	
-	return read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_CHIP_ID_REG);
+	return bme280_whoami(twi_master);	
 }
 
 //Strictly resets.  Run .begin() afterwards
-void BME280_reset(nrf_drv_twi_t twi_master)
+void bme280_reset(nrf_drv_twi_t twi_master)
 {
 	write_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_RST_REG, 0xB6);
 	
 }
 
 
-uint8_t BME280_init(nrf_drv_twi_t twi_master){
+uint8_t bme280_init(nrf_drv_twi_t twi_master){
 	uint8_t who_am_i;
-	BME280_setup();
-	who_am_i = BME280_begin(twi_master);
+	bme280_setup();
+	who_am_i = bme280_whoami(twi_master);
     if(who_am_i==0x60){
         NRF_LOG_RAW_INFO("BME280 Initialization: Pass %x \r\n", who_am_i);
     }
@@ -116,52 +120,65 @@ uint8_t BME280_init(nrf_drv_twi_t twi_master){
 	return who_am_i;
 }
 
+bool bme280_pass(nrf_drv_twi_t twi_master){
 
-uint8_t run_BME280(nrf_drv_twi_t twi_master){
-	uint8_t who_am_i = read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_CHIP_ID_REG);
+	uint8_t who_am_i = bme280_whoami(twi_master);
+    if(who_am_i==0x60){
+        NRF_LOG_RAW_INFO("BME280: Pass %x \r\n", who_am_i);
+        return true;
+    }
+    else{
+        NRF_LOG_RAW_INFO("BME280: Fail %x \r\n", who_am_i);
+        return false;
+    }
+}
+
+
+uint8_t run_bme280(nrf_drv_twi_t twi_master){
+	uint8_t who_am_i = bme280_whoami(twi_master);
     NRF_LOG_RAW_INFO("BME280 ID: %x.\r\n", who_am_i);
 
-	uint8_t tempF = BME280_readTempF(twi_master);
+	uint8_t tempF = bme280_readTempF(twi_master);
     NRF_LOG_RAW_INFO("BME280 Temp: %d F.\r\n", tempF);
 
-	uint8_t pressure = BME280_readFloatPressure(twi_master);
+	uint8_t pressure = bme280_readFloatPressure(twi_master);
     NRF_LOG_RAW_INFO("BME280 Pressure: %d(Pa).\r\n", pressure);
 
-	uint8_t altitude = BME280_readFloatAltitudeFeet(twi_master);
+	uint8_t altitude = bme280_readFloatAltitudeFeet(twi_master);
     NRF_LOG_RAW_INFO("BME280 Altitude: %d ft.\r\n", altitude);
 
-	uint8_t humidity = BME280_readFloatHumidity(twi_master);
+	uint8_t humidity = bme280_readFloatHumidity(twi_master);
     NRF_LOG_RAW_INFO("BME280 Humidity: %d percent\r\n", humidity);
 
     return who_am_i;
 
 }
 
-uint8_t run_BME280_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
+uint8_t run_bme280_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
 	uint8_t length = 18;
 	uint8_t ble_string[length];
 
-	uint8_t who_am_i = read_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_CHIP_ID_REG);
+	uint8_t who_am_i = bme280_whoami(twi_master);
     sprintf(ble_string, "bme280id: %x\r\n",who_am_i);
     send_ble_data(m_nus,ble_string,length);
 
-	uint8_t tempF = BME280_readTempF(twi_master);
+	uint8_t tempF = bme280_readTempF(twi_master);
     sprintf(ble_string, "bme280tempf: %d\r\n",tempF);
     send_ble_data(m_nus,ble_string,length);
 
-	uint8_t tempc = BME280_readTempC(twi_master);
+	uint8_t tempc = bme280_readTempC(twi_master);
     sprintf(ble_string, "bme280tempc: %d\r\n",tempc);
     send_ble_data(m_nus,ble_string,length);
 
-	uint8_t pressure = BME280_readFloatPressure(twi_master);
+	uint8_t pressure = bme280_readFloatPressure(twi_master);
     sprintf(ble_string, "bme280press: %d\r\n",pressure);
 	send_ble_data(m_nus,ble_string,length);
 
-	uint8_t altitude = BME280_readFloatAltitudeFeet(twi_master);
+	uint8_t altitude = bme280_readFloatAltitudeFeet(twi_master);
     sprintf(ble_string, "bme280alt: %d\r\n",altitude);
     send_ble_data(m_nus,ble_string,length);
 
-	uint8_t humidity = BME280_readFloatHumidity(twi_master);
+	uint8_t humidity = bme280_readFloatHumidity(twi_master);
     sprintf(ble_string, "bme280hum: %d\r\n",humidity);
     send_ble_data(m_nus,ble_string,length);
 
@@ -171,7 +188,7 @@ uint8_t run_BME280_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
 }
 
 
-float BME280_readFloatPressure(nrf_drv_twi_t twi_master)
+float bme280_readFloatPressure(nrf_drv_twi_t twi_master)
 {
 
 	// Returns pressure in Pa as unsigned 32 bit integer in Q24.8 format (24 integer bits and 8 fractional bits).
@@ -199,25 +216,25 @@ float BME280_readFloatPressure(nrf_drv_twi_t twi_master)
 	
 }
 
-float BME280_readFloatAltitudeMeters(nrf_drv_twi_t twi_master)
+float bme280_readFloatAltitudeMeters(nrf_drv_twi_t twi_master)
 {
 	float heightOutput = 0;
 	
-	heightOutput = ((float)-45846.2)*(pow(((float)BME280_readFloatPressure(twi_master)/(float)101325), 0.190263) - (float)1);
+	heightOutput = ((float)-45846.2)*(pow(((float)bme280_readFloatPressure(twi_master)/(float)101325), 0.190263) - (float)1);
 	return heightOutput;
 	
 }
 
-float BME280_readFloatAltitudeFeet(nrf_drv_twi_t twi_master)
+float bme280_readFloatAltitudeFeet(nrf_drv_twi_t twi_master)
 {
 	float heightOutput = 0;
 	
-	heightOutput = BME280_readFloatAltitudeMeters(twi_master) * 3.28084;
+	heightOutput = bme280_readFloatAltitudeMeters(twi_master) * 3.28084;
 	return heightOutput;
 	
 }
 
-float BME280_readFloatHumidity(nrf_drv_twi_t twi_master)
+float bme280_readFloatHumidity(nrf_drv_twi_t twi_master)
 {
 	
 	// Returns humidity in %RH as unsigned 32 bit integer in Q22. 10 format (22 integer and 10 fractional bits).
@@ -237,7 +254,7 @@ float BME280_readFloatHumidity(nrf_drv_twi_t twi_master)
 
 }
 
-float BME280_readTempC(nrf_drv_twi_t twi_master)
+float bme280_readTempC(nrf_drv_twi_t twi_master)
 {
 	// Returns temperature in DegC, resolution is 0.01 DegC. Output value of “5123” equals 51.23 DegC.
 	// t_fine carries fine temperature as global value
@@ -259,9 +276,9 @@ float BME280_readTempC(nrf_drv_twi_t twi_master)
 	return output;
 }
 
-float BME280_readTempF(nrf_drv_twi_t twi_master)
+float bme280_readTempF(nrf_drv_twi_t twi_master)
 {
-	float output = BME280_readTempC(twi_master);
+	float output = bme280_readTempC(twi_master);
 	output = (output * 9) / 5 + 32;
 
 	return output;

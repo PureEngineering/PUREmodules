@@ -134,7 +134,6 @@ int si1153_get_data(nrf_drv_twi_t twi_master){
 
 uint8_t si1153_init(nrf_drv_twi_t twi_master){
 
-	NRF_LOG_RAW_INFO("Proximity Sensor Start\r\n");
 	uint8_t ADCCONFIGx;
 	uint8_t ADCSENSx;
 	uint8_t ADCPOSTx;
@@ -146,8 +145,6 @@ uint8_t si1153_init(nrf_drv_twi_t twi_master){
 	param_set(twi_master,Si1153_CHAN_LIST,CHAN_LIST_Word);
 
 
-	NRF_LOG_RAW_INFO("Proximity Sensor First Set\r\n"); NRF_LOG_FLUSH();   
-
 	param_set(twi_master,Si1153_MEASRATE_H,0);
 	param_set(twi_master,Si1153_MEASRATE_L,1);
 
@@ -156,7 +153,6 @@ uint8_t si1153_init(nrf_drv_twi_t twi_master){
 	param_set(twi_master,Si1153_MEASCOUNT_2,10);
 
 
-	NRF_LOG_RAW_INFO("Proximity Sensor Setup\r\n"); NRF_LOG_FLUSH();   
 	ADCCONFIGx = 0x00;
 	ADCSENSx   = 0x02;
 	ADCPOSTx   = 0x40;
@@ -169,7 +165,6 @@ uint8_t si1153_init(nrf_drv_twi_t twi_master){
 
 	config_channel(twi_master,1,configurations);
 
-	NRF_LOG_RAW_INFO("Proximity Sensor Channel1\r\n"); NRF_LOG_FLUSH();   
 	ADCCONFIGx = 0x00;
 	ADCSENSx   = 0x02;
 	ADCPOSTx   = 0x40;
@@ -186,11 +181,28 @@ uint8_t si1153_init(nrf_drv_twi_t twi_master){
 	uint8_t who_am_i = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_PART_ID);
 
 	if(who_am_i==0x53){
-		NRF_LOG_RAW_INFO("Si1153 Proximity Sensor Initialization: Pass %x \r\n", who_am_i); NRF_LOG_FLUSH();   
+		NRF_LOG_RAW_INFO("Si1153: Pass %x \r\n", who_am_i); NRF_LOG_FLUSH();   
 	}
 	else{
-		NRF_LOG_RAW_INFO("Si1153 Proximity Sensor Initialization: Pass %x \r\n", who_am_i); NRF_LOG_FLUSH();   
+		NRF_LOG_RAW_INFO("Si1153: Fail %x \r\n", who_am_i); NRF_LOG_FLUSH();   
 	}
 
 	return who_am_i;
+}
+
+
+bool si1153_pass(nrf_drv_twi_t twi_master){
+	uint8_t who_am_i = si1153_whoami(twi_master);
+
+
+	if(who_am_i==0x53){
+		NRF_LOG_RAW_INFO("Si1153: Pass %x \r\n", who_am_i); NRF_LOG_FLUSH();   
+		return true;
+	}
+	else{
+		NRF_LOG_RAW_INFO("Si1153: Fail %x \r\n", who_am_i); NRF_LOG_FLUSH();   
+		return false;
+	}
+
+	return who_am_i;	
 }
