@@ -3,7 +3,7 @@
 
 
 
-void send_ble_data(ble_nus_t m_nus,uint8_t * data, uint8_t length){
+void send_ble_data(ble_nus_t m_nus,uint8_t *data, uint8_t length){
     //static uint8_t data_array[BLE_NUS_MAX_DATA_LEN];
     //static uint8_t index = 0;
 

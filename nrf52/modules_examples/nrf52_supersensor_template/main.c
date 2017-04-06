@@ -132,7 +132,7 @@ int main(void)
 
     NRF_LOG_FLUSH();
 
-    while (1)
+    while (1){
     
         //__WFI();
         uint8_t c = NRF_LOG_GETCHAR();
@@ -172,7 +172,6 @@ int main(void)
         case 'o':
             vl53l0_init(m_twi_master);
             run_vl53l0(m_twi_master);
-            bsp_board_led_invert(0);
             break; 
         case 'a':
             NRF_LOG_RAW_INFO("\r\nStart Initializing all Sensors: \r\n"); 
@@ -184,6 +183,7 @@ int main(void)
             break;
         case 'd':
             bme280_init(m_twi_master); 
+            bme280_pass(m_twi_master);
             break;
         case 'f':
             run_bme280(m_twi_master); 

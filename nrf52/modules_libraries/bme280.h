@@ -106,6 +106,7 @@ uint8_t bme280_begin(nrf_drv_twi_t twi_master);
 void bme280_reset(nrf_drv_twi_t twi_master);
 bool bme280_pass(nrf_drv_twi_t twi_master);
 uint8_t bme280_whoami(nrf_drv_twi_t twi_master);
+void bme280_powerdown(nrf_drv_twi_t twi_master);
 
 //Returns the values as floats.
 float bme280_readFloatPressure(nrf_drv_twi_t twi_master);

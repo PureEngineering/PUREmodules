@@ -347,9 +347,9 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
     if(p_data[0]=='1'){
         lis2de_init(m_twi_master);
         lis2de_on = true;
-        //send_ble_data(m_nus,ble_string,10);
     }
     if(p_data[0]=='2'){
+        lis2de_powerdown(m_twi_master);
         lis2de_on = false;
     }
     if(p_data[0]=='3'){
@@ -357,6 +357,7 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
         lis3mdl_on = true;
     }
     if(p_data[0]=='4'){
+        lis3mdl_powerdown(m_twi_master);
         lis3mdl_on = false;
     }
     if(p_data[0]=='5'){
@@ -364,6 +365,7 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
         bme280_on = true;
     }
     if(p_data[0]=='6'){
+        bme280_powerdown(m_twi_master);
         bme280_on = false;
     }
     if(p_data[0]=='7'){
@@ -371,6 +373,7 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
         veml6075_on = true;
     }
     if(p_data[0]=='8'){
+        veml6075_powerdown(m_twi_master);
         veml6075_on = false;
     }
     if(p_data[0]=='9'){
@@ -378,8 +381,11 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
         si1153_on = true;
     }
     if(p_data[0]=='a'){
+        //Si1153 automatically moves to Standby Mode
         si1153_on = false;
     }
+
+    //Code to put ble received messages into uart
 
     /*for (uint32_t i = 0; i < length; i++)
     {       

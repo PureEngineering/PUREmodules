@@ -95,24 +95,27 @@ uint8_t run_lis2de(nrf_drv_twi_t twi_master){
 
 
 uint8_t run_lis2de_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
-	uint8_t length = 15;
-	uint8_t ble_string[length];
+	uint8_t length = 13;
+	uint8_t *ble_string[length];
+
 
 	uint8_t who_am_i = lis2de_whoami(twi_master);
-    sprintf(ble_string, "lis2deid: %x\r\n",who_am_i);
-    send_ble_data(m_nus,ble_string,length);
+    sprintf((char *)ble_string, "lis2deid: %x \r\n",who_am_i);
+    //puts(ble_string);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
 
 	int8_t OUT_X = lis2de_readOUT_X(twi_master);
-    sprintf(ble_string, "lis2dex: %d\r\n",OUT_X);
-    send_ble_data(m_nus,ble_string,length);
+    sprintf((char *)ble_string, "lis2dex: %d \r\n",OUT_X);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
 	int8_t OUT_Y = lis2de_readOUT_Y(twi_master);
-    sprintf(ble_string, "lis2dey: %d\r\n",OUT_Y);
-	send_ble_data(m_nus,ble_string,length);
+    sprintf((char *)ble_string, "lis2dey: %d \r\n",OUT_Y);
+	send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
 	int8_t OUT_Z = lis2de_readOUT_Z(twi_master);
-    sprintf(ble_string, "lis2dez: %d\r\n",OUT_Z);
-    send_ble_data(m_nus,ble_string,length);
+    sprintf((char *)ble_string, "lis2dez: %d \r\n",OUT_Z);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
 	return who_am_i;
 
 }

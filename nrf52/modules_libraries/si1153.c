@@ -7,6 +7,8 @@
 #include "bsp.h"
 
 #include "i2c_driver.h"
+#include "ble_driver.h"
+
 
 int param_set(nrf_drv_twi_t twi_master,uint8_t loc, uint8_t val){
 
@@ -96,12 +98,13 @@ uint8_t si1153_whoami(nrf_drv_twi_t twi_master){
 }
 
 uint8_t run_si1153_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
-	uint8_t length = 15;
-	uint8_t ble_string[length];
+	uint8_t length = 13;
+	uint8_t *ble_string[length];
 
 	uint8_t who_am_i = si1153_whoami(twi_master);
-    sprintf(ble_string, "si1153id: %x\r\n",who_am_i);
-    send_ble_data(m_nus,ble_string,length);
+    sprintf((char *)ble_string, "si1153id: %x\r\n",who_am_i);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
 
 	uint8_t data[3];
 	//uint8_t channel3_data[3];
@@ -110,8 +113,8 @@ uint8_t run_si1153_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
 	data[2] = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT2);
 	int int_data = bytes_to_int(data, sizeof(data));
 
-    sprintf(ble_string, "si1153x: %.4d \r\n",int_data);
-    send_ble_data(m_nus,ble_string,length);
+    sprintf((char *)ble_string, "si1153x:  %.4d \r\n",int_data);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
 
 	return who_am_i;

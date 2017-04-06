@@ -37,6 +37,8 @@ struct Veml6075_SensorSettings
  uint16_t run_veml6075(nrf_drv_twi_t twi_master);
  uint8_t run_veml6075_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus);
  bool veml6075_pass(nrf_drv_twi_t twi_master);
+ void veml6075_powerdown(nrf_drv_twi_t twi_master);
+
 
  uint16_t veml6075_whoami(nrf_drv_twi_t twi_master);
  uint16_t veml6075_readUVA(nrf_drv_twi_t twi_master);

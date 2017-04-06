@@ -106,17 +106,16 @@ void bme280_reset(nrf_drv_twi_t twi_master)
 	
 }
 
+void bme280_powerdown(nrf_drv_twi_t twi_master){
+	//Put Sensor in sleep mode
+	write_byte(twi_master,BME280_DEVICE_ADDRESS,BME280_CTRL_MEAS_REG, 0x00);
+}
 
 uint8_t bme280_init(nrf_drv_twi_t twi_master){
 	uint8_t who_am_i;
 	bme280_setup();
 	who_am_i = bme280_whoami(twi_master);
-    if(who_am_i==0x60){
-        NRF_LOG_RAW_INFO("BME280 Initialization: Pass %x \r\n", who_am_i);
-    }
-    else{
-        NRF_LOG_RAW_INFO("BME280 Initialization: Fail %x \r\n", who_am_i);
-    }
+
 	return who_am_i;
 }
 
@@ -151,36 +150,37 @@ uint8_t run_bme280(nrf_drv_twi_t twi_master){
     NRF_LOG_RAW_INFO("BME280 Humidity: %d percent\r\n", humidity);
 
     return who_am_i;
-
 }
 
+
 uint8_t run_bme280_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
-	uint8_t length = 18;
-	uint8_t ble_string[length];
+	uint8_t length = 15;
+	uint8_t *ble_string[length];
 
 	uint8_t who_am_i = bme280_whoami(twi_master);
-    sprintf(ble_string, "bme280id: %x\r\n",who_am_i);
-    send_ble_data(m_nus,ble_string,length);
+    sprintf((char *)ble_string, "bme280id:    %x\r\n",who_am_i);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
 	uint8_t tempF = bme280_readTempF(twi_master);
-    sprintf(ble_string, "bme280tempf: %d\r\n",tempF);
-    send_ble_data(m_nus,ble_string,length);
+    sprintf((char *)ble_string, "bme280tempf: %d\r\n",tempF);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
 
 	uint8_t tempc = bme280_readTempC(twi_master);
-    sprintf(ble_string, "bme280tempc: %d\r\n",tempc);
-    send_ble_data(m_nus,ble_string,length);
+    sprintf((char *)ble_string, "bme280tempc: %d\r\n",tempc);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
 	uint8_t pressure = bme280_readFloatPressure(twi_master);
-    sprintf(ble_string, "bme280press: %d\r\n",pressure);
-	send_ble_data(m_nus,ble_string,length);
+    sprintf((char *)ble_string, "bme280press: %d\r\n",pressure);
+	send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
 	uint8_t altitude = bme280_readFloatAltitudeFeet(twi_master);
-    sprintf(ble_string, "bme280alt: %d\r\n",altitude);
-    send_ble_data(m_nus,ble_string,length);
+    sprintf((char *)ble_string, "bme280alt:   %d\r\n",altitude);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
 	uint8_t humidity = bme280_readFloatHumidity(twi_master);
-    sprintf(ble_string, "bme280hum: %d\r\n",humidity);
-    send_ble_data(m_nus,ble_string,length);
+    sprintf((char *)ble_string, "bme280hum:   %d\r\n",humidity);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
 
 	return who_am_i;
