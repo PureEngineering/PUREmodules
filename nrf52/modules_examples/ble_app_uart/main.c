@@ -344,45 +344,61 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
     //Parses the input from the android app to turn on or off
     //the different sensors. 
 
-    if(p_data[0]=='1'){
-        lis2de_init(m_twi_master);
-        lis2de_on = true;
-    }
-    if(p_data[0]=='2'){
-        lis2de_powerdown(m_twi_master);
-        lis2de_on = false;
-    }
-    if(p_data[0]=='3'){
-        lis3mdl_init(m_twi_master);
-        lis3mdl_on = true;
-    }
-    if(p_data[0]=='4'){
-        lis3mdl_powerdown(m_twi_master);
-        lis3mdl_on = false;
-    }
-    if(p_data[0]=='5'){
-        bme280_init(m_twi_master);
-        bme280_on = true;
-    }
-    if(p_data[0]=='6'){
-        bme280_powerdown(m_twi_master);
-        bme280_on = false;
-    }
-    if(p_data[0]=='7'){
-        veml6075_init(m_twi_master);
-        veml6075_on = true;
-    }
-    if(p_data[0]=='8'){
-        veml6075_powerdown(m_twi_master);
-        veml6075_on = false;
-    }
-    if(p_data[0]=='9'){
-        si1153_init(m_twi_master);
-        si1153_on = true;
-    }
-    if(p_data[0]=='a'){
-        //Si1153 automatically moves to Standby Mode
-        si1153_on = false;
+
+    switch (p_data[0])
+    {
+        case LIS2DE_ON_MESSAGE:
+            lis2de_init(m_twi_master);
+            lis2de_on = true;
+            break;
+
+        case LIS2DE_OFF_MESSAGE:
+            lis2de_powerdown(m_twi_master);
+            lis2de_on = false;
+            break;
+
+        case LIS3MDL_ON_MESSAGE:
+            lis3mdl_init(m_twi_master);
+            lis3mdl_on = true;
+            break;
+
+        case LIS3MDL_OFF_MESSAGE:
+            lis3mdl_powerdown(m_twi_master);
+            lis3mdl_on = false;
+            break;
+
+        case BME280_ON_MESSAGE:
+            bme280_init(m_twi_master);
+            bme280_on = true;
+            break;
+
+        case BME280_OFF_MESSAGE:
+            bme280_powerdown(m_twi_master);
+            bme280_on = false;
+            break;
+
+        case VEML6075_ON_MESSAGE:
+            veml6075_init(m_twi_master);
+            veml6075_on = true;
+            break;
+
+        case VEML6075_OFF_MESSAGE:
+            veml6075_powerdown(m_twi_master);
+            veml6075_on = false;
+            break;
+
+        case SI1153_ON_MESSAGE:
+            si1153_init(m_twi_master);
+            si1153_on = true;
+            break;
+
+        case SI1153_OFF_MESSAGE:
+            //Si1153 automatically moves to Standby Mode
+            si1153_on = false;
+            break;
+
+        default:
+            break;
     }
 
     //Code to put ble received messages into uart
@@ -391,10 +407,11 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
     {       
         while (app_uart_put(p_data[i]) != NRF_SUCCESS);
     }
+
     while (app_uart_put('\r') != NRF_SUCCESS);
     while (app_uart_put('\n') != NRF_SUCCESS);*/
-
 }
+
 /**@snippet [Handling the data received over BLE] */
 
 
