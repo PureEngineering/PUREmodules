@@ -360,7 +360,7 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
         lis3mdl_on = false;
     }
     if(p_data[0]=='5'){
-        BME280_init(m_twi_master);
+        bme280_init(m_twi_master);
         bme280_on = true;
     }
     if(p_data[0]=='6'){
@@ -870,7 +870,7 @@ void print_to_ble(){
         run_lis3mdl_ble(m_twi_master,m_nus);
     }
     if(bme280_on){
-        run_BME280_ble(m_twi_master,m_nus);
+        run_bme280_ble(m_twi_master,m_nus);
     }
     if(veml6075_on){
         run_veml6075_ble(m_twi_master,m_nus);
@@ -879,7 +879,6 @@ void print_to_ble(){
         run_si1153_ble(m_twi_master,m_nus);
     }
     if(vl53l0_on){
-        //run_BME280_ble(m_twi_master,m_nus);
     }
 
 }
