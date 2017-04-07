@@ -110,10 +110,12 @@ bool lis3mdl_pass(nrf_drv_twi_t twi_master){
     
     if(who_am_i==0x3d){
         NRF_LOG_RAW_INFO("Lis3mdl: Pass %x \r\n", who_am_i);
+        printf("Lis3mdl: Pass %x \r\n", who_am_i);
         return true;
     }
     else{
         NRF_LOG_RAW_INFO("Lis3mdl: Fail %x \r\n", who_am_i);
+        printf("Lis3mdl: Fail %x \r\n", who_am_i);
         return false;
     }
 

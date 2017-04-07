@@ -13,8 +13,7 @@
 #include "si1153.h"
 #include "veml6075.h"
 #include "bme280.h"
-
-
+#include "nrf_delay.h"
 
 
 ss_response test_supersensor_init(nrf_drv_twi_t twi_master){
@@ -45,27 +44,29 @@ bool test_individual_sensors(nrf_drv_twi_t twi_master){
         
     test_supersensor_init(twi_master);
 
+    bool pass = true;
+
     if(!lis3mdl_pass(twi_master)){
-        return false;
+        pass = false;
     }
 
     if(!lis2de_pass(twi_master)){
-        return false;
+        pass = false;
     }
 
     if(!veml6075_pass(twi_master)){
-        return false;
-    }
-
-    if(!si1153_pass(twi_master)){
-        return false;
+        pass = false;
     }
 
     if(!bme280_pass(twi_master)){
-        return false;
+        pass = false;
     } 
 
-    return true;
+    //if(!si1153_pass(twi_master)){
+    //    pass = false;
+    //}
+
+    return pass;
 
 }
 
@@ -76,7 +77,14 @@ void test_supersensor(nrf_drv_twi_t twi_master){
     supersensor_powerdown(twi_master);
 
     if(supersensor_pass){
+        printf("SuperSensor Pass \r\n");
         bsp_board_led_on(0);
+        nrf_delay_ms(2000);
+        bsp_board_led_off(0);
+        nrf_delay_ms(500);
+        bsp_board_led_on(0);
+        nrf_delay_ms(1000);
+        bsp_board_led_off(0);
     }
 }
 

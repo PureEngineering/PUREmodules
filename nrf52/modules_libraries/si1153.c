@@ -200,10 +200,12 @@ bool si1153_pass(nrf_drv_twi_t twi_master){
 
 	if(who_am_i==0x53){
 		NRF_LOG_RAW_INFO("Si1153: Pass %x \r\n", who_am_i); NRF_LOG_FLUSH();   
+		printf("Si1153: Pass %x \r\n", who_am_i);
 		return true;
 	}
 	else{
 		NRF_LOG_RAW_INFO("Si1153: Fail %x \r\n", who_am_i); NRF_LOG_FLUSH();   
+		printf("Si1153: Fail %x \r\n", who_am_i);
 		return false;
 	}
 

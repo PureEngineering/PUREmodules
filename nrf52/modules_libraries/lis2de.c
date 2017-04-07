@@ -136,10 +136,12 @@ bool lis2de_pass(nrf_drv_twi_t twi_master){
 
 	if(who_am_i==0x33){
 		NRF_LOG_RAW_INFO("Lis2de: Pass %x \r\n", who_am_i);
+		printf("Lis2de: Pass %x \r\n", who_am_i);
 		return true;
 	}
 	else{
 		NRF_LOG_RAW_INFO("Lis2de: Fail %x \r\n", who_am_i);
+		printf("Lis2de: Fail %x \r\n", who_am_i);
 		return false;
 	}
 

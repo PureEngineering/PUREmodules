@@ -603,7 +603,7 @@ void uart_event_handle(app_uart_evt_t * p_event)
 /**@snippet [UART Initialization] */
 static void uart_init(void)
 {
-    uint32_t                     err_code;
+    uint32_t err_code;
     const app_uart_comm_params_t comm_params =
     {
         RX_PIN_NUMBER,
@@ -716,7 +716,6 @@ static ret_code_t twi_master_init(void)
 
 //Code that runs in main to read data from sensors that are on
 void print_to_ble(){
-    //printf("inside the printer \r\n");
     if(lis2de_on){
         run_lis2de_ble(m_twi_master,m_nus);
     }
@@ -763,7 +762,6 @@ int main(void)
     bsp_board_leds_init();
 
     test_supersensor(m_twi_master);
-    nrf_delay_ms(5000);
 
 
     printf("\r\nUART Start!\r\n");
