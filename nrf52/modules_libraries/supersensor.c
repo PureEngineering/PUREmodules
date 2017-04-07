@@ -17,7 +17,7 @@
 
 
 
-ss_response test_SuperSensor_init(nrf_drv_twi_t twi_master){
+ss_response test_supersensor_init(nrf_drv_twi_t twi_master){
     //uint8_t magnet_ID = 
     lis3mdl_init(twi_master);
     //uint8_t accel_ID = 
@@ -34,9 +34,16 @@ ss_response test_SuperSensor_init(nrf_drv_twi_t twi_master){
 
 }
 
+void supersensor_powerdown(nrf_drv_twi_t twi_master){
+    lis2de_powerdown(twi_master);
+    lis3mdl_powerdown(twi_master);
+    bme280_powerdown(twi_master);
+    veml6075_powerdown(twi_master);
+}
+
 bool test_individual_sensors(nrf_drv_twi_t twi_master){
         
-    test_SuperSensor_init(twi_master);
+    test_supersensor_init(twi_master);
 
     if(!lis3mdl_pass(twi_master)){
         return false;
@@ -58,14 +65,15 @@ bool test_individual_sensors(nrf_drv_twi_t twi_master){
         return false;
     } 
 
-
     return true;
 
 }
 
-void test_SuperSensor(nrf_drv_twi_t twi_master){
+void test_supersensor(nrf_drv_twi_t twi_master){
 
     bool supersensor_pass = test_individual_sensors(twi_master);
+
+    supersensor_powerdown(twi_master);
 
     if(supersensor_pass){
         bsp_board_led_on(0);
@@ -74,7 +82,7 @@ void test_SuperSensor(nrf_drv_twi_t twi_master){
 
 
 
-ss_response test_SuperSensor_run(nrf_drv_twi_t twi_master){
+ss_response test_supersensor_run(nrf_drv_twi_t twi_master){
     //uint8_t magnet_ID = 
     run_lis3mdl(twi_master);
     //uint8_t accel_ID = 

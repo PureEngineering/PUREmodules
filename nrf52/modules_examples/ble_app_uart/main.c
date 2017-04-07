@@ -10,16 +10,6 @@
  *
  */
 
-/** @file
- *
- * @defgroup ble_sdk_uart_over_ble_main main.c
- * @{
- * @ingroup  ble_sdk_app_nus_eval
- * @brief    UART over BLE application main file.
- *
- * This file contains the source code for a sample application that uses the Nordic UART service.
- * This application uses the @ref srvlib_conn_params module.
- */
 
 #include <stdint.h>
 #include <string.h>
@@ -41,7 +31,6 @@
 
 #include <stdbool.h>
 #include <ctype.h>
-//#include "config.h"
 #include "nrf_gpio.h"
 #include "app_error.h"
 #include "nrf_drv_twi.h"
@@ -113,6 +102,7 @@ bool veml6075_on = false;
 bool si1153_on = false;
 bool vl53l0_on = false;
 
+
 /**
  * @brief TWI master instance
  *
@@ -121,163 +111,6 @@ bool vl53l0_on = false;
  */
 //TW0_USE_EAY added in nrf_drv_twi line 80
 static const nrf_drv_twi_t m_twi_master = NRF_DRV_TWI_INSTANCE(MASTER_TWI_INST);
-
-
-
-uint8_t ORIENTATION_X = 0;
-uint8_t ORIENTATION_Y = 1;
-uint8_t ORIENTATION_Z = 2;
-
-bool did_sign_change(int value, int prev_value){
-    if (value >= 0){
-        return prev_value < 0;
-    }
-    else{
-        return prev_value >= 0;
-    }
-}
-
-
-uint8_t check_orientation(int x_cycle_count, int y_cycle_count, int z_cycle_count){
-    if(x_cycle_count>=y_cycle_count){
-        if(x_cycle_count>=z_cycle_count){
-            return ORIENTATION_X;
-        }
-        else{
-            return ORIENTATION_Z;
-        }
-    }
-    else{
-        if(y_cycle_count>=z_cycle_count){
-            return ORIENTATION_Y;
-        }
-        else{
-            return ORIENTATION_Z;
-        }
-    }
-}
-
-int step_incrementer(int step_count, uint8_t current_orientation, bool x_changed, bool y_changed,bool z_changed){
-
-    if(current_orientation==ORIENTATION_X){
-        if(x_changed){
-            bsp_board_led_invert(0);
-            return step_count + 1;
-        }
-        else{
-            return step_count;
-        }
-    }
-    else if(current_orientation==ORIENTATION_Y){
-        if(y_changed){
-            bsp_board_led_invert(0);
-            return step_count + 1;
-        }
-        else{
-            return step_count;
-        }
-    }
-    else{
-        if(z_changed){
-            bsp_board_led_invert(0);
-            return step_count + 1;
-        }
-        else{
-            return step_count;
-        }
-    }
-}
-
-
-
-void lis2de_stepcounter(){
-    //uint8_t debug_counter = 0;
-    int counter = 0;
-
-    int x_cycle_count = 0;
-    int y_cycle_count = 0;
-    int z_cycle_count = 0;
-
-    int8_t prev_outx = 0;
-    int8_t prev_outy = 0;
-    int8_t prev_outz = 0;
-
-    bool x_changed = 0; 
-    bool y_changed = 0;
-    bool z_changed = 0;
-
-    uint8_t current_orientation = 0;
-
-    int step_count = 0;
-
-    //uint8_t length = 1;
-    //uint8_t data_array[length];
-
-    while(1){
-
-    //debug_counter++;
-    counter++;
-
-    int8_t outx =  lis2de_readOUT_X(m_twi_master);
-    int8_t outy =  lis2de_readOUT_Y(m_twi_master);
-    int8_t outz =  lis2de_readOUT_Z(m_twi_master);
-
-
-
-    current_orientation = check_orientation(x_cycle_count,y_cycle_count,z_cycle_count);
-
-    if(did_sign_change(outx, prev_outx)){
-        x_changed = 1;
-        x_cycle_count++;
-    }
-    else{
-        x_changed = 0;
-    }
-    if(did_sign_change(outy, prev_outy)){
-        y_changed = 1;
-        y_cycle_count++;
-    }
-    else{
-        y_changed = 0;
-    }
-    if(did_sign_change(outz, prev_outz)){
-        z_changed = 1;
-        z_cycle_count++;
-    }
-    else{
-        z_changed = 0;
-    }
-
-    step_count = step_incrementer(step_count, current_orientation, x_changed, y_changed, z_changed);
-
-
-
-    prev_outx = outx;
-    prev_outy = outy;
-    prev_outz = outz;
-
-    //NRF_LOG_RAW_INFO("-----------------------");
-    NRF_LOG_RAW_INFO("STEP Count : %x.\r\n\r\n", step_count);
-    //NRF_LOG_RAW_INFO("Orientation: %x.\r\n", current_orientation);
-    //NRF_LOG_RAW_INFO("X cycle    : %x.\r\n", x_cycle_count);
-    //NRF_LOG_RAW_INFO("Y cycle    : %x.\r\n", y_cycle_count);
-    //NRF_LOG_RAW_INFO("Z cycle    : %x.\r\n", z_cycle_count);
-
-    if(counter == 25){
-        char step_count_string[20];
-        sprintf(step_count_string,"Step Count = %d",step_count);
-        puts(step_count_string);
-        //data_array[0] = step_count_string;
-        printf("\r\n Step Count: %d \r\n",step_count);
-
-        //send_ble_data(step_count_string,20);
-        counter = 0;
-    }
-
-    nrf_delay_ms(100);
-    NRF_LOG_FLUSH();
-    }
-}
 
 
 
@@ -343,8 +176,6 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
     
     //Parses the input from the android app to turn on or off
     //the different sensors. 
-
-
     switch (p_data[0])
     {
         case LIS2DE_ON_MESSAGE:
@@ -883,7 +714,7 @@ static ret_code_t twi_master_init(void)
     return ret;
 }
 
-//BLE INTERRUPT sets these bools
+//Code that runs in main to read data from sensors that are on
 void print_to_ble(){
     //printf("inside the printer \r\n");
     if(lis2de_on){
@@ -914,6 +745,11 @@ int main(void)
     uint32_t err_code;
     bool erase_bonds;
 
+    /* Initializing TWI master interface for SuperSensor */
+    err_code = twi_master_init();
+    APP_ERROR_CHECK(err_code);
+
+
     // Initialize.
     APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
     uart_init();
@@ -926,9 +762,9 @@ int main(void)
     conn_params_init();
     bsp_board_leds_init();
 
-    /* Initializing TWI master interface for SuperSensor */
-    err_code = twi_master_init();
-    APP_ERROR_CHECK(err_code);
+    test_supersensor(m_twi_master);
+    nrf_delay_ms(5000);
+
 
     printf("\r\nUART Start!\r\n");
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
