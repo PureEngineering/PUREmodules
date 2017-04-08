@@ -175,11 +175,11 @@ int main(void)
             break; 
         case 'a':
             NRF_LOG_RAW_INFO("\r\nStart Initializing all Sensors: \r\n"); 
-            test_SuperSensor_init(m_twi_master); 
+            test_supersensor_init(m_twi_master); 
             break;
         case 's':
             NRF_LOG_RAW_INFO("\r\nStart Running all Sensors\r\n"); 
-            test_SuperSensor_run(m_twi_master); 
+            test_supersensor_run(m_twi_master); 
             break;
         case 'd':
             bme280_init(m_twi_master); 
