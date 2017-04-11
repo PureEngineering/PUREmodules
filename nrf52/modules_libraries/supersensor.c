@@ -27,6 +27,8 @@ ss_response test_supersensor_init(nrf_drv_twi_t twi_master){
     si1153_init(twi_master);
     //uint8_t bme280_id = 
     bme280_init(twi_master); 
+    
+    vl53l0_init(twi_master); 
 
 
     return SS_SUCCESSFUL;
@@ -62,9 +64,13 @@ bool test_individual_sensors(nrf_drv_twi_t twi_master){
         pass = false;
     } 
 
-    //if(!si1153_pass(twi_master)){
-    //    pass = false;
-    //}
+    if(!si1153_pass(twi_master)){
+        pass = false;
+    }
+    
+    if(!vl53l0_pass(twi_master)){
+        pass = false;
+    }
 
     return pass;
 
@@ -90,17 +96,32 @@ void test_supersensor(nrf_drv_twi_t twi_master){
 
 
 
-ss_response test_supersensor_run(nrf_drv_twi_t twi_master){
+ss_response test_supersensor_run(nrf_drv_twi_t twi_master)
+{
+    
+    run_vl53l0(twi_master); 
+    NRF_LOG_FLUSH();
+    
     //uint8_t magnet_ID = 
     run_lis3mdl(twi_master);
+    NRF_LOG_FLUSH();
+
     //uint8_t accel_ID = 
     run_lis2de(twi_master);
+    NRF_LOG_FLUSH();
+
     //uint8_t uva_ID = 
     run_veml6075(twi_master);
+    NRF_LOG_FLUSH();
+
     //uint8_t prox_ID = 
     run_si1153(twi_master);
+    NRF_LOG_FLUSH();
+
     //uint8_t bme_ID = 
     run_bme280(twi_master); 
+    NRF_LOG_FLUSH();
+    
 
     return SS_SUCCESSFUL;
 

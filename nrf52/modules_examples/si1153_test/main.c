@@ -196,10 +196,12 @@ int main(void)
 		}
 		NRF_LOG_RAW_INFO("*\n\r");
 		NRF_LOG_FLUSH();   
-
 		si1153_data = si1153_get_channel_data(m_twi_master,1);
-		//NRF_LOG_RAW_INFO("%06d ",si1153_data );
 		si1153_data = si1153_get_channel_data(m_twi_master,2);
+
+		//si1153_data = si1153_get_channel_data(m_twi_master,1);
+		//NRF_LOG_RAW_INFO("%06d ",si1153_data );
+		//si1153_data = si1153_get_channel_data(m_twi_master,2);
 		//NRF_LOG_RAW_INFO("%06d \n\r",si1153_data );
 
 

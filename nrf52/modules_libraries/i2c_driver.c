@@ -68,10 +68,8 @@ uint8_t read_byte(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress){
 
 uint16_t read_2bytes(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress){
 	ret_code_t ret;
-	uint8_t data_MSB;
-	uint8_t data_LSB;
 	uint16_t full_data;
-	uint8_t buffer[1];
+	uint8_t buffer[2];
 	buffer[0] = subAddress;
 
 	ret = nrf_drv_twi_tx(&twi_master, addr, buffer, 1, false);
@@ -79,19 +77,14 @@ uint16_t read_2bytes(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress){
 		NRF_LOG_WARNING("Communication error when asking to read\r\n");
 		return (uint8_t)ret;
 	}
-	ret = nrf_drv_twi_rx(&twi_master, addr, &data_MSB, 1);
+	ret = nrf_drv_twi_rx(&twi_master, addr, buffer, 2);
 	if (NRF_SUCCESS != ret){
 		NRF_LOG_WARNING("Communication error when reading first byte\r\n");
 		return (uint8_t)ret;
 	}
-	ret = nrf_drv_twi_rx(&twi_master, addr, &data_LSB, 1);
-	if (NRF_SUCCESS != ret){
-		NRF_LOG_WARNING("Communication error when reading second byte\r\n");
-		return (uint8_t)ret;
-	}
-	NRF_LOG_WARNING("Read 2 bytes: ");
-	full_data = (data_MSB<<8) | data_LSB;
-	NRF_LOG_RAW_INFO("%.4x: \r\n", full_data);
+	//NRF_LOG_WARNING("Read 2 bytes: ");
+	full_data = (buffer[0]<<8) | buffer[1];
+	//NRF_LOG_RAW_INFO("%.4x: \r\n", full_data);
 	return full_data;
 
 }

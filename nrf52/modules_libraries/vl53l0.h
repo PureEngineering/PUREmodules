@@ -20,6 +20,7 @@ extern "C" {
 
 /** @} */
 
+ bool vl53l0_pass(nrf_drv_twi_t twi_master);
  void run_vl53l0(nrf_drv_twi_t twi_master);
  void vl53l0_init(nrf_drv_twi_t twi_master);
 
