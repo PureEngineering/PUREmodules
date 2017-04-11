@@ -57,6 +57,7 @@ SRC_FILES += \
   $(LIB_DIR)/bme280.c \
   $(LIB_DIR)/ble_driver.c \
   $(LIB_DIR)/supersensor.c \
+  $(LIB_DIR)/apds9250.c \
 
 
 
