@@ -13,6 +13,7 @@
 #include "si1153.h"
 #include "veml6075.h"
 #include "bme280.h"
+#include "apds9250.h"
 #include "nrf_delay.h"
 
 
@@ -29,6 +30,7 @@ ss_response test_supersensor_init(nrf_drv_twi_t twi_master){
     bme280_init(twi_master); 
     
     vl53l0_init(twi_master); 
+    apds9250_init(twi_master); 
 
 
     return SS_SUCCESSFUL;
@@ -72,6 +74,11 @@ bool test_individual_sensors(nrf_drv_twi_t twi_master){
         pass = false;
     }
 
+    if(!apds9250_pass(twi_master)){
+        pass = false;
+    }
+
+
     return pass;
 
 }
@@ -98,6 +105,9 @@ void test_supersensor(nrf_drv_twi_t twi_master){
 
 ss_response test_supersensor_run(nrf_drv_twi_t twi_master)
 {
+    
+    run_apds9250(twi_master); 
+    NRF_LOG_FLUSH();
     
     run_vl53l0(twi_master); 
     NRF_LOG_FLUSH();
