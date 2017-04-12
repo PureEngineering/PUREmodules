@@ -9,6 +9,7 @@ extern "C" {
 #define NRF_LOG_MODULE_NAME "APP"
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
+#include "ble_nus.h"
 
 #define APDS9250_DEVICE_ADDRESS		0x52
 
@@ -23,6 +24,7 @@ extern "C" {
  bool apds9250_pass(nrf_drv_twi_t twi_master);
  void run_apds9250(nrf_drv_twi_t twi_master);
  void apds9250_init(nrf_drv_twi_t twi_master);
+ uint8_t run_apds9250_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus);
 
 
 #ifdef __cplusplus

@@ -7,23 +7,24 @@
 #include "bsp.h"
 
 #include "i2c_driver.h"
+#include "ble_driver.h"
+#include "ble_nus.h"
 
 
 bool vl53l0_pass(nrf_drv_twi_t twi_master){
 
-	uint8_t data;
-
-	data = read_byte(twi_master,Vl53l0_DEVICE_ADDRESS,Vl53l0_REF1);
-	if(data==0xee)
+	uint8_t who_am_i = read_byte(twi_master,Vl53l0_DEVICE_ADDRESS,Vl53l0_REF1);
+	
+	if(who_am_i==0xee)
 	{
-		NRF_LOG_RAW_INFO("Vl53l0 PASS %x == 0xee \r\n", data);
+		NRF_LOG_RAW_INFO("Vl53l0 PASS %x == 0xee \r\n", who_am_i);
 		printf("Vl53l0: Pass %x == 0xee \r\n", who_am_i);
 		return true;
 	}
 	else
 	{
-		NRF_LOG_RAW_INFO("Vl53l0 FAIL %x != 0xee \r\n", data);
-		printf("Vl53l0: Pass %x != 0xee \r\n", who_am_i);
+		NRF_LOG_RAW_INFO("Vl53l0 FAIL %x != 0xee \r\n", who_am_i);
+		printf("Vl53l0: Fail %x != 0xee \r\n", who_am_i);
 		return false;
 	}
 }
@@ -50,4 +51,13 @@ void run_vl53l0(nrf_drv_twi_t twi_master)
 void vl53l0_init(nrf_drv_twi_t twi_master)
 {
 	//NRF_LOG_WARNING("Time of Flight Not Implemented \r\n");
+}
+
+
+uint8_t run_vl53l0_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
+	uint8_t who_am_i = read_byte(twi_master,Vl53l0_DEVICE_ADDRESS,Vl53l0_REF1);
+	
+	NRF_LOG_RAW_INFO("Vl53l0_REF1: %x (0xee) \r\n", who_am_i);
+
+	return who_am_i;
 }

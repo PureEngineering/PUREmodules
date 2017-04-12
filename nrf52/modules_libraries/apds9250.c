@@ -7,6 +7,8 @@
 #include "bsp.h"
 
 #include "i2c_driver.h"
+#include "ble_driver.h"
+#include "ble_nus.h"
 
 
 bool apds9250_pass(nrf_drv_twi_t twi_master){
@@ -32,10 +34,16 @@ bool apds9250_pass(nrf_drv_twi_t twi_master){
 
 void run_apds9250(nrf_drv_twi_t twi_master)
 {
-	uint8_t data;
+	uint8_t who_am_i = read_byte(twi_master,APDS9250_DEVICE_ADDRESS,APDS9250_PART_ID);
+	NRF_LOG_RAW_INFO("APDS9250_PART_ID: %x (0XB2) \r\n", who_am_i);
+}
 
-	data = read_byte(twi_master,APDS9250_DEVICE_ADDRESS,APDS9250_PART_ID);
-	NRF_LOG_RAW_INFO("APDS9250_PART_ID: %x (0XB2) \r\n", data);
+uint8_t run_apds9250_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
+	uint8_t who_am_i= read_byte(twi_master,APDS9250_DEVICE_ADDRESS,APDS9250_PART_ID);
+	
+	NRF_LOG_RAW_INFO("APDS9250_PART_ID: %x (0XB2) \r\n", who_am_i);
+	return who_am_i;
+
 }
 
 void apds9250_init(nrf_drv_twi_t twi_master)

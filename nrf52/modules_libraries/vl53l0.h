@@ -9,6 +9,8 @@ extern "C" {
 #define NRF_LOG_MODULE_NAME "APP"
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
+#include "ble_nus.h"
+
 
 #define Vl53l0_DEVICE_ADDRESS       0x29
 #define Vl53l0_REF1                 0xC0
@@ -23,6 +25,8 @@ extern "C" {
  bool vl53l0_pass(nrf_drv_twi_t twi_master);
  void run_vl53l0(nrf_drv_twi_t twi_master);
  void vl53l0_init(nrf_drv_twi_t twi_master);
+ uint8_t run_lis2de_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus);
+
 
 
 #ifdef __cplusplus
