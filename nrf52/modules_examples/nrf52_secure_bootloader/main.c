@@ -31,6 +31,7 @@
 #include "app_error_weak.h"
 #include "nrf_bootloader_info.h"
 
+
 void app_error_fault_handler(uint32_t id, uint32_t pc, uint32_t info)
 {
     NRF_LOG_ERROR("received a fault! id: 0x%08x, pc: 0x&08x\r\n", id, pc);
