@@ -241,8 +241,8 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
             break;
 
         case VL53L0_ON_MESSAGE:
-            si1153_init(m_twi_master);
-            si1153_on = true;
+            vl53l0_init(m_twi_master);
+            vl53l0_on = true;
             break;
 
         case VL53L0_OFF_MESSAGE:

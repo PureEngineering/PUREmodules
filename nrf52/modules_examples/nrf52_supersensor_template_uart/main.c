@@ -18,15 +18,15 @@
 
 
 #include "i2c_driver.h"
+#include "ble_driver.h"
 #include "lis3mdl.h"
 #include "lis2de.h"
 #include "vl53l0.h"
 #include "si1153.h"
 #include "veml6075.h"
 #include "bme280.h"
+#include "apds9250.h"
 #include "supersensor.h"
-
-
 
 #include "nrf_drv_timer.h"
 
@@ -100,10 +100,6 @@ void timer_event_handler(nrf_timer_event_t event_type, void* p_context)
 int main(void)
 {
 
-    uint32_t time_ms = 5000; //Time(in miliseconds) between consecutive compare events.
-    uint32_t time_ticks;
-
-
     ret_code_t err_code;
     /* Initialization of UART */
     bsp_board_leds_init();
@@ -119,6 +115,12 @@ int main(void)
     NRF_LOG_RAW_INFO("\r\nStarted Super Sensor\r\n");
     //test_SuperSensor_init(m_twi_master); 
 
+/*
+//  Timer Code if needed
+
+    uint32_t time_ms = 5000; //Time(in miliseconds) between consecutive compare events.
+    uint32_t time_ticks;
+    
     nrf_drv_timer_config_t timer_cfg = NRF_DRV_TIMER_DEFAULT_CONFIG;
     err_code = nrf_drv_timer_init(&TIMER_DATA, &timer_cfg, timer_event_handler);
     APP_ERROR_CHECK(err_code);
@@ -128,7 +130,7 @@ int main(void)
     nrf_drv_timer_extended_compare(
          &TIMER_DATA, NRF_TIMER_CC_CHANNEL0, time_ticks, NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK, true);
 
-    nrf_drv_timer_enable(&TIMER_DATA);
+    nrf_drv_timer_enable(&TIMER_DATA);*/
 
     NRF_LOG_FLUSH();
 
@@ -142,54 +144,69 @@ int main(void)
         case '\r':
             NRF_LOG_RAW_INFO("You select a command\r\n"); 
             break;
-        case 'q':
-            lis3mdl_init(m_twi_master);
-            break;
-        case 'w':
-            run_lis3mdl(m_twi_master);
-            break;
-        case 'e':
+                case LIS2DE_ON_MESSAGE:
             lis2de_init(m_twi_master);
             run_lis2de(m_twi_master);
             break;
-        case 'r':
+
+        case LIS2DE_OFF_MESSAGE:
+            lis2de_powerdown(m_twi_master);
+            break;
+
+        case LIS3MDL_ON_MESSAGE:
+            lis3mdl_init(m_twi_master);
+            run_lis3mdl(m_twi_master);    
+            break;
+
+        case LIS3MDL_OFF_MESSAGE:
+            lis3mdl_powerdown(m_twi_master);
+            break;
+
+        case BME280_ON_MESSAGE:
+            bme280_init(m_twi_master);
+            run_bme280(m_twi_master);
+            break;
+
+        case BME280_OFF_MESSAGE:
+            bme280_powerdown(m_twi_master);
+            break;
+
+        case VEML6075_ON_MESSAGE:
             veml6075_init(m_twi_master);
-            break;
-        case 't':
             run_veml6075(m_twi_master);
-            break;    
-        case 'y':
-            bsp_board_led_invert(0);
             break;
-        case 'u':
+
+        case VEML6075_OFF_MESSAGE:
+            veml6075_powerdown(m_twi_master);
+            break;
+
+        case SI1153_ON_MESSAGE:
             si1153_init(m_twi_master);
-            bsp_board_led_invert(0);
-            break;
-        case 'i':
             run_si1153(m_twi_master);
-            bsp_board_led_invert(0);
             break;
-        case 'o':
+
+        case SI1153_OFF_MESSAGE:
+            break;
+
+        case APDS9250_ON_MESSAGE:
+            apds9250_init(m_twi_master);
+            run_apds9250(m_twi_master);
+            break;
+
+        case APDS9250_OFF_MESSAGE:
+            //apds9250_powerdown(m_twi_master);
+            break;
+
+        case VL53L0_ON_MESSAGE:
             vl53l0_init(m_twi_master);
             run_vl53l0(m_twi_master);
-            break; 
-        case 'a':
-            NRF_LOG_RAW_INFO("\r\nStart Initializing all Sensors: \r\n"); 
-            test_supersensor_init(m_twi_master); 
             break;
-        case 's':
-            NRF_LOG_RAW_INFO("\r\nStart Running all Sensors\r\n"); 
-            test_supersensor_run(m_twi_master); 
+
+        case VL53L0_OFF_MESSAGE:
+            //vl53l0_powerdown(m_twi_master);
             break;
-        case 'd':
-            bme280_init(m_twi_master); 
-            bme280_pass(m_twi_master);
-            break;
-        case 'f':
-            run_bme280(m_twi_master); 
-            break;
+
         default:
-            NRF_LOG_RAW_INFO("You selected %c. Unknown command\r\n", (char)c); 
             break;
         }
         NRF_LOG_FLUSH();
