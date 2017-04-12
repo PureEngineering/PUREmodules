@@ -16,6 +16,11 @@ extern "C" {
 #define VEML6075_OFF_MESSAGE '8'
 #define SI1153_ON_MESSAGE	'9'
 #define SI1153_OFF_MESSAGE	'a'
+#define APDS9250_ON_MESSAGE 'b'
+#define APDS9250_OFF_MESSAGE 'c'
+#define VL53L0_ON_MESSAGE    'd'
+#define VL53L0_OFF_MESSAGE   'e'
+
 
 
 

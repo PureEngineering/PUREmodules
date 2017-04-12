@@ -17,11 +17,13 @@ bool vl53l0_pass(nrf_drv_twi_t twi_master){
 	if(data==0xee)
 	{
 		NRF_LOG_RAW_INFO("Vl53l0 PASS %x == 0xee \r\n", data);
+		printf("Vl53l0: Pass %x == 0xee \r\n", who_am_i);
 		return true;
 	}
 	else
 	{
 		NRF_LOG_RAW_INFO("Vl53l0 FAIL %x != 0xee \r\n", data);
+		printf("Vl53l0: Pass %x != 0xee \r\n", who_am_i);
 		return false;
 	}
 }

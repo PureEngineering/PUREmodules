@@ -46,6 +46,7 @@
 #include "si1153.h"
 #include "veml6075.h"
 #include "bme280.h"
+#include "apds9250.h"
 #include "supersensor.h"
 #include "ble_driver.h"
 
@@ -101,6 +102,7 @@ bool bme280_on = false;
 bool veml6075_on = false; 
 bool si1153_on = false;
 bool vl53l0_on = false;
+bool apds9250_on = false;
 
 
 /**
@@ -226,6 +228,26 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
         case SI1153_OFF_MESSAGE:
             //Si1153 automatically moves to Standby Mode
             si1153_on = false;
+            break;
+
+        case APDS9250_ON_MESSAGE:
+            apds9250_init(m_twi_master);
+            apds9250_on = true;
+            break;
+
+        case APDS9250_OFF_MESSAGE:
+            //apds9250_powerdown(m_twi_master);
+            apds9250_on = false;
+            break;
+
+        case VL53L0_ON_MESSAGE:
+            si1153_init(m_twi_master);
+            si1153_on = true;
+            break;
+
+        case VL53L0_OFF_MESSAGE:
+            //vl53l0_powerdown(m_twi_master);
+            vl53l0_on = false;
             break;
 
         default:
