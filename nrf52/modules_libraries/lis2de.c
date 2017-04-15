@@ -126,6 +126,11 @@ uint8_t lis2de_init(nrf_drv_twi_t twi_master){
 	Lis2de_begin(twi_master);
 
 	uint8_t who_am_i =  lis2de_whoami(twi_master);
+	if(who_am_i != 0x33)
+	{
+		override_defaut_lis2de_address(Lis2de_CORE_DEVICE_ADDRESS);
+		who_am_i =  lis2de_whoami(twi_master);
+	}
 
 	return who_am_i;
 }
