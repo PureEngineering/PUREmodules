@@ -68,6 +68,8 @@
 #define APP_ADV_INTERVAL                64                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS      180                                         /**< The advertising timeout (in units of seconds). */
 
+#define APP_ADV_INTERVAL_SLOW             0x0664
+
 #define APP_TIMER_PRESCALER             0                                           /**< Value of the RTC1 PRESCALER register. */
 #define APP_TIMER_OP_QUEUE_SIZE         4                                           /**< Size of timer operation queues. */
 
@@ -650,6 +652,10 @@ static void advertising_init(void)
     options.ble_adv_fast_interval = APP_ADV_INTERVAL;
     options.ble_adv_fast_timeout  = APP_ADV_TIMEOUT_IN_SECONDS;
 
+    options.ble_adv_slow_enabled  = true;
+    options.ble_adv_slow_interval = APP_ADV_INTERVAL_SLOW;
+    options.ble_adv_slow_timeout  = 0;
+
     err_code = ble_advertising_init(&advdata, &scanrsp, &options, on_adv_evt, NULL);
     APP_ERROR_CHECK(err_code);
 }
@@ -736,6 +742,25 @@ void print_to_ble(){
 
 }
 
+APP_TIMER_DEF(sensor_loop_timer_id);
+
+static void sensor_loop_handler(void * p_context)
+{
+   print_to_ble();  
+}
+
+static void create_sensor_timer()
+{   
+    uint32_t err_code;
+
+    // Create timers
+    err_code = app_timer_create(&sensor_loop_timer_id, APP_TIMER_MODE_REPEATED, sensor_loop_handler);
+    APP_ERROR_CHECK(err_code);
+
+     err_code = app_timer_start(sensor_loop_timer_id, APP_TIMER_TICKS(3000, APP_TIMER_PRESCALER), NULL);
+     APP_ERROR_CHECK(err_code);
+}
+
 
 /**@brief Application main function.
  */
@@ -771,12 +796,13 @@ int main(void)
 
     NRF_LOG_FLUSH();
 
+    create_sensor_timer();
+
     // Enter main loop.
     for (;;)
     {
-        print_to_ble();   
-        nrf_delay_ms(3000);  //Send data every 3 seconds   
-
+	err_code = sd_app_evt_wait();
+	APP_ERROR_CHECK(err_code);
     }
 }
 
