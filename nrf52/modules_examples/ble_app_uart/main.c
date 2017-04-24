@@ -786,7 +786,8 @@ int main(void)
     conn_params_init();
     bsp_board_leds_init();
 
-    test_supersensor(m_twi_master);
+    //test_supersensor(m_twi_master);
+    lis2de_pass(m_twi_master);
 
 
     printf("\r\nUART Start!\r\n");

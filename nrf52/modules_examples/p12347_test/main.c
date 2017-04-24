@@ -95,6 +95,30 @@ void timer_event_handler(nrf_timer_event_t event_type, void* p_context)
     }
 }
 
+static int twi_device_search(void)
+{
+	int i = 0;
+	uint8_t buffer[1]; 
+	ret_code_t ret;
+
+	for(i=1;i<128;i++)
+	{
+		NRF_LOG_RAW_INFO("CHECKING 0x%x, ",i);
+		NRF_LOG_FLUSH();   
+		ret = nrf_drv_twi_rx(&m_twi_master, i, buffer, 1);
+		if (NRF_SUCCESS != ret){
+			//NRF_LOG_WARNING("Communication error when Writing\r\n");
+		} 
+		else
+		{
+			NRF_LOG_RAW_INFO("\n\rDEVICE FOUND at ADDRESS 0x%x \r\n",i);
+
+		}
+		nrf_delay_ms(10);
+	}
+
+	 return 1;
+}
 
 /**
  *  The begin of the journey
@@ -102,10 +126,6 @@ void timer_event_handler(nrf_timer_event_t event_type, void* p_context)
 static int p12347_test_init(void)
 {
 	int i = 0;
-	int si1153_data;
-	int si1153_R;
-	int si1153_IR1;
-	int si1153_IR2;
 	ret_code_t err_code;
 	/* Initialization of UART */
 	bsp_board_leds_init();
@@ -116,10 +136,13 @@ static int p12347_test_init(void)
 	err_code = twi_master_init();
 	APP_ERROR_CHECK(err_code);
 
+	twi_device_search();
+
 	NRF_LOG_RAW_INFO("lis2de_init start\n\r");
 	NRF_LOG_FLUSH();   
 	lis2de_init(m_twi_master);
 	lis2de_pass(m_twi_master);
+	nrf_delay_ms(10);
 
 	NRF_LOG_RAW_INFO("p12347_test start\n\r");
 	NRF_LOG_FLUSH();   
@@ -147,6 +170,7 @@ int main(void)
 	    NRF_LOG_FLUSH();   
 	    nrf_delay_ms(10);
     }
+
     
     NRF_LOG_FLUSH();   
 }

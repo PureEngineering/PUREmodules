@@ -129,6 +129,7 @@ uint8_t lis2de_init(nrf_drv_twi_t twi_master){
 	if(who_am_i != 0x33)
 	{
 		override_defaut_lis2de_address(Lis2de_CORE_DEVICE_ADDRESS);
+		NRF_LOG_RAW_INFO("Lis2de address changed to 0x%x \r\n", Lis2de_CORE_DEVICE_ADDRESS);
 		who_am_i =  lis2de_whoami(twi_master);
 	}
 
@@ -141,12 +142,12 @@ bool lis2de_pass(nrf_drv_twi_t twi_master){
 
 	if(who_am_i==0x33){
 		NRF_LOG_RAW_INFO("Lis2de: Pass %x == 0x33 \r\n", who_am_i);
-		printf("Lis2de: Pass %x == 0x33 \r\n", who_am_i);
+		//printf("Lis2de: Pass %x == 0x33 \r\n", who_am_i);
 		return true;
 	}
 	else{
 		NRF_LOG_RAW_INFO("Lis2de: Fail %x != 0x33 \r\n", who_am_i);
-		printf("Lis2de: Fail %x != 0x33 \r\n", who_am_i);
+		//printf("Lis2de: Fail %x != 0x33 \r\n", who_am_i);
 		return false;
 	}
 

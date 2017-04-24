@@ -135,6 +135,29 @@ int si1153_get_data(nrf_drv_twi_t twi_master){
 	return int_data;
 }
 
+
+int si1153_get_channel_data(nrf_drv_twi_t twi_master, int channel)
+{
+	int data =0;
+
+	if(channel == 0)
+	{
+		data = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT1);
+		data |= read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT0)*256;
+	}
+	else if (channel ==1)
+	{
+		data = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT3);
+		data |= read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT2)*256;
+	}
+	else if (channel ==2)
+	{
+		data = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT5);
+		data |= read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTOUT4)*256;
+	}
+	return data;
+}
+
 uint8_t si1153_init(nrf_drv_twi_t twi_master){
 
 	uint8_t ADCCONFIGx;
@@ -193,12 +216,12 @@ bool si1153_pass(nrf_drv_twi_t twi_master){
 
 	if(who_am_i==0x53){
 		NRF_LOG_RAW_INFO("Si1153: Pass %x \r\n", who_am_i); NRF_LOG_FLUSH();   
-		printf("Si1153: Pass %x == 0x53 \r\n", who_am_i);
+		//printf("Si1153: Pass %x == 0x53 \r\n", who_am_i);
 		return true;
 	}
 	else{
 		NRF_LOG_RAW_INFO("Si1153: Fail %x \r\n", who_am_i); NRF_LOG_FLUSH();   
-		printf("Si1153: Fail %x != 0x53 \r\n", who_am_i);
+		//printf("Si1153: Fail %x != 0x53 \r\n", who_am_i);
 		return false;
 	}
 
