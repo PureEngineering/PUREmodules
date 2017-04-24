@@ -20,14 +20,14 @@ bool apds9250_pass(nrf_drv_twi_t twi_master){
 	if(who_am_i==0XB2)
 	{
 		NRF_LOG_RAW_INFO("Apds9250: Pass %x == 0xB2 \r\n", who_am_i);
-		printf("Apds9250: Pass %x == 0xB2 \r\n", who_am_i);
+		//printf("Apds9250: Pass %x == 0xB2 \r\n", who_am_i);
 
 		return true;
 	}
 	else
 	{
 		NRF_LOG_RAW_INFO("Apds9250 FAIL %x != 0xB2 \r\n", who_am_i);
-		printf("Apds9250: Fail %x != 0xB2 \r\n", who_am_i);
+		//printf("Apds9250: Fail %x != 0xB2 \r\n", who_am_i);
 		return false;
 	}
 }

@@ -27,6 +27,7 @@
 #include "bme280.h"
 #include "apds9250.h"
 #include "supersensor.h"
+#include "p1234701ct.h"
 
 #include "nrf_drv_timer.h"
 
@@ -94,17 +95,37 @@ void timer_event_handler(nrf_timer_event_t event_type, void* p_context)
     }
 }
 
+static int twi_device_search(void)
+{
+	int i = 0;
+	uint8_t buffer[1]; 
+	ret_code_t ret;
+
+	for(i=1;i<128;i++)
+	{
+		NRF_LOG_RAW_INFO("CHECKING 0x%x, ",i);
+		NRF_LOG_FLUSH();   
+		ret = nrf_drv_twi_rx(&m_twi_master, i, buffer, 1);
+		if (NRF_SUCCESS != ret){
+			//NRF_LOG_WARNING("Communication error when Writing\r\n");
+		} 
+		else
+		{
+			NRF_LOG_RAW_INFO("\n\rDEVICE FOUND at ADDRESS 0x%x \r\n",i);
+
+		}
+		nrf_delay_ms(10);
+	}
+
+	 return 1;
+}
 
 /**
  *  The begin of the journey
  */
-int si1153_test(void)
+static int p12347_test_init(void)
 {
 	int i = 0;
-	int si1153_data;
-	int si1153_R;
-	int si1153_IR1;
-	int si1153_IR2;
 	ret_code_t err_code;
 	/* Initialization of UART */
 	bsp_board_leds_init();
@@ -114,76 +135,22 @@ int si1153_test(void)
 	/* Initializing TWI master interface for EEPROM */
 	err_code = twi_master_init();
 	APP_ERROR_CHECK(err_code);
-	NRF_LOG_RAW_INFO("si1153 test\n\r");
-	NRF_LOG_FLUSH();   
 
-	send_command(m_twi_master,Si1153_RESET_SW);
+	twi_device_search();
+
+	NRF_LOG_RAW_INFO("lis2de_init start\n\r");
+	NRF_LOG_FLUSH();   
+	lis2de_init(m_twi_master);
+	lis2de_pass(m_twi_master);
 	nrf_delay_ms(10);
-	//si1153_init(m_twi_master);
 
-	param_set(m_twi_master, Si1153_CHAN_LIST, 0x07);
-
-	param_set(m_twi_master, Si1153_LED1_A, 0x3F);
-	param_set(m_twi_master, Si1153_LED2_A, 0x3F);
-	param_set(m_twi_master, Si1153_LED3_A, 0x3F);
-
-	param_set(m_twi_master, Si1153_ADCCONFIG_0, 0x62);
-	param_set(m_twi_master, Si1153_MEASCONFIG_0, 0x01);
-
-	param_set(m_twi_master, Si1153_ADCCONFIG_1, 0x62);
-	param_set(m_twi_master, Si1153_MEASCONFIG_1, 0x02);
-
-	param_set(m_twi_master, Si1153_ADCCONFIG_2, 0x62);
-	param_set(m_twi_master, Si1153_MEASCONFIG_2, 0x04);
-
-	send_command(m_twi_master,Si1153_FORCE);
-
+	NRF_LOG_RAW_INFO("p12347_test start\n\r");
 	NRF_LOG_FLUSH();   
 
-	while (1)
-	{
+	p1234701ct_pass(m_twi_master);
+	NRF_LOG_RAW_INFO("p12347_test complete\n\r");
+	NRF_LOG_FLUSH();   
 
-		NRF_LOG_FLUSH();   
-
-		if(0==1)
-		{
-			si1153_data = si1153_get_data(m_twi_master);
-			NRF_LOG_RAW_INFO("%06d:",si1153_data );
-			for(i=0;i<((si1153_data/4)%70);i++)
-			{
-				NRF_LOG_RAW_INFO("-");
-				NRF_LOG_FLUSH();   
-			}
-			NRF_LOG_RAW_INFO("*\n\r");
-			NRF_LOG_FLUSH();   
-		}
-
-		//NRF_LOG_RAW_INFO("%d------------------------\r\n",i++);
-		nrf_delay_ms(10);
-
-		//run_si1153(m_twi_master);
-		bsp_board_led_invert(0);
-
-
-		si1153_IR1 = si1153_data = si1153_get_channel_data(m_twi_master,0);
-		send_command(m_twi_master,Si1153_FORCE);
-		/*
-		NRF_LOG_RAW_INFO("%06d ",si1153_data );
-
-		for(i=0;i<((si1153_data/4)%70);i++)
-		{
-			NRF_LOG_RAW_INFO("-");
-			NRF_LOG_FLUSH();   
-		}
-		NRF_LOG_RAW_INFO("*\n\r");
-		NRF_LOG_FLUSH();   
-		*/
-		si1153_R = si1153_get_channel_data(m_twi_master,1);
-		si1153_IR2 = si1153_get_channel_data(m_twi_master,2);
-		NRF_LOG_RAW_INFO("%06d,%06d,%06d\n\r",si1153_IR1,si1153_R,si1153_IR2);
-
-		NRF_LOG_FLUSH();
-	}
 }
 
 /**
@@ -191,5 +158,19 @@ int si1153_test(void)
  */
 int main(void)
 {
-    si1153_test();
+	bool p1234701ct_status; 
+    p12347_test_init();
+
+    p1234701ct_status = p1234701ct_pass(m_twi_master);;
+    p1234701ct_init(m_twi_master);
+    NRF_LOG_FLUSH();   
+    while(p1234701ct_status)
+    {
+	    run_p1234701ct(m_twi_master);
+	    NRF_LOG_FLUSH();   
+	    nrf_delay_ms(10);
+    }
+
+    
+    NRF_LOG_FLUSH();   
 }

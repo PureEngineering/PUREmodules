@@ -113,8 +113,9 @@ int main(void)
 
     /* Welcome message */
     NRF_LOG_RAW_INFO("\r\nStarted Super Sensor\r\n");
-    //test_SuperSensor_init(m_twi_master); 
+    NRF_LOG_FLUSH();
 
+    test_supersensor(m_twi_master); 
 /*
 //  Timer Code if needed
 
@@ -205,8 +206,10 @@ int main(void)
         case VL53L0_OFF_MESSAGE:
             //vl53l0_powerdown(m_twi_master);
             break;
+	case 's':
 
-        default:
+	    test_supersensor(m_twi_master); 
+
             break;
         }
         NRF_LOG_FLUSH();
