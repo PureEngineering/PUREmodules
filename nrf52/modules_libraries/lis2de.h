@@ -121,6 +121,8 @@ uint8_t lis2de_powerdown(nrf_drv_twi_t twi_master);
 
 
 
+
+
 #ifdef __cplusplus
 }
 #endif
