@@ -101,12 +101,24 @@ void apds9250_setmodergb(nrf_drv_twi_t twi_master) {
   apds9250_setmode(twi_master, APDS9250_CHAN_RGB);
 }
 
-
 apds9250_res_t apds9250_getresolution(nrf_drv_twi_t twi_master){
 	apds9250_getmeasureratereg(twi_master);
 
 	return APDS9250_settings.res;
 
+}
+
+void apds9250_setmeasureratereg(nrf_drv_twi_t twi_master){
+	uint8_t temp = 0; 
+	temp |= (apds9250_restoreg(APDS9250_settings.res) <<4);
+	temp |= (apds9250_measratetoreg(APDS9250_settings.meas_rate));
+	write_byte(twi_master,APDS9250_DEVICE_ADDRESS,APDS9250_REG_LS_MEAS_RATE,temp); 
+}
+
+apds9250_res_t apds9250_setresolution(nrf_drv_twi_t twi_master, apds9250_res_t newRes){
+	APDS9250_settings.res = newRes;
+	apds9250_setmeasureratereg(twi_master);
+	return apds9250_getresolution(twi_master);
 }
 
 /*
@@ -120,6 +132,56 @@ void apds9250_getmeasureratereg(nrf_drv_twi_t twi_master){
 	APDS9250_settings.meas_rate = apds9250_measratefromreg(data);
 }
 
+
+
+apds9250_rate_t apds9250_getmeasrate(nrf_drv_twi_t twi_master) {
+	apds9250_getmeasureratereg(twi_master);
+	return APDS9250_settings.meas_rate;
+}
+
+apds9250_rate_t apds9250_setmeasrate(nrf_drv_twi_t twi_master, apds9250_rate_t newRate){
+	APDS9250_settings.meas_rate = newRate;
+	apds9250_setmeasureratereg(twi_master);
+	return apds9250_getmeasrate(twi_master);
+}
+
+apds9250_gain_t apds9250_getgain(nrf_drv_twi_t twi_master) {
+	uint8_t temp = read_byte(twi_master,APDS9250_DEVICE_ADDRESS,APDS9250_REG_LS_GAIN);
+	APDS9250_settings.gain = apds9250_gainfromreg(temp);
+	return APDS9250_settings.gain;
+}
+
+apds9250_gain_t apds9250_setgain(nrf_drv_twi_t twi_master,apds9250_gain_t newGain) {
+	uint8_t data = apds9250_gaintoreg(newGain);
+	write_byte(twi_master,APDS9250_DEVICE_ADDRESS,APDS9250_REG_LS_GAIN,data);
+	return apds9250_getgain(twi_master);
+}
+
+
+uint32_t apds9250_getrawreddata(nrf_drv_twi_t twi_master){
+	APDS9250_settings.raw_r = read_20bits(twi_master,APDS9250_DEVICE_ADDRESS,APDS9250_REG_LS_DATA_RED_0);
+	return APDS9250_settings.raw_r;
+}
+
+uint32_t apds9250_getrawgreendata(nrf_drv_twi_t twi_master){
+	APDS9250_settings.raw_g = read_20bits(twi_master,APDS9250_DEVICE_ADDRESS,APDS9250_REG_LS_DATA_GREEN_0);
+	return APDS9250_settings.raw_g;
+}
+
+uint32_t apds9250_getrawbluedata(nrf_drv_twi_t twi_master){
+	APDS9250_settings.raw_b = read_20bits(twi_master,APDS9250_DEVICE_ADDRESS,APDS9250_REG_LS_DATA_BLUE_0);
+	return APDS9250_settings.raw_b;
+}
+
+uint32_t apds9250_getrawirdata(nrf_drv_twi_t twi_master){
+	APDS9250_settings.raw_ir = read_20bits(twi_master,APDS9250_DEVICE_ADDRESS,APDS9250_REG_LS_DATA_IR_0);
+	return APDS9250_settings.raw_ir;
+}
+
+uint32_t apds9250_getrawalsdata(nrf_drv_twi_t twi_master){
+	APDS9250_settings.raw_als = read_20bits(twi_master,APDS9250_DEVICE_ADDRESS,APDS9250_REG_LS_DATA_GREEN_0);
+	return APDS9250_settings.raw_als;
+}
 
 
 /*

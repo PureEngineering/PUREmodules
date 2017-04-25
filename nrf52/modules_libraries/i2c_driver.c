@@ -88,3 +88,26 @@ uint16_t read_2bytes(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress){
 	return full_data;
 
 }
+
+uint32_t read_20bits(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress){
+	ret_code_t ret;
+	uint16_t full_data;
+	uint8_t buffer[3];
+	buffer[0] = subAddress;
+
+	ret = nrf_drv_twi_tx(&twi_master, addr, buffer, 1, false);
+	if (NRF_SUCCESS != ret){
+		NRF_LOG_WARNING("Communication error when asking to read\r\n");
+		return (uint8_t)ret;
+	}
+	ret = nrf_drv_twi_rx(&twi_master, addr, buffer, 3);
+	if (NRF_SUCCESS != ret){
+		NRF_LOG_WARNING("Communication error when reading first byte\r\n");
+		return (uint8_t)ret;
+	}
+	//NRF_LOG_WARNING("Read 3 bytes: ");
+	full_data =  (((uint32_t)(buffer[2] & 7)) << 16) | (((uint32_t)buffer[1]) << 8) | buffer[0];
+
+	//NRF_LOG_RAW_INFO("%.4x: \r\n", full_data);
+	return full_data;
+}

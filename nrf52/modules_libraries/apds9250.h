@@ -113,11 +113,11 @@ struct APDS9250_SensorSettings
 	apds9250_res_t res;
 	apds9250_rate_t meas_rate;
 	apds9250_gain_t gain;
-	uint8_t raw_r;
-	uint8_t raw_g;
-	uint8_t raw_b;
-	uint8_t raw_als;
-	uint8_t raw_ir;
+	uint32_t raw_r;
+	uint32_t raw_g;
+	uint32_t raw_b;
+	uint32_t raw_als;
+	uint32_t raw_ir;
 
 } APDS9250_settings;
 
@@ -143,21 +143,23 @@ void apds9250_setmodergb(nrf_drv_twi_t twi_master);
 void apds9250_getmeasureratereg(nrf_drv_twi_t twi_master);
 apds9250_res_t apds9250_getresolution(nrf_drv_twi_t twi_master);
 
-void apds9250_setmeasureratereg();
-  apds9250_res_t apds9250_setresolution(apds9250_res_t newRes);
+void apds9250_setmeasureratereg(nrf_drv_twi_t twi_master);
+apds9250_res_t apds9250_setresolution(nrf_drv_twi_t twi_master, apds9250_res_t newRes);
 
 
-  apds9250_rate_t apds9250_getmeasrate();
-  apds9250_rate_t apds9250_setmeasrate(apds9250_rate_t newRate);
-  apds9250_gain_t apds9250_getgain();
-  apds9250_gain_t apds9250_setgain(apds9250_gain_t newGain);
+apds9250_rate_t apds9250_getmeasrate(nrf_drv_twi_t twi_master);
+apds9250_rate_t apds9250_setmeasrate(nrf_drv_twi_t twi_master, apds9250_rate_t newRate);
+ 
+
+apds9250_gain_t apds9250_getgain(nrf_drv_twi_t twi_master);
+apds9250_gain_t apds9250_setgain(nrf_drv_twi_t twi_master,apds9250_gain_t newGain);
 
 
-  uint32_t apds9250_getrawreddata();
-  uint32_t apds9250_getrawgreendata();
-  uint32_t apds9250_getrawbluedata();
-  uint32_t apds9250_getrawirdata();
-  uint32_t apds9250_getrawalsdata();
+uint32_t apds9250_getrawreddata(nrf_drv_twi_t twi_master);
+uint32_t apds9250_getrawgreendata(nrf_drv_twi_t twi_master);
+uint32_t apds9250_getrawbluedata(nrf_drv_twi_t twi_master);
+uint32_t apds9250_getrawirdata(nrf_drv_twi_t twi_master);
+uint32_t apds9250_getrawalsdata(nrf_drv_twi_t twi_master);
 
 
 	apds9250_chan_t apds9250_modefromreg(uint8_t reg_value);
