@@ -13,9 +13,7 @@
 
 
 bool apds9250_pass(nrf_drv_twi_t twi_master){
-
-
-	uint8_t who_am_i = read_byte(twi_master,APDS9250_DEVICE_ADDRESS,APDS9250_PART_ID);
+	uint8_t who_am_i = apds9250_whoami(twi_master);
 	
 	if(who_am_i==0XB2)
 	{
@@ -33,18 +31,66 @@ bool apds9250_pass(nrf_drv_twi_t twi_master){
 }
 
 
-void run_apds9250(nrf_drv_twi_t twi_master)
+uint8_t run_apds9250(nrf_drv_twi_t twi_master)
 {
-	uint8_t who_am_i = read_byte(twi_master,APDS9250_DEVICE_ADDRESS,APDS9250_PART_ID);
+	uint8_t who_am_i = apds9250_whoami(twi_master);
 	NRF_LOG_RAW_INFO("APDS9250_PART_ID: %x (0XB2) \r\n", who_am_i);
+
+	uint32_t red_data = apds9250_getrawreddata(twi_master);
+	NRF_LOG_RAW_INFO("APDS9250_RAW_RED: %x \r\n", red_data);
+
+	uint32_t green_data = apds9250_getrawgreendata(twi_master);
+	NRF_LOG_RAW_INFO("APDS9250_RAW_RED: %x \r\n", green_data);
+
+	uint32_t blue_data = apds9250_getrawbluedata(twi_master);
+	NRF_LOG_RAW_INFO("APDS9250_RAW_RED: %x \r\n", blue_data);
+
+	uint32_t als_data = apds9250_getrawalsdata(twi_master);
+	NRF_LOG_RAW_INFO("APDS9250_RAW_RED: %x \r\n", als_data);
+
+	uint32_t ir_data = apds9250_getrawirdata(twi_master);
+	NRF_LOG_RAW_INFO("APDS9250_RAW_RED: %x \r\n", ir_data);
+
+	return who_am_i;
 }
 
-uint8_t run_apds9250_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
-	uint8_t who_am_i= read_byte(twi_master,APDS9250_DEVICE_ADDRESS,APDS9250_PART_ID);
-	
-	NRF_LOG_RAW_INFO("APDS9250_PART_ID: %x (0XB2) \r\n", who_am_i);
-	return who_am_i;
 
+
+uint8_t run_apds9250_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
+	uint8_t length = 15;
+	uint8_t *ble_string[length];
+
+	uint8_t who_am_i = apds9250_whoami(twi_master);
+    sprintf((char *)ble_string, "apds9250id:    %x\r\n",who_am_i);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
+	uint8_t red_data = apds9250_getrawreddata(twi_master);
+    sprintf((char *)ble_string, "apds9250red:    %x\r\n",red_data);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
+	uint8_t green_data = apds9250_getrawgreendata(twi_master);
+    sprintf((char *)ble_string, "apds9250green:    %x\r\n",green_data);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
+	uint8_t blue_data = apds9250_getrawbluedata(twi_master);
+    sprintf((char *)ble_string, "apds9250blue:    %x\r\n",blue_data);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
+	uint8_t ir_data = apds9250_getrawirdata(twi_master);
+    sprintf((char *)ble_string, "apds9250IR:    %x\r\n",ir_data);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
+	uint8_t als_data = apds9250_getrawalsdata(twi_master);
+    sprintf((char *)ble_string, "apds9250ALS:    %x\r\n",als_data);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
+    return who_am_i;
+
+}
+
+uint8_t apds9250_whoami(nrf_drv_twi_t twi_master){
+	uint8_t who_am_i = read_byte(twi_master,APDS9250_DEVICE_ADDRESS,APDS9250_PART_ID);
+	return who_am_i;
 }
 
 
@@ -64,7 +110,11 @@ void apds9250_setup(void){
 
 void apds9250_init(nrf_drv_twi_t twi_master)
 {
-	write_byte(twi_master, APDS9250_DEVICE_ADDRESS, APDS9250_REG_MAIN_CTRL, APDS9250_CTRL_LS_EN);
+	//write_byte(twi_master, APDS9250_DEVICE_ADDRESS, APDS9250_REG_MAIN_CTRL, APDS9250_CTRL_LS_EN);
+	apds9250_setmode(twi_master,APDS9250_settings.mode);
+	apds9250_setmeasureratereg(twi_master);
+	apds9250_setgain(twi_master, APDS9250_settings.gain);
+
 }
 
 

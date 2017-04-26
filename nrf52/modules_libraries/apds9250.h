@@ -126,9 +126,10 @@ struct APDS9250_SensorSettings
 /** @} */
 
  bool apds9250_pass(nrf_drv_twi_t twi_master);
- void run_apds9250(nrf_drv_twi_t twi_master);
  void apds9250_init(nrf_drv_twi_t twi_master);
+ uint8_t apds9250_whoami(nrf_drv_twi_t twi_master);
  void apds9250_setup(void);
+ uint8_t run_apds9250(nrf_drv_twi_t twi_master);
  uint8_t run_apds9250_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus);
 
  void apds9250_reset(nrf_drv_twi_t twi_master);
