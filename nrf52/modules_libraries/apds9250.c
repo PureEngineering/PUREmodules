@@ -123,6 +123,11 @@ void apds9250_reset(nrf_drv_twi_t twi_master){
 }
 
 
+void apds9250_powerdown(nrf_drv_twi_t twi_master){
+	
+	write_byte(twi_master,APDS9250_DEVICE_ADDRESS,APDS9250_REG_MAIN_CTRL,0x00);
+}
+
 apds9250_chan_t apds9250_getmode(nrf_drv_twi_t twi_master){
 
 	uint8_t data = read_byte(twi_master,APDS9250_DEVICE_ADDRESS,APDS9250_REG_MAIN_CTRL);
