@@ -56,6 +56,7 @@ SRC_FILES += \
   $(LIB_DIR)/veml6075.c \
   $(LIB_DIR)/bme280.c \
   $(LIB_DIR)/apds9250.c \
+  $(LIB_DIR)/p1234701ct.c \
   $(LIB_DIR)/i2c_driver.c \
   $(LIB_DIR)/ble_driver.c \
   $(LIB_DIR)/supersensor.c \

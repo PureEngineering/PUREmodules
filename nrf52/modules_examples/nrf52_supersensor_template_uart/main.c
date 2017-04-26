@@ -27,7 +27,7 @@
 #include "bme280.h"
 #include "apds9250.h"
 #include "supersensor.h"
-
+#include "p1234701ct.h"
 #include "nrf_drv_timer.h"
 
 
@@ -145,7 +145,8 @@ int main(void)
         case '\r':
             NRF_LOG_RAW_INFO("You select a command\r\n"); 
             break;
-                case LIS2DE_ON_MESSAGE:
+        
+        case LIS2DE_ON_MESSAGE:
             lis2de_init(m_twi_master);
             run_lis2de(m_twi_master);
             break;
@@ -195,7 +196,7 @@ int main(void)
             break;
 
         case APDS9250_OFF_MESSAGE:
-            //apds9250_powerdown(m_twi_master);
+            apds9250_powerdown(m_twi_master);
             break;
 
         case VL53L0_ON_MESSAGE:
@@ -206,8 +207,19 @@ int main(void)
         case VL53L0_OFF_MESSAGE:
             //vl53l0_powerdown(m_twi_master);
             break;
-	case 's':
 
+        case P1234701CT_ON_MESSAGE:
+            p1234701ct_init(m_twi_master);
+            run_p1234701ct(m_twi_master);
+            break;
+
+        case P1234701CT_OFF_MESSAGE:
+            p1234701ct_powerdown(m_twi_master);
+            break;
+	   
+
+
+       case 's':
 	    test_supersensor(m_twi_master); 
 
             break;
