@@ -11,9 +11,11 @@
 #include "ble_nus.h"
 
 
-void read_sensor_data(nrf_drv_twi_t twi_master,unsigned short *red,unsigned short green,unsigned short blue){
+void read_sensor_data(nrf_drv_twi_t twi_master,unsigned short *red,unsigned short *green,unsigned short *blue){
 	ret_code_t ret;
 	uint8_t buffer[6]; 
+	unsigned short red_temp, blue_temp, green_temp;
+
 	buffer[0] = P12347_RED_CHANNEL_DATA_HIGH;
 	ret = nrf_drv_twi_tx(&twi_master, P12347_DEVICE_ADDRESS, buffer, 1, false);
 	if (NRF_SUCCESS != ret){
@@ -27,9 +29,12 @@ void read_sensor_data(nrf_drv_twi_t twi_master,unsigned short *red,unsigned shor
 		return;
 	}  
 
-	red = (unsigned short) (buffer[0]<<8 | buffer[1]);
-	green =  (unsigned short)(buffer[2]<<8 | buffer[3]);
-	blue = (unsigned short) (buffer[4]<<8 | buffer[5]);
+	red_temp = (unsigned short)(buffer[0]<<8 | buffer[1]);
+	red = &red_temp;
+	green_temp =  (unsigned short)(buffer[2]<<8 | buffer[3]);
+	green = &green_temp;
+	blue_temp = (unsigned short)(buffer[4]<<8 | buffer[5]);
+	blue = &blue_temp;
 }
 
 uint8_t p1234701ct_whoami(nrf_drv_twi_t twi_master){
@@ -82,25 +87,26 @@ uint8_t run_p1234701ct_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus)
 	uint8_t length = 15;
 	uint8_t *ble_string[length];
 
-	unsigned short red;
-	unsigned short green;
-	unsigned short blue;
+	unsigned short red = 0;
+	unsigned short green = 0;
+	unsigned short blue = 0;
 
 	read_sensor_data(twi_master, &red, &green, &blue);
+
 
 	uint8_t who_am_i = p1234701ct_whoami(twi_master);
     sprintf((char *)ble_string, "p1234701ctWHOAMI:    %x\r\n",who_am_i);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
-    sprintf((char *)ble_string, "p1234701ctRED:    %x\r\n",red);
+    sprintf((char *)ble_string, "p1234701ctRED:    %hu\r\n", red);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
-    sprintf((char *)ble_string, "p1234701ctGREEN:    %x\r\n",green);
+    sprintf((char *)ble_string, "p1234701ctGREEN:    %hu\r\n",green);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
-    sprintf((char *)ble_string, "p1234701ctBLUE:    %x\r\n",blue);
+    sprintf((char *)ble_string, "p1234701ctBLUE:    %hu\r\n",blue);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
 
-	return who_am_i;
+	return true;
 }
