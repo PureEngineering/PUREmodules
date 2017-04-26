@@ -32,33 +32,42 @@ void read_sensor_data(nrf_drv_twi_t twi_master,unsigned short *red,unsigned shor
 	blue = (unsigned short) (buffer[4]<<8 | buffer[5]);
 }
 
+uint8_t p1234701ct_whoami(nrf_drv_twi_t twi_master){
+	uint8_t default_reg = read_byte(twi_master,P12347_DEVICE_ADDRESS,P12347_PROX_SENSOR_CONTROL_1);
+	return default_reg;
+}
 
 bool p1234701ct_pass(nrf_drv_twi_t twi_master){
 
-	uint8_t default_reg = read_byte(twi_master,P12347_DEVICE_ADDRESS,P12347_PROX_SENSOR_CONTROL_1);
+	uint8_t who_am_i = p1234701ct_whoami(twi_master);
 	
-	if(default_reg==0xd4)
+	if(who_am_i==0xd4)
 	{
-		NRF_LOG_RAW_INFO("p1234701ct PASS %x \r\n", default_reg);
+		NRF_LOG_RAW_INFO("p1234701ct PASS %x (0xd4) \r\n", who_am_i);
 		return true;
 	}
 	else
 	{
-		NRF_LOG_RAW_INFO("p1234701ct FAIL %x \r\n", default_reg);
+		NRF_LOG_RAW_INFO("p1234701ct FAIL %x (0xd4) \r\n", who_am_i);
 		return false;
 	}
 }
 
 
-void run_p1234701ct(nrf_drv_twi_t twi_master)
+uint8_t run_p1234701ct(nrf_drv_twi_t twi_master)
 {
 
 	unsigned short red;
 	unsigned short green;
 	unsigned short blue;
 
+	uint8_t who_am_i = p1234701ct_whoami(twi_master);
+	NRF_LOG_RAW_INFO("p1234701ct_whoami: %x (0Xd4) \r\n", who_am_i);
+
 	read_sensor_data(twi_master, &red,&green, &blue );
 	NRF_LOG_RAW_INFO("RED %d GREEN %d BLUE %d \r\n", red, green, blue);
+
+	return who_am_i;
 }
 
 void p1234701ct_init(nrf_drv_twi_t twi_master)
@@ -70,6 +79,28 @@ void p1234701ct_init(nrf_drv_twi_t twi_master)
 
 uint8_t run_p1234701ct_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus)
 {
+	uint8_t length = 15;
+	uint8_t *ble_string[length];
 
-	return p1234701ct_pass(twi_master);
+	unsigned short red;
+	unsigned short green;
+	unsigned short blue;
+
+	read_sensor_data(twi_master, &red, &green, &blue);
+
+	uint8_t who_am_i = p1234701ct_whoami(twi_master);
+    sprintf((char *)ble_string, "p1234701ctWHOAMI:    %x\r\n",who_am_i);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
+    sprintf((char *)ble_string, "p1234701ctRED:    %x\r\n",red);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
+    sprintf((char *)ble_string, "p1234701ctGREEN:    %x\r\n",green);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
+    sprintf((char *)ble_string, "p1234701ctBLUE:    %x\r\n",blue);
+    send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
+
+	return who_am_i;
 }
