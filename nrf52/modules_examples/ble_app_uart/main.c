@@ -48,7 +48,8 @@
 #include "bme280.h"
 #include "supersensor.h"
 #include "ble_driver.h"
-
+#include "p1234701ct.h"
+#include "apds9250.h"
 
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT 0                                           /**< Include the service_changed characteristic. If not enabled, the server's database cannot be changed for the lifetime of the device. */
@@ -103,6 +104,8 @@ bool bme280_on = false;
 bool veml6075_on = false; 
 bool si1153_on = false;
 bool vl53l0_on = false;
+bool apds9250_on = false;
+bool p1234701ct_on = false;
 
 
 /**
@@ -229,6 +232,29 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
             //Si1153 automatically moves to Standby Mode
             si1153_on = false;
             break;
+
+        case APDS9250_ON_MESSAGE:
+            apds9250_init(m_twi_master);
+            apds9250_on = true;
+            break;
+
+        case APDS9250_OFF_MESSAGE:
+            apds9250_powerdown(m_twi_master);
+            apds9250_on = false;
+            break;
+
+        case P1234701CT_ON_MESSAGE:
+            p1234701ct_init(m_twi_master);
+            p1234701ct_on = true;
+            break;
+
+        case P1234701CT_OFF_MESSAGE:
+            p1234701ct_powerdown(m_twi_master);
+            p1234701ct_on = false;
+            break;
+
+        //NEED TO ADD TOF SENSOR
+
 
         default:
             break;
@@ -739,6 +765,12 @@ void print_to_ble(){
     }
     if(vl53l0_on){
     }
+    if(apds9250_on){
+        run_apds9250_ble(m_twi_master,m_nus);
+    }
+    if(p1234701ct_on){
+        run_p1234701ct_ble(m_twi_master,m_nus);
+    }
 
 }
 
@@ -787,7 +819,6 @@ int main(void)
     bsp_board_leds_init();
 
     //test_supersensor(m_twi_master);
-    lis2de_pass(m_twi_master);
 
 
     printf("\r\nUART Start!\r\n");
