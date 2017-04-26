@@ -81,6 +81,10 @@ void p1234701ct_init(nrf_drv_twi_t twi_master)
 	write_byte(twi_master,P12347_DEVICE_ADDRESS,P12347_RGB_CONTROL,0x04);
 }
 
+ void p1234701ct_powerdown(nrf_drv_twi_t twi_master){
+	write_byte(twi_master,P12347_DEVICE_ADDRESS,P12347_RGB_CONTROL,0x44);
+ }
+
 
 uint8_t run_p1234701ct_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus)
 {
