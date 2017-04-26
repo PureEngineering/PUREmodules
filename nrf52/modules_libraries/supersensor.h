@@ -44,8 +44,8 @@ typedef enum ss_response {
 } ss_response;
 
 
-ss_response test_supersensor_init(nrf_drv_twi_t twi_master);
-ss_response test_supersensor_run(nrf_drv_twi_t twi_master);
+void test_supersensor_init(nrf_drv_twi_t twi_master);
+void test_supersensor_run(nrf_drv_twi_t twi_master);
 void test_supersensor(nrf_drv_twi_t twi_master);
 bool test_individual_sensors(nrf_drv_twi_t twi_master);
 void supersensor_powerdown(nrf_drv_twi_t twi_master);

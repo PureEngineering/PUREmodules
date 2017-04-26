@@ -62,9 +62,9 @@ bool p1234701ct_pass(nrf_drv_twi_t twi_master){
 uint8_t run_p1234701ct(nrf_drv_twi_t twi_master)
 {
 
-	unsigned short red;
-	unsigned short green;
-	unsigned short blue;
+	unsigned short red = 0;
+	unsigned short green = 0;
+	unsigned short blue = 0;
 
 	uint8_t who_am_i = p1234701ct_whoami(twi_master);
 	NRF_LOG_RAW_INFO("p1234701ct_whoami: %x (0Xd4) \r\n", who_am_i);
