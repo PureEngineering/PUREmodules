@@ -133,8 +133,7 @@ struct APDS9250_SensorSettings
  uint8_t run_apds9250_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus);
 
  void apds9250_reset(nrf_drv_twi_t twi_master);
- void apds9250_powerdown(nrf_drv_twi_t twi_master);
-
+void apds9250_powerdown(nrf_drv_twi_t twi_master);
 
 apds9250_chan_t apds9250_getmode(nrf_drv_twi_t twi_master);
 apds9250_chan_t apds9250_setmode(nrf_drv_twi_t twi_master,apds9250_chan_t newMode);

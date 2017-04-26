@@ -20,6 +20,8 @@ extern "C" {
 #define APDS9250_OFF_MESSAGE 'c'
 #define VL53L0_ON_MESSAGE    'd'
 #define VL53L0_OFF_MESSAGE   'e'
+#define P1234701CT_ON_MESSAGE 'f'
+#define P1234701CT_OFF_MESSAGE 'g'
 
 
 

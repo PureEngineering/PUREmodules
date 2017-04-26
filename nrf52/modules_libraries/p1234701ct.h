@@ -37,7 +37,6 @@ extern "C" {
  uint8_t p1234701ct_whoami(nrf_drv_twi_t twi_master);
  void p1234701ct_powerdown(nrf_drv_twi_t twi_master);
 
-
 #ifdef __cplusplus
 }
 #endif
