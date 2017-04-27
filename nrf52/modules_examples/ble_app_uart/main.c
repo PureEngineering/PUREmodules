@@ -178,7 +178,7 @@ static void gap_params_init(void)
 /**@snippet [Handling the data received over BLE] */
 static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
 {
-    
+    app_uart_put(p_data[0]);
     //Parses the input from the android app to turn on or off
     //the different sensors. 
     switch (p_data[0])

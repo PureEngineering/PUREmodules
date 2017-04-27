@@ -17,6 +17,7 @@ void read_sensor_data(nrf_drv_twi_t twi_master,unsigned short *red,unsigned shor
 	unsigned short red_temp, blue_temp, green_temp;
 
 	buffer[0] = P12347_RED_CHANNEL_DATA_HIGH;
+
 	ret = nrf_drv_twi_tx(&twi_master, P12347_DEVICE_ADDRESS, buffer, 1, false);
 	if (NRF_SUCCESS != ret){
 		NRF_LOG_WARNING("Communication error when Writing\r\n");
@@ -88,7 +89,7 @@ void p1234701ct_init(nrf_drv_twi_t twi_master)
 
 uint8_t run_p1234701ct_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus)
 {
-	uint8_t length = 15;
+	uint8_t length = 22;
 	uint8_t *ble_string[length];
 
 	unsigned short red = 0;
@@ -102,13 +103,13 @@ uint8_t run_p1234701ct_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus)
     sprintf((char *)ble_string, "p1234701ctWHOAMI:    %x\r\n",who_am_i);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
-    sprintf((char *)ble_string, "p1234701ctRED:    %hu\r\n", red);
+    sprintf((char *)ble_string, "p1234701ctred:    %hu\r\n", red);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
-    sprintf((char *)ble_string, "p1234701ctGREEN:    %hu\r\n",green);
+    sprintf((char *)ble_string, "p1234701ctgreen:    %hu\r\n",green);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
-    sprintf((char *)ble_string, "p1234701ctBLUE:    %hu\r\n",blue);
+    sprintf((char *)ble_string, "p1234701ctblue:    %hu\r\n",blue);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
 

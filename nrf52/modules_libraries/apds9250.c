@@ -57,27 +57,27 @@ uint8_t run_apds9250(nrf_drv_twi_t twi_master)
 
 
 uint8_t run_apds9250_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
-	uint8_t length = 15;
+	uint8_t length = 17;
 	uint8_t *ble_string[length];
 
 	uint8_t who_am_i = apds9250_whoami(twi_master);
-    sprintf((char *)ble_string, "apds9250id:    %x\r\n",who_am_i);
+    sprintf((char *)ble_string, "apds9250id: %x\r\n",who_am_i);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
 	uint8_t red_data = apds9250_getrawreddata(twi_master);
-    sprintf((char *)ble_string, "apds9250red:    %x\r\n",red_data);
+    sprintf((char *)ble_string, "apds9250red: %x\r\n",red_data);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
 	uint8_t green_data = apds9250_getrawgreendata(twi_master);
-    sprintf((char *)ble_string, "apds9250green:    %x\r\n",green_data);
+    sprintf((char *)ble_string, "apds9250green: %x\r\n",green_data);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
 	uint8_t blue_data = apds9250_getrawbluedata(twi_master);
-    sprintf((char *)ble_string, "apds9250blue:    %x\r\n",blue_data);
+    sprintf((char *)ble_string, "apds9250blue: %x\r\n",blue_data);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
 	uint8_t ir_data = apds9250_getrawirdata(twi_master);
-    sprintf((char *)ble_string, "apds9250IR:    %x\r\n",ir_data);
+    sprintf((char *)ble_string, "apds9250IR: %x\r\n",ir_data);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
 	uint8_t als_data = apds9250_getrawalsdata(twi_master);
@@ -124,7 +124,7 @@ void apds9250_reset(nrf_drv_twi_t twi_master){
 
 
 void apds9250_powerdown(nrf_drv_twi_t twi_master){
-	
+
 	write_byte(twi_master,APDS9250_DEVICE_ADDRESS,APDS9250_REG_MAIN_CTRL,0x00);
 }
 
