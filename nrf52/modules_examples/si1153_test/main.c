@@ -164,23 +164,11 @@ int si1153_test(void)
 		//run_si1153(m_twi_master);
 		bsp_board_led_invert(0);
 
-
 		si1153_IR1 = si1153_data = si1153_get_channel_data(m_twi_master,0);
+		si1153_IR2 = si1153_get_channel_data(m_twi_master,1);
+		si1153_R = si1153_get_channel_data(m_twi_master,2);
+		NRF_LOG_RAW_INFO("%06d,%06d,%06d\n\r",si1153_IR1,si1153_IR2,si1153_R);
 		send_command(m_twi_master,Si1153_FORCE);
-		/*
-		NRF_LOG_RAW_INFO("%06d ",si1153_data );
-
-		for(i=0;i<((si1153_data/4)%70);i++)
-		{
-			NRF_LOG_RAW_INFO("-");
-			NRF_LOG_FLUSH();   
-		}
-		NRF_LOG_RAW_INFO("*\n\r");
-		NRF_LOG_FLUSH();   
-		*/
-		si1153_R = si1153_get_channel_data(m_twi_master,1);
-		si1153_IR2 = si1153_get_channel_data(m_twi_master,2);
-		NRF_LOG_RAW_INFO("%06d,%06d,%06d\n\r",si1153_IR1,si1153_R,si1153_IR2);
 
 		NRF_LOG_FLUSH();
 	}
