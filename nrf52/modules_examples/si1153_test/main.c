@@ -129,12 +129,15 @@ int si1153_test(void)
 
 	param_set(m_twi_master, Si1153_ADCCONFIG_0, 0x62);
 	param_set(m_twi_master, Si1153_MEASCONFIG_0, 0x01);
+	param_set(m_twi_master, Si1153_ADCSENS_0, 0x01);
 
 	param_set(m_twi_master, Si1153_ADCCONFIG_1, 0x62);
 	param_set(m_twi_master, Si1153_MEASCONFIG_1, 0x02);
+	param_set(m_twi_master, Si1153_ADCSENS_1, 0x01);
 
 	param_set(m_twi_master, Si1153_ADCCONFIG_2, 0x62);
 	param_set(m_twi_master, Si1153_MEASCONFIG_2, 0x04);
+	param_set(m_twi_master, Si1153_ADCSENS_2, 0x01);
 
 	send_command(m_twi_master,Si1153_FORCE);
 
