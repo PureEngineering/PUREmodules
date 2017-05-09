@@ -129,12 +129,15 @@ int si1153_test(void)
 
 	param_set(m_twi_master, Si1153_ADCCONFIG_0, 0x62);
 	param_set(m_twi_master, Si1153_MEASCONFIG_0, 0x01);
+	param_set(m_twi_master, Si1153_ADCSENS_0, 0x01);
 
 	param_set(m_twi_master, Si1153_ADCCONFIG_1, 0x62);
 	param_set(m_twi_master, Si1153_MEASCONFIG_1, 0x02);
+	param_set(m_twi_master, Si1153_ADCSENS_1, 0x01);
 
 	param_set(m_twi_master, Si1153_ADCCONFIG_2, 0x62);
 	param_set(m_twi_master, Si1153_MEASCONFIG_2, 0x04);
+	param_set(m_twi_master, Si1153_ADCSENS_2, 0x01);
 
 	send_command(m_twi_master,Si1153_FORCE);
 
@@ -164,23 +167,11 @@ int si1153_test(void)
 		//run_si1153(m_twi_master);
 		bsp_board_led_invert(0);
 
-
 		si1153_IR1 = si1153_data = si1153_get_channel_data(m_twi_master,0);
+		si1153_IR2 = si1153_get_channel_data(m_twi_master,1);
+		si1153_R = si1153_get_channel_data(m_twi_master,2);
+		NRF_LOG_RAW_INFO("%06d,%06d,%06d\n\r",si1153_IR1,si1153_IR2,si1153_R);
 		send_command(m_twi_master,Si1153_FORCE);
-		/*
-		NRF_LOG_RAW_INFO("%06d ",si1153_data );
-
-		for(i=0;i<((si1153_data/4)%70);i++)
-		{
-			NRF_LOG_RAW_INFO("-");
-			NRF_LOG_FLUSH();   
-		}
-		NRF_LOG_RAW_INFO("*\n\r");
-		NRF_LOG_FLUSH();   
-		*/
-		si1153_R = si1153_get_channel_data(m_twi_master,1);
-		si1153_IR2 = si1153_get_channel_data(m_twi_master,2);
-		NRF_LOG_RAW_INFO("%06d,%06d,%06d\n\r",si1153_IR1,si1153_R,si1153_IR2);
 
 		NRF_LOG_FLUSH();
 	}
