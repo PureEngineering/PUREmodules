@@ -46,10 +46,10 @@
 #include "si1153.h"
 #include "veml6075.h"
 #include "bme280.h"
-#include "apds9250.h"
 #include "supersensor.h"
 #include "ble_driver.h"
-
+#include "p1234701ct.h"
+#include "apds9250.h"
 
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT 0                                           /**< Include the service_changed characteristic. If not enabled, the server's database cannot be changed for the lifetime of the device. */
@@ -68,6 +68,8 @@
 
 #define APP_ADV_INTERVAL                64                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS      180                                         /**< The advertising timeout (in units of seconds). */
+
+#define APP_ADV_INTERVAL_SLOW             0x0664
 
 #define APP_TIMER_PRESCALER             0                                           /**< Value of the RTC1 PRESCALER register. */
 #define APP_TIMER_OP_QUEUE_SIZE         4                                           /**< Size of timer operation queues. */
@@ -103,6 +105,7 @@ bool veml6075_on = false;
 bool si1153_on = false;
 bool vl53l0_on = false;
 bool apds9250_on = false;
+bool p1234701ct_on = false;
 
 
 /**
@@ -175,7 +178,7 @@ static void gap_params_init(void)
 /**@snippet [Handling the data received over BLE] */
 static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
 {
-    
+    app_uart_put(p_data[0]);
     //Parses the input from the android app to turn on or off
     //the different sensors. 
     switch (p_data[0])
@@ -236,19 +239,22 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
             break;
 
         case APDS9250_OFF_MESSAGE:
-            //apds9250_powerdown(m_twi_master);
+            apds9250_powerdown(m_twi_master);
             apds9250_on = false;
             break;
 
-        case VL53L0_ON_MESSAGE:
-            vl53l0_init(m_twi_master);
-            vl53l0_on = true;
+        case P1234701CT_ON_MESSAGE:
+            p1234701ct_init(m_twi_master);
+            p1234701ct_on = true;
             break;
 
-        case VL53L0_OFF_MESSAGE:
-            //vl53l0_powerdown(m_twi_master);
-            vl53l0_on = false;
+        case P1234701CT_OFF_MESSAGE:
+            p1234701ct_powerdown(m_twi_master);
+            p1234701ct_on = false;
             break;
+
+        //NEED TO ADD TOF SENSOR
+
 
         default:
             break;
@@ -672,6 +678,10 @@ static void advertising_init(void)
     options.ble_adv_fast_interval = APP_ADV_INTERVAL;
     options.ble_adv_fast_timeout  = APP_ADV_TIMEOUT_IN_SECONDS;
 
+    options.ble_adv_slow_enabled  = true;
+    options.ble_adv_slow_interval = APP_ADV_INTERVAL_SLOW;
+    options.ble_adv_slow_timeout  = 0;
+
     err_code = ble_advertising_init(&advdata, &scanrsp, &options, on_adv_evt, NULL);
     APP_ERROR_CHECK(err_code);
 }
@@ -754,9 +764,33 @@ void print_to_ble(){
         run_si1153_ble(m_twi_master,m_nus);
     }
     if(vl53l0_on){
-        
+    }
+    if(apds9250_on){
+        run_apds9250_ble(m_twi_master,m_nus);
+    }
+    if(p1234701ct_on){
+        run_p1234701ct_ble(m_twi_master,m_nus);
     }
 
+}
+
+APP_TIMER_DEF(sensor_loop_timer_id);
+
+static void sensor_loop_handler(void * p_context)
+{
+   print_to_ble();  
+}
+
+static void create_sensor_timer()
+{   
+    uint32_t err_code;
+
+    // Create timers
+    err_code = app_timer_create(&sensor_loop_timer_id, APP_TIMER_MODE_REPEATED, sensor_loop_handler);
+    APP_ERROR_CHECK(err_code);
+
+     err_code = app_timer_start(sensor_loop_timer_id, APP_TIMER_TICKS(3000, APP_TIMER_PRESCALER), NULL);
+     APP_ERROR_CHECK(err_code);
 }
 
 
@@ -784,7 +818,7 @@ int main(void)
     conn_params_init();
     bsp_board_leds_init();
 
-    test_supersensor(m_twi_master);
+    //test_supersensor(m_twi_master);
 
 
     printf("\r\nUART Start!\r\n");
@@ -794,12 +828,13 @@ int main(void)
 
     NRF_LOG_FLUSH();
 
+    create_sensor_timer();
+
     // Enter main loop.
     for (;;)
     {
-        print_to_ble();   
-        nrf_delay_ms(3000);  //Send data every 3 seconds   
-
+	err_code = sd_app_evt_wait();
+	APP_ERROR_CHECK(err_code);
     }
 }
 
