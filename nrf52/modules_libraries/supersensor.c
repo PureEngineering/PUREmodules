@@ -49,9 +49,9 @@ void test_supersensor_init(nrf_drv_twi_t twi_master){
 	NRF_LOG_FLUSH();
 	apds9250_init(twi_master); 
 
-	NRF_LOG_RAW_INFO("p1234701ct_init starting \r\n");
-	NRF_LOG_FLUSH();
-	p1234701ct_init(twi_master);
+	//NRF_LOG_RAW_INFO("p1234701ct_init starting \r\n");
+	//NRF_LOG_FLUSH();
+	//p1234701ct_init(twi_master);
 
 }
 
@@ -61,7 +61,7 @@ void supersensor_powerdown(nrf_drv_twi_t twi_master){
 	bme280_powerdown(twi_master);
 	veml6075_powerdown(twi_master);
 	apds9250_powerdown(twi_master);
-	p1234701ct_powerdown(twi_master);
+	//p1234701ct_powerdown(twi_master);
 }
 
 bool test_individual_sensors(nrf_drv_twi_t twi_master){
@@ -115,9 +115,9 @@ bool test_individual_sensors(nrf_drv_twi_t twi_master){
 
 	//NRF_LOG_RAW_INFO("p1234701ct_pass starting \r\n");
 	//NRF_LOG_FLUSH();
-	if(!p1234701ct_pass(twi_master)){
-		pass = false;
-	}
+	//if(!p1234701ct_pass(twi_master)){
+	//	pass = false;
+	//}
 
 
 
@@ -185,8 +185,8 @@ void test_supersensor_run(nrf_drv_twi_t twi_master)
     NRF_LOG_FLUSH();
 
     //uint8_t p123_ID = 
-    run_p1234701ct(twi_master); 
-    NRF_LOG_FLUSH();
+    //run_p1234701ct(twi_master); 
+    //NRF_LOG_FLUSH();
     
 
 }
