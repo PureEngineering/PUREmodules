@@ -114,6 +114,7 @@ void bme280_powerdown(nrf_drv_twi_t twi_master){
 uint8_t bme280_init(nrf_drv_twi_t twi_master){
 	uint8_t who_am_i;
 	bme280_setup();
+	bme280_begin(twi_master);
 	who_am_i = bme280_whoami(twi_master);
 
 	return who_am_i;

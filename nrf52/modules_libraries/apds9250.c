@@ -37,20 +37,22 @@ uint8_t run_apds9250(nrf_drv_twi_t twi_master)
 	NRF_LOG_RAW_INFO("APDS9250_PART_ID: %x (0XB2) \r\n", who_am_i);
 
 	uint32_t red_data = apds9250_getrawreddata(twi_master);
-	NRF_LOG_RAW_INFO("APDS9250_RAW_RED: %x \r\n", red_data);
+	NRF_LOG_RAW_INFO("APDS9250_RAW_RED: %d \r\n", red_data);
 
 	uint32_t green_data = apds9250_getrawgreendata(twi_master);
-	NRF_LOG_RAW_INFO("APDS9250_RAW_RED: %x \r\n", green_data);
+	NRF_LOG_RAW_INFO("APDS9250_RAW_GREEN: %d \r\n", green_data);
 
 	uint32_t blue_data = apds9250_getrawbluedata(twi_master);
-	NRF_LOG_RAW_INFO("APDS9250_RAW_RED: %x \r\n", blue_data);
+	NRF_LOG_RAW_INFO("APDS9250_RAW_BLUE: %d \r\n", blue_data);
 
+  apds9250_setmodeals(twi_master);
 	uint32_t als_data = apds9250_getrawalsdata(twi_master);
-	NRF_LOG_RAW_INFO("APDS9250_RAW_RED: %x \r\n", als_data);
+	NRF_LOG_RAW_INFO("APDS9250_RAW_ALS: %d \r\n", als_data);
 
 	uint32_t ir_data = apds9250_getrawirdata(twi_master);
-	NRF_LOG_RAW_INFO("APDS9250_RAW_RED: %x \r\n", ir_data);
+	NRF_LOG_RAW_INFO("APDS9250_RAW_IR: %d \r\n", ir_data);
 
+  apds9250_setmodergb(twi_master);
 	return who_am_i;
 }
 
@@ -76,6 +78,9 @@ uint8_t run_apds9250_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
     sprintf((char *)ble_string, "apds9250blue: %x\r\n",blue_data);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
+
+  apds9250_setmodeals(twi_master);
+
 	uint8_t ir_data = apds9250_getrawirdata(twi_master);
     sprintf((char *)ble_string, "apds9250IR: %x\r\n",ir_data);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
@@ -83,6 +88,8 @@ uint8_t run_apds9250_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
 	uint8_t als_data = apds9250_getrawalsdata(twi_master);
     sprintf((char *)ble_string, "apds9250ALS:    %x\r\n",als_data);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
+    apds9250_setmodergb(twi_master);
 
     return who_am_i;
 
@@ -96,7 +103,7 @@ uint8_t apds9250_whoami(nrf_drv_twi_t twi_master){
 
 void apds9250_setup(void){
 
-	APDS9250_settings.mode = APDS9250_CHAN_ALS;
+	APDS9250_settings.mode = APDS9250_CHAN_RGB;
 	APDS9250_settings.res  = APDS9250_RES_18BIT;
 	APDS9250_settings.meas_rate = APDS9250_RATE_100MS;
 	APDS9250_settings.gain = APDS9250_GAIN_3X;
@@ -111,7 +118,8 @@ void apds9250_setup(void){
 void apds9250_init(nrf_drv_twi_t twi_master)
 {
 	//write_byte(twi_master, APDS9250_DEVICE_ADDRESS, APDS9250_REG_MAIN_CTRL, APDS9250_CTRL_LS_EN);
-	apds9250_setmode(twi_master,APDS9250_settings.mode);
+	apds9250_setup();
+  apds9250_setmode(twi_master,APDS9250_settings.mode);
 	apds9250_setmeasureratereg(twi_master);
 	apds9250_setgain(twi_master, APDS9250_settings.gain);
 
