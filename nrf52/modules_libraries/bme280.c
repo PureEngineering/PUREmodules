@@ -144,7 +144,7 @@ uint8_t run_bme280(nrf_drv_twi_t twi_master){
 	uint8_t tempF = bme280_readTempF(twi_master);
     NRF_LOG_RAW_INFO("BME280 Temp: %d F.\r\n", tempF);
 
-	uint8_t pressure = bme280_readFloatPressure(twi_master);
+	uint32_t pressure = bme280_readFloatPressure(twi_master);
     NRF_LOG_RAW_INFO("BME280 Pressure: %d(Pa).\r\n", pressure);
 
 	uint8_t altitude = bme280_readFloatAltitudeFeet(twi_master);
@@ -174,9 +174,9 @@ uint8_t run_bme280_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
     sprintf((char *)ble_string, "bme280tempc: %d\r\n",tempc);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
-	uint8_t pressure = bme280_readFloatPressure(twi_master);
-    sprintf((char *)ble_string, "bme280press: %d\r\n",pressure);
-	send_ble_data(m_nus,(uint8_t *)ble_string,length);
+	float pressure = bme280_readFloatPressure(twi_master);
+    sprintf((char *)ble_string, "bme280press: %4.2f\r\n",pressure);
+	send_ble_data(m_nus,(uint8_t *)ble_string,length+10);
 
 	uint8_t altitude = bme280_readFloatAltitudeFeet(twi_master);
     sprintf((char *)ble_string, "bme280alt:   %d\r\n",altitude);

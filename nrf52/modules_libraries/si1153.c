@@ -12,6 +12,8 @@
 
 int param_set(nrf_drv_twi_t twi_master,uint8_t loc, uint8_t val){
 
+
+
 	//int CMMD_CTR = read_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_RESPONSE0);
 
 	write_byte(twi_master,Si1153_DEVICE_ADDRESS,Si1153_HOSTIN0,val);
