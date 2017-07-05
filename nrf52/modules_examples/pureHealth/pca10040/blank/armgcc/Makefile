@@ -59,6 +59,8 @@ SRC_FILES += \
   $(LIB_DIR)/i2c_driver.c \
   $(LIB_DIR)/ble_driver.c \
   $(LIB_DIR)/supersensor.c \
+  $(LIB_DIR)/tmp007.c \
+
 
 
 

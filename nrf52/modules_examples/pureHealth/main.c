@@ -26,6 +26,7 @@
 #include "veml6075.h"
 #include "bme280.h"
 #include "apds9250.h"
+#include "tmp007.h"
 #include "supersensor.h"
 
 #include "nrf_drv_timer.h"
@@ -182,5 +183,12 @@ int si1153_test(void)
  */
 int main(void)
 {
+	bool passed_test = tmp007_pass(m_twi_master);
+	if(passed_test){
+		NRF_LOG_RAW_INFO("Tmp007 pass");
+	}
+	else{
+		NRF_LOG_RAW_INFO("Tmp007 failed");
+	}
     si1153_test();
 }
