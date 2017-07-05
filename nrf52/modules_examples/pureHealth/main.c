@@ -19,15 +19,11 @@
 
 #include "i2c_driver.h"
 #include "ble_driver.h"
-#include "lis3mdl.h"
 #include "lis2de.h"
-#include "vl53l0.h"
 #include "si1153.h"
 #include "veml6075.h"
 #include "bme280.h"
-#include "apds9250.h"
 #include "tmp007.h"
-#include "supersensor.h"
 
 #include "nrf_drv_timer.h"
 
