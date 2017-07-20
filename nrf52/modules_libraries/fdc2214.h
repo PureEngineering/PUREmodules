@@ -12,6 +12,8 @@ extern "C" {
 #include "ble_nus.h"
 
 
+#define FDC2214_DEVICE_ADDRESS 0x2B
+
 #define FDC2214_DATA_MSW_CH0 0x00
 #define FDC2214_DATA_LSW_CH0 0x01
 #define FDC2214_DATA_MSW_CH1 0x02
@@ -48,6 +50,12 @@ extern "C" {
 #define FDC2214_FIN 0xff
 
 
+
+void fdc2214_reset(nrf_drv_twi_t twi_master);
+uint32_t fcd2214_read_ch0(nrf_drv_twi_t twi_master);
+uint32_t fcd2214_read_ch1(nrf_drv_twi_t twi_master);
+uint32_t fcd2214_read_ch2(nrf_drv_twi_t twi_master);
+uint32_t fcd2214_read_ch3(nrf_drv_twi_t twi_master);
 
 
 
