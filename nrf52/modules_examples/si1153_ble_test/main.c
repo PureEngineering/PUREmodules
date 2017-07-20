@@ -13,6 +13,9 @@
 
 #include <stdint.h>
 #include <string.h>
+
+#include "SEGGER_RTT.h"
+
 #include "config.h"
 #include "nordic_common.h"
 #include "nrf.h"
@@ -784,7 +787,7 @@ int8_t run_si1153_local_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
 	sprintf((char *)ble_string, "ch2: %x \r\n",si1153_R);
 	send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
-	NRF_LOG_RAW_INFO("%06d,%06d,%06d\n\r", si1153_IR1,si1153_IR2,si1153_R);
+	NRF_LOG_RAW_INFO(",%06d,%06d,%06d\n\r", si1153_IR1,si1153_IR2,si1153_R);
 	send_command(m_twi_master,Si1153_FORCE);
 
 
@@ -814,7 +817,7 @@ int8_t run_lis2de_local_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
 //	float x_in_gravity = convert_to_gravity(OUT_X);
 	sprintf((char *)ble_string, "lis2dex: %.2x \r\n",OUT_X);
 	send_ble_data(m_nus,(uint8_t *)ble_string,length);
-
+	
 
 	int8_t OUT_Y = lis2de_readOUT_Y(twi_master);
 //	NRF_LOG_RAW_INFO("Accelerometer OUTY: %x.\r\n", OUT_Y);
@@ -899,31 +902,14 @@ static void create_sensor_timer()
 int si1153_test(void)
 {
 
-//	int i = 0;
-/*	int si1153_data;
-	int si1153_R;
-	int si1153_IR1;
-	int si1153_IR2;
 
-	uint8_t length = 19;
-	uint8_t *ble_string[length];
-	*/
-//	ret_code_t err_code;
-	/* Initialization of UART */
-//	bsp_board_leds_init();
-
-//	APP_ERROR_CHECK(NRF_LOG_INIT(NULL));
-
-	/* Initializing TWI master interface for EEPROM */
-//	err_code = twi_master_init();
-//	APP_ERROR_CHECK(err_code);
 	NRF_LOG_RAW_INFO("si1153 test\n\r");
 	NRF_LOG_FLUSH();   
-
+	NRF_LOG_RAW_INFO("reach before send_command \n\r");
 	send_command(m_twi_master,Si1153_RESET_SW);
 	nrf_delay_ms(10);
 	//si1153_init(m_twi_master);
-
+	NRF_LOG_RAW_INFO("reach after send_command \n\r");
 	param_set(m_twi_master, Si1153_CHAN_LIST, 0x07);
 
 	param_set(m_twi_master, Si1153_LED1_A, 0x3F);
@@ -943,60 +929,10 @@ int si1153_test(void)
 	param_set(m_twi_master, Si1153_ADCSENS_2, 0x01);
 
 	send_command(m_twi_master,Si1153_FORCE);
-
+	
+	
 	NRF_LOG_FLUSH();   
 
-/*
-	while (1)
-	{
-
-		NRF_LOG_FLUSH();   
-
-		if(0==1)
-		{
-			si1153_data = si1153_get_data(m_twi_master);
-			NRF_LOG_RAW_INFO("%06d:",si1153_data );
-			for(i=0;i<((si1153_data/4)%70);i++)
-			{
-				NRF_LOG_RAW_INFO("-");
-				NRF_LOG_FLUSH();   
-			}
-			NRF_LOG_RAW_INFO("*\n\r");
-			NRF_LOG_FLUSH();   
-		}
-
-	
-		nrf_delay_ms(10);
-
-	
-		bsp_board_led_invert(0);
-
-
-		//read the data in each channel and send through ble
-	//	si1153_IR1 = si1153_data = si1153_get_channel_data(m_twi_master,0);
-	//	sprintf((char *)ble_string, "ch0: %x \r\n",si1153_IR1);
-	//	send_ble_data(m_nus,(uint8_t *)ble_string,length);
-
-
-	//	si1153_IR2 = si1153_get_channel_data(m_twi_master,1);
-	//	sprintf((char *)ble_string, "ch0: %x \r\n",si1153_IR2);
-	//	send_ble_data(m_nus,(uint8_t *)ble_string,length);
-
-
-	//	si1153_R = si1153_get_channel_data(m_twi_master,2);
-	//	sprintf((char *)ble_string, "ch0: %x \r\n",si1153_R);
-	//	send_ble_data(m_nus,(uint8_t *)ble_string,length);
-
-
-		
-	//	fin_dis(si1153_IR1);
-		
-	//	NRF_LOG_RAW_INFO("%06d,%06d,%06d\n\r", si1153_IR1,si1153_IR2,si1153_R);
-		send_command(m_twi_master,Si1153_FORCE);
-
-		NRF_LOG_FLUSH();
-	}
-	*/
 	return 0;
 
 }
@@ -1026,13 +962,13 @@ int main(void)
 
     //test_supersensor(m_twi_master);
 
-    
-    NRF_LOG_RAW_INFO("UART Start!------->\n\r");
-    si1153_test();
-    err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
+  
+   err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
 
-
+	si1153_test();
+    NRF_LOG_RAW_INFO(",ch0, chan1, chan2\n\r");
+	
     NRF_LOG_FLUSH();
 
     create_sensor_timer();
@@ -1040,12 +976,14 @@ int main(void)
     // Enter main loop.
     for (;;)
     {
-	NRF_LOG_RAW_INFO("UART Start!------->\n\r");
+	//NRF_LOG_RAW_INFO("UART Start!------->\n\r");
+	//SEGGER_RTT_TerminalOut(1, "Hello World!\n");
 	NRF_LOG_FLUSH(); 
 	err_code = sd_app_evt_wait();
 	APP_ERROR_CHECK(err_code);
 	
     }
+	
 }
 
 
