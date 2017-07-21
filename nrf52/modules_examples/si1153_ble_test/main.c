@@ -764,7 +764,7 @@ int8_t run_si1153_local_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
 	int si1153_IR1;
 	int si1153_IR2;
 
-	uint8_t length = 19;
+	uint8_t length = 20;
 	uint8_t *ble_string[length];
 
 	nrf_delay_ms(10);
@@ -772,19 +772,19 @@ int8_t run_si1153_local_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
 	
 	bsp_board_led_invert(0);
 
-	memset(ble_string, 0, 19);
+	//memset(ble_string, 0, 19);
 	si1153_IR1 = si1153_data = si1153_get_channel_data(m_twi_master,0);
-	sprintf((char *)ble_string, "ch0: %x \r\n",si1153_IR1);
-	send_ble_data(m_nus,(uint8_t *)ble_string,length);
+//	sprintf((char *)ble_string, "%2d",si1153_IR1);
+//	send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
-	memset(ble_string, 0, 19);
+	//memset(ble_string, 0, 19);
 	si1153_IR2 = si1153_get_channel_data(m_twi_master,1);
-	sprintf((char *)ble_string, "ch1: %x \r\n",si1153_IR2);
-	send_ble_data(m_nus,(uint8_t *)ble_string,length);
+	//sprintf((char *)ble_string, ", %2d",si1153_IR2);
+	//send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
-	memset(ble_string, 0, 19);
+	memset(ble_string, 0, 20);
 	si1153_R = si1153_get_channel_data(m_twi_master,2);
-	sprintf((char *)ble_string, "ch2: %x \r\n",si1153_R);
+	sprintf((char *)ble_string, "%05d, %05d, %05d\n",si1153_IR1, si1153_IR2, si1153_R);
 	send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
 	NRF_LOG_RAW_INFO(",%06d,%06d,%06d\n\r", si1153_IR1,si1153_IR2,si1153_R);
@@ -888,7 +888,7 @@ static void create_sensor_timer()
     err_code = app_timer_create(&sensor_loop_timer_id, APP_TIMER_MODE_REPEATED, sensor_loop_handler);
     APP_ERROR_CHECK(err_code);
 
-     err_code = app_timer_start(sensor_loop_timer_id, APP_TIMER_TICKS(3000, APP_TIMER_PRESCALER), NULL);
+     err_code = app_timer_start(sensor_loop_timer_id, APP_TIMER_TICKS(50, APP_TIMER_PRESCALER), NULL);
      APP_ERROR_CHECK(err_code);
 }
 
@@ -962,10 +962,11 @@ int main(void)
 
     //test_supersensor(m_twi_master);
 
-  
+  //NRF_LOG_RAW_INFO("UART Start!------->\n\r");
    err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
+  // NRF_LOG_RAW_INFO("UART Start!------->\n\r");
     APP_ERROR_CHECK(err_code);
-
+	
 	si1153_test();
     NRF_LOG_RAW_INFO(",ch0, chan1, chan2\n\r");
 	
