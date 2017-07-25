@@ -24,6 +24,8 @@
 #include "veml6075.h"
 #include "bme280.h"
 #include "tmp007.h"
+#include "ads1114.h"
+#include "fdc2214.h"
 
 #include "nrf_drv_timer.h"
 
@@ -179,12 +181,61 @@ int si1153_test(void)
  */
 int main(void)
 {
+	bool purehealth_allpass = true;
+
 	bool passed_test = tmp007_pass(m_twi_master);
 	if(passed_test){
 		NRF_LOG_RAW_INFO("Tmp007 pass");
 	}
 	else{
 		NRF_LOG_RAW_INFO("Tmp007 failed");
+		purehealth_allpass = false;
 	}
-    si1153_test();
+	
+	passed_test = fdc2214_pass(m_twi_master);
+	if(passed_test){
+		NRF_LOG_RAW_INFO("fdc2214 pass");
+	}
+	else{
+		NRF_LOG_RAW_INFO("fdc2214 failed");
+		purehealth_allpass = false;
+	}
+	passed_test = bme280_pass(m_twi_master);
+	if(passed_test){
+		NRF_LOG_RAW_INFO("bme280 pass");
+	}
+	else{
+		NRF_LOG_RAW_INFO("bme280 failed");
+		purehealth_allpass = false;
+	}
+	passed_test = veml6075_pass(m_twi_master);
+	if(passed_test){
+		NRF_LOG_RAW_INFO("vemo6075 pass");
+	}
+	else{
+		NRF_LOG_RAW_INFO("veml6075 failed");
+		purehealth_allpass = false;
+	}
+	passed_test = lis2de_pass(m_twi_master);
+	if(passed_test){
+		NRF_LOG_RAW_INFO("lis2de pass");
+	}
+	else{
+		NRF_LOG_RAW_INFO("lis2de failed");
+		purehealth_allpass = false;
+	}
+	passed_test = si1153_pass(m_twi_master);
+	if(passed_test){
+		NRF_LOG_RAW_INFO("si1153 pass");
+	}
+	else{
+		NRF_LOG_RAW_INFO("si1153 failed");
+		purehealth_allpass = false;
+	}
+
+	if(purehealth_allpass){
+		NRF_LOG_RAW_INFO("----All PureHealth Sensors Passed----");
+
+	}
+    //si1153_test();
 }
