@@ -38,24 +38,26 @@ extern "C" {
 #define FDC2214_CLOCK_DIVIDERS_CH1 0x15
 #define FDC2214_CLOCK_DIVIDERS_CH2 0x16
 #define FDC2214_CLOCK_DIVIDERS_CH3 0x17
+#define FDC2214_STATUS 0x18
+#define FDC2214_ERROR_CONFIG 0x19
+#define FDC2214_CONFIG 0x1a
+#define FDC2214_MUX_CONFIG 0x1b
+#define FDC2214_RESET_DEV 0x1c
 #define FDC2214_DRIVE_CURRENT_CH0 0x1e
 #define FDC2214_DRIVE_CURRENT_CH1 0x1f
 #define FDC2214_DRIVE_CURRENT_CH2 0x20
 #define FDC2214_DRIVE_CURRENT_CH3 0x21
-#define FDC2214_ERROR_CONFIG 0x19
-#define FDC2214_MUX_CONFIG 0x1b
-#define FDC2214_RESET_DEV 0x1c
-#define FDC2214_CONFIG 0x1a
-#define FDC2214_STATUS 0x18
+#define FDC2214_MANUFACTURER_ID 0x7E
+#define FDC2214_DEVICE_ID 0x7F
 #define FDC2214_FIN 0xff
 
 
-
+uint16_t fdc2214_init(nrf_drv_twi_t twi_master);
 void fdc2214_reset(nrf_drv_twi_t twi_master);
-uint32_t fcd2214_read_ch0(nrf_drv_twi_t twi_master);
-uint32_t fcd2214_read_ch1(nrf_drv_twi_t twi_master);
-uint32_t fcd2214_read_ch2(nrf_drv_twi_t twi_master);
-uint32_t fcd2214_read_ch3(nrf_drv_twi_t twi_master);
+uint32_t fdc2214_readchannel(nrf_drv_twi_t twi_master, uint8_t channelNo);
+uint16_t fdc2214_whoami(nrf_drv_twi_t twi_master);
+
+bool fdc2214_pass(nrf_drv_twi_t twi_master);
 
 
 
