@@ -233,3 +233,5 @@ int16_t ads1114_getLastConversionResults(nrf_drv_twi_t twi_master)
   }
 }
 
+
+
