@@ -19,7 +19,8 @@
 
 #include "i2c_driver.h"
 #include "ble_driver.h"
-#include "ads1114.h"
+#include "fdc2214.h"
+
 #include "nrf_drv_timer.h"
 
 
@@ -99,23 +100,16 @@ int main(void)
 	APP_ERROR_CHECK(err_code);
 	NRF_LOG_FLUSH();   
 
-    int16_t results;
-    float   multiplier = 3.0F;    /* ADS1015 @ +/- 6.144V gain (12-bit results) */
-    //float multiplier = 0.1875F; /* ADS1115  @ +/- 6.144V gain (16-bit results) */
 
-    ads1114_begin();
+	NRF_LOG_RAW_INFO("----- FDC2214 START -------");
 
-    
+    fdc2214_init(m_twi_master);
 
-    while(1){
-        NRF_LOG_FLUSH();
-        results = ads1114_readADC_Differential_0_1(m_twi_master);
-    
-        NRF_LOG_RAW_INFO("Differential: %x (%f mV)", results, results*multiplier);
-
-        bsp_board_led_invert(0);
-        nrf_delay_ms(1000);
-
-    }
-
+	bool passed_test = fdc2214_pass(m_twi_master);
+	if(passed_test){
+		NRF_LOG_RAW_INFO("Fdc2214 pass");
+	}
+	else{
+		NRF_LOG_RAW_INFO("Fdc2214 failed");
+	}
 }
