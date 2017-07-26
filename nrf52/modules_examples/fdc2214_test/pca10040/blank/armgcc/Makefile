@@ -49,16 +49,18 @@ SRC_FILES += \
   $(SDK_ROOT)/components/ble/ble_services/ble_nus/ble_nus.c \
   $(SDK_ROOT)/components/softdevice/common/softdevice_handler/softdevice_handler.c \
   $(SDK_ROOT)/components/drivers_nrf/timer/nrf_drv_timer.c \
+  $(LIB_DIR)/lis3mdl.c \
   $(LIB_DIR)/lis2de.c \
+  $(LIB_DIR)/vl53l0.c \
   $(LIB_DIR)/si1153.c \
-  $(LIB_DIR)/fdc2214.c \
   $(LIB_DIR)/veml6075.c \
   $(LIB_DIR)/bme280.c \
+  $(LIB_DIR)/apds9250.c \
   $(LIB_DIR)/i2c_driver.c \
   $(LIB_DIR)/ble_driver.c \
+  $(LIB_DIR)/supersensor.c \
   $(LIB_DIR)/tmp007.c \
-  $(LIB_DIR)/ads1114.c \
-
+  $(LIB_DIR)/fdc2214.c \
 
 
 
