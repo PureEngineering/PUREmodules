@@ -1,0 +1,3 @@
+# BTLEDataLogger
+
+This is a simple android app for connecting to and logging data sent over Bluetooth Low Energy serial using [Adafruit's BTLE nRF8001 Breakout](https://www.adafruit.com/product/1697). So far only source code for the iOS BTLE app has been published, and none of the apps offer a convenient method for logging data. This is therefore both a sample app for learning how to write your own BTLE apps as well as a tool for performing simple BTLE logging using an Arduino-like device.
