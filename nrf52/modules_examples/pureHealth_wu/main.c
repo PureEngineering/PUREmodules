@@ -103,7 +103,7 @@ static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;
 static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_NUS_SERVICE, NUS_SERVICE_UUID_TYPE}};  /**< Universally unique service identifier. */
 
 bool ble_on = true;
-bool lis2de_on = false;
+bool lis2de_on = true;
 bool lis3mdl_on = false;
 bool bme280_on = false;
 bool veml6075_on = false; 
@@ -949,6 +949,7 @@ int main(void)
     uart_init();
 
 	lis2de_init(m_twi_master);
+	lis2de_on = true;
     buttons_leds_init(&erase_bonds);
     ble_stack_init();
     gap_params_init();
