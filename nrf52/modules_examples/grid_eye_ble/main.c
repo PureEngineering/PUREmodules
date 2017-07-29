@@ -14,6 +14,7 @@
 #include <stdint.h>
 #include <string.h>
 
+
 #include "SEGGER_RTT.h"
 
 #include "config.h"
@@ -953,20 +954,24 @@ static int grid_eye(void) {
 	  
 	  for (int pixel= 0; pixel <64; pixel++) {
 		  
-		  // NRF_LOG_RAW_INFO("pixel------------------->%d\n\r", pixel);
-		 //  NRF_LOG_FLUSH(); 
-		 // line 29 - 32
+		
+		 // line 29 - 32 communicate with the device address, and also the temperature register
+		 //sending in a dummy data to let the device know our address
 			 write_byte(m_twi_master, addr, pixelTempL, dummy_data);
 			 
-			 //line 33 - 44
+			 //line 33 - 44 
+			 //grabs 2 bytes of information from the temperature register
 			 int16_t temperature = read_2bytes(m_twi_master, addr, pixelTempL); 
 			
+			 //anything bigger than 2047 is negative
 			 if(temperature > 2047) {
 				 temperature = temperature - 4096;
 			 }
 			 
 			 celsius = temperature * 0.25;
 			
+			//NRF_LOG_RAW_INFO("celsius-------------------------------->%d\n\r", celsius);
+
 			 if( (pixel+1) %8 == 0) {
 				 
 			 }
@@ -989,6 +994,7 @@ static int grid_eye(void) {
 	   NRF_LOG_RAW_INFO("celsius-------------------------------->%d\n\r", celsius);
 	  NRF_LOG_FLUSH(); 
 	  //line 73 and on
+	  //this is talking to the thermistor register and getting the ambient temperature
 	   write_byte(m_twi_master, addr, thermistor_addr, dummy_data);
 	   int16_t therm_temp = read_2bytes(m_twi_master, addr, thermistor_addr); 
 	   float celsiusTherm = therm_temp * 0.0625;
