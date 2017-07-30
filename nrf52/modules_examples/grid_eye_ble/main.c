@@ -45,16 +45,7 @@
 #include "nrf_log_ctrl.h"
 #include "nrf_delay.h"
 #include "i2c_driver.h"
-#include "lis3mdl.h"
-#include "lis2de.h"
-#include "vl53l0.h"
-#include "si1153.h"
-#include "veml6075.h"
-#include "bme280.h"
-#include "supersensor.h"
 #include "ble_driver.h"
-#include "p1234701ct.h"
-#include "apds9250.h"
 #include <math.h>
 
 
@@ -69,7 +60,7 @@
 #define CENTRAL_LINK_COUNT              0                                           /**< Number of central links used by the application. When changing this number remember to adjust the RAM settings*/
 #define PERIPHERAL_LINK_COUNT           1                                           /**< Number of peripheral links used by the application. When changing this number remember to adjust the RAM settings*/
 
-#define DEVICE_NAME                     "PureEngineering-CoreModule"                               /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME                     "Pure-GRID-EYE"                               /**< Name of device. Will be included in the advertising data. */
 #define NUS_SERVICE_UUID_TYPE           BLE_UUID_TYPE_VENDOR_BEGIN                  /**< UUID type for the Nordic UART Service (vendor specific). */
 
 #define APP_ADV_INTERVAL                64                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
@@ -96,23 +87,12 @@
 #define TWI_SDA_M                26   //!< Master SDA pin                                       /**< UART RX buffer size. */
 #define MASTER_TWI_INST          0    //!< TWI interface used as a master accessing EEPROM memory
 
-
-
 static ble_nus_t                        m_nus;                                      /**< Structure to identify the Nordic UART Service. */
 static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;    /**< Handle of the current connection. */
 
 static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_NUS_SERVICE, NUS_SERVICE_UUID_TYPE}};  /**< Universally unique service identifier. */
 
 bool ble_on = true;
-bool lis2de_on = false;
-bool lis3mdl_on = false;
-bool bme280_on = false;
-bool veml6075_on = false; 
-bool si1153_on = false;
-bool vl53l0_on = false;
-bool apds9250_on = false;
-bool p1234701ct_on = false;
-
 
 /**
  * @brief TWI master instance
@@ -126,7 +106,7 @@ static const nrf_drv_twi_t m_twi_master = NRF_DRV_TWI_INSTANCE(MASTER_TWI_INST);
 //grid eye
 uint8_t pixelTempL;
 uint8_t pixelTempH;
-uint8_t thermistor_addr;
+uint8_t thermistor_addr = 0x0E;
 char addr = 0x69;
 float celsius;
 float aveTemp;
@@ -193,86 +173,7 @@ static void gap_params_init(void)
 static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
 {
     app_uart_put(p_data[0]);
-    //Parses the input from the android app to turn on or off
-    //the different sensors. 
-    switch (p_data[0])
-    {
-        case LIS2DE_ON_MESSAGE:
-            lis2de_init(m_twi_master);
-            lis2de_on = true;
-            break;
-
-        case LIS2DE_OFF_MESSAGE:
-            lis2de_powerdown(m_twi_master);
-            lis2de_on = false;
-            break;
-
-        case LIS3MDL_ON_MESSAGE:
-            lis3mdl_init(m_twi_master);
-            lis3mdl_on = true;
-            break;
-
-        case LIS3MDL_OFF_MESSAGE:
-            lis3mdl_powerdown(m_twi_master);
-            lis3mdl_on = false;
-            break;
-
-        case BME280_ON_MESSAGE:
-            bme280_init(m_twi_master);
-            bme280_on = true;
-            break;
-
-        case BME280_OFF_MESSAGE:
-            bme280_powerdown(m_twi_master);
-            bme280_on = false;
-            break;
-
-        case VEML6075_ON_MESSAGE:
-            veml6075_init(m_twi_master);
-            veml6075_on = true;
-            break;
-
-        case VEML6075_OFF_MESSAGE:
-            veml6075_powerdown(m_twi_master);
-            veml6075_on = false;
-            break;
-
-        case SI1153_ON_MESSAGE:
-            si1153_init(m_twi_master);
-            si1153_on = true;
-            break;
-
-        case SI1153_OFF_MESSAGE:
-            //Si1153 automatically moves to Standby Mode
-            si1153_on = false;
-            break;
-
-        case APDS9250_ON_MESSAGE:
-            apds9250_init(m_twi_master);
-            apds9250_on = true;
-            break;
-
-        case APDS9250_OFF_MESSAGE:
-            apds9250_powerdown(m_twi_master);
-            apds9250_on = false;
-            break;
-
-        case P1234701CT_ON_MESSAGE:
-            p1234701ct_init(m_twi_master);
-            p1234701ct_on = true;
-            break;
-
-        case P1234701CT_OFF_MESSAGE:
-            p1234701ct_powerdown(m_twi_master);
-            p1234701ct_on = false;
-            break;
-
-        //NEED TO ADD TOF SENSOR
-
-
-        default:
-            break;
-    }
+  
 
     //Code to put ble received messages into uart
 
@@ -760,134 +661,85 @@ static ret_code_t twi_master_init(void)
     return ret;
 }
 
-static void fin_dis(int anaOut) {
-	float result = 109.579* pow(anaOut, -0.415);
-	
-	NRF_LOG_RAW_INFO("Distance---->" NRF_LOG_FLOAT_MARKER "\r\n", NRF_LOG_FLOAT(result));
-	
-}
+uint16_t read_grideye_2bytes(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subAddress){
+	ret_code_t ret;
+	uint16_t full_data;
+	uint8_t buffer[2];
+	buffer[0] = subAddress;
 
-int8_t run_si1153_local_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
-	int si1153_data;
-	int si1153_R;
-	int si1153_IR1;
-	int si1153_IR2;
-
-	uint8_t length = 20;
-	uint8_t *ble_string[length];
-
-	nrf_delay_ms(10);
-
-	
-	bsp_board_led_invert(0);
-
-	//memset(ble_string, 0, 19);
-	si1153_IR1 = si1153_data = si1153_get_channel_data(m_twi_master,0);
-//	sprintf((char *)ble_string, "%2d",si1153_IR1);
-//	send_ble_data(m_nus,(uint8_t *)ble_string,length);
-
-	//memset(ble_string, 0, 19);
-	si1153_IR2 = si1153_get_channel_data(m_twi_master,1);
-	//sprintf((char *)ble_string, ", %2d",si1153_IR2);
-	//send_ble_data(m_nus,(uint8_t *)ble_string,length);
-
-	memset(ble_string, 0, 20);
-	si1153_R = si1153_get_channel_data(m_twi_master,2);
-	sprintf((char *)ble_string, "%05d, %05d, %05d\n",si1153_IR1, si1153_IR2, si1153_R);
-	send_ble_data(m_nus,(uint8_t *)ble_string,length);
-
-	NRF_LOG_RAW_INFO(",%06d,%06d,%06d\n\r", si1153_IR1,si1153_IR2,si1153_R);
-	send_command(m_twi_master,Si1153_FORCE);
-
-
-	NRF_LOG_FLUSH();
-	return 0;
-
-
+	ret = nrf_drv_twi_tx(&twi_master, addr, buffer, 1, false);
+	if (NRF_SUCCESS != ret){
+		NRF_LOG_WARNING("Communication error when asking to read\r\n");
+		return (uint8_t)ret;
+	}
+	ret = nrf_drv_twi_rx(&twi_master, addr, buffer, 2);
+	if (NRF_SUCCESS != ret){
+		NRF_LOG_WARNING("Communication error when reading first byte\r\n");
+		return (uint8_t)ret;
+	}
+	full_data = (buffer[1]<<8) | buffer[0];
+	return full_data;
 
 }
 
 
-int8_t run_lis2de_local_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
-	uint8_t length = 19;
-	uint8_t *ble_string[length];
-//	uint8_t output_array[11];
-	
-	//uint8_t FIFO_SRC = read_byte(twi_master, Lis2de_DEVICE_ADDRESS, Lis2de_FIFO_SRC);
-////	NRF_LOG_RAW_INFO("~~~~~~~~~~~~~~~~Lis2de_FIFO_SRC: %x.\r\n", FIFO_SRC);
-//	uint8_t who_am_i = lis2de_whoami(twi_master);
-//	NRF_LOG_RAW_INFO("Accelerometer WhoamI: %x.\r\n", who_am_i);
-	
-//	uint8_t status = lis2de_readStatus(twi_master);
-//	NRF_LOG_RAW_INFO("Accelerometer Status: %x.\r\n", status);
+//changing slightly from the arduino example to compress the amount of data being send over the ble, leaving data in hex and not converting to floating point, capping data to 0-255 range, 0xff
+//
+//will do this adjusting in the app. 
+//anything bigger than 2047 is negative
+//if(temperature > 2047) {
+//	temperature = temperature - 4096;
+//}
 
-	int8_t OUT_X = lis2de_readOUT_X(twi_master);
-//	NRF_LOG_RAW_INFO("Accelerometer OUTX: %x.\r\n", OUT_X);
-//	float x_in_gravity = convert_to_gravity(OUT_X);
-	sprintf((char *)ble_string, "lis2dex: %.2x \r\n",OUT_X);
-	send_ble_data(m_nus,(uint8_t *)ble_string,length);
-	
+//celsius = temperature * 0.25;
+//NRF_LOG_RAW_INFO("%x", temperature);
+//
+static int grid_eye(void) {
+	const uint8_t dummy_data = 0x00; // Declare some dummy data to use for our search for devices on the TWI bus
+	uint8_t ble_string[32];
+	int ble_string_length;
+	int temperature_row[8];
 
-	int8_t OUT_Y = lis2de_readOUT_Y(twi_master);
-//	NRF_LOG_RAW_INFO("Accelerometer OUTY: %x.\r\n", OUT_Y);
-//	float y_in_gravity = convert_to_gravity(OUT_Y);
-	sprintf((char *)ble_string, "lis2dey: %x \r\n",OUT_Y);
-        send_ble_data(m_nus,(uint8_t *)ble_string,length);
-	
-	int8_t OUT_Z = lis2de_readOUT_Z(twi_master);
-//	NRF_LOG_RAW_INFO("Accelerometer OUTZ: %x.\r\n", OUT_Z);
-//	float z_in_gravity = convert_to_gravity(OUT_Z);
-	//create_packet(z_in_gravity);
-	printf((char *)ble_string, "lis2deZ: %x \r\n",OUT_Z);
-        send_ble_data(m_nus,(uint8_t *)ble_string,length);
+	pixelTempL = 0x80;
 
-//	int8_t temp = lis2de_readTEMP_L(twi_master);
-//	NRF_LOG_RAW_INFO("Accelerometer Temp: %x.\r\n", temp);
-	
+	//this is talking to the thermistor register and getting the ambient temperature
+	int16_t therm_temp = read_grideye_2bytes(m_twi_master, addr, thermistor_addr); 
+	ble_string_length = sprintf(ble_string, "%x\nGE:\n",therm_temp);
+	NRF_LOG_RAW_INFO("%s", ble_string);
+	NRF_LOG_FLUSH(); 
+	send_ble_data(m_nus,ble_string,ble_string_length);
+
+	for (int pixel= 0; pixel <64; pixel++) 
+	{
+		//grabs 2 bytes of information from the temperature register
+		temperature_row[pixel%8] = read_grideye_2bytes(m_twi_master, addr, pixelTempL) ;
+
+		if(temperature_row[pixel%8] > 0xff)
+		{
+			temperature_row[pixel%8] = 0xff;  //cap max temp to prevent data from exceeding 2 bytes
+		}
+
+		if( (pixel+1) %8 == 0) 
+		{
+			ble_string_length = sprintf(ble_string, "%02x%02x%02x%02x%02x%02x%02x%02x\n",temperature_row[0],temperature_row[1],temperature_row[2],temperature_row[3],temperature_row[4],temperature_row[5],temperature_row[6],temperature_row[7]);
+		
+			send_ble_data(m_nus,ble_string,ble_string_length);
+			NRF_LOG_RAW_INFO("%s", ble_string);
+			NRF_LOG_FLUSH(); 
+		}
+
+		pixelTempL += 2;
+
+	}//end for
 
 	return 0;
-
-}
-
-
-//Code that runs in main to read data from sensors that are on
-void print_to_ble(void){
-  //  if(lis2de_on){
-       // run_lis2de_local_ble(m_twi_master,m_nus);
-       //
-        run_si1153_local_ble(m_twi_master, m_nus);
-//    }
-	
-	
-  /*  if(lis3mdl_on){
-        run_lis3mdl_ble(m_twi_master,m_nus);
-    }
-    if(bme280_on){
-        run_bme280_ble(m_twi_master,m_nus);
-    }
-    if(veml6075_on){
-        run_veml6075_ble(m_twi_master,m_nus);
-    }
-    if(si1153_on){
-        run_si1153_ble(m_twi_master,m_nus);
-    }
-    if(vl53l0_on){
-    }
-    if(apds9250_on){
-        run_apds9250_ble(m_twi_master,m_nus);
-    }
-    if(p1234701ct_on){
-        run_p1234701ct_ble(m_twi_master,m_nus);
-    }
-*/
 }
 
 APP_TIMER_DEF(sensor_loop_timer_id);
 
 static void sensor_loop_handler(void * p_context)
 {
-  // print_to_ble();
-//nrf_drv_gpiote_out_toggle(LED_1_PIN);  
+	grid_eye();
 }
 
 static void create_sensor_timer()
@@ -898,164 +750,47 @@ static void create_sensor_timer()
     err_code = app_timer_create(&sensor_loop_timer_id, APP_TIMER_MODE_REPEATED, sensor_loop_handler);
     APP_ERROR_CHECK(err_code);
 
-     err_code = app_timer_start(sensor_loop_timer_id, APP_TIMER_TICKS(50, APP_TIMER_PRESCALER), NULL);
+     err_code = app_timer_start(sensor_loop_timer_id, APP_TIMER_TICKS(200, APP_TIMER_PRESCALER), NULL);
      APP_ERROR_CHECK(err_code);
 }
 
 
-/**@brief Application main function.
- */
-
-
-
-
-int si1153_test(void)
-{
-
-
-	NRF_LOG_RAW_INFO("si1153 test\n\r");
-	NRF_LOG_FLUSH();   
-	NRF_LOG_RAW_INFO("reach before send_command \n\r");
-	send_command(m_twi_master,Si1153_RESET_SW);
-	nrf_delay_ms(10);
-	//si1153_init(m_twi_master);
-	NRF_LOG_RAW_INFO("reach after send_command \n\r");
-	param_set(m_twi_master, Si1153_CHAN_LIST, 0x07);
-
-	param_set(m_twi_master, Si1153_LED1_A, 0x3F);
-	param_set(m_twi_master, Si1153_LED2_A, 0x3F);
-	param_set(m_twi_master, Si1153_LED3_A, 0x3F);
-
-	param_set(m_twi_master, Si1153_ADCCONFIG_0, 0x62);
-	param_set(m_twi_master, Si1153_MEASCONFIG_0, 0x01);
-	param_set(m_twi_master, Si1153_ADCSENS_0, 0x01);
-
-	param_set(m_twi_master, Si1153_ADCCONFIG_1, 0x62);
-	param_set(m_twi_master, Si1153_MEASCONFIG_1, 0x02);
-	param_set(m_twi_master, Si1153_ADCSENS_1, 0x01);
-
-	param_set(m_twi_master, Si1153_ADCCONFIG_2, 0x62);
-	param_set(m_twi_master, Si1153_MEASCONFIG_2, 0x04);
-	param_set(m_twi_master, Si1153_ADCSENS_2, 0x01);
-
-	send_command(m_twi_master,Si1153_FORCE);
-	
-	
-	NRF_LOG_FLUSH();   
-
-	return 0;
-
-}
-
-static int grid_eye(void) {
-	  const uint8_t dummy_data = 0x00; // Declare some dummy data to use for our search for devices on the TWI bus
-	  pixelTempL = 0x80;
-	  aveTemp = 0;
-	  
-	  for (int pixel= 0; pixel <64; pixel++) {
-		  
-		
-		 // line 29 - 32 communicate with the device address, and also the temperature register
-		 //sending in a dummy data to let the device know our address
-			 write_byte(m_twi_master, addr, pixelTempL, dummy_data);
-			 
-			 //line 33 - 44 
-			 //grabs 2 bytes of information from the temperature register
-			 int16_t temperature = read_2bytes(m_twi_master, addr, pixelTempL); 
-			
-			 //anything bigger than 2047 is negative
-			 if(temperature > 2047) {
-				 temperature = temperature - 4096;
-			 }
-			 
-			 celsius = temperature * 0.25;
-			
-			//NRF_LOG_RAW_INFO("celsius-------------------------------->%d\n\r", celsius);
-
-			 if( (pixel+1) %8 == 0) {
-				 
-			 }
-			 
-			 
-			 if(pixel == 36){
-				
-				  aveTemp += celsius;
-				
-				}
-				// NRF_LOG_RAW_INFO("temperature------->%x\n\r", temperature);
-			
-			 	// NRF_LOG_FLUSH(); 
-				 pixelTempL = pixelTempL + 2;
-			
-			 
-		
-	  }//end for
-	  
-	   NRF_LOG_RAW_INFO("celsius-------------------------------->%d\n\r", celsius);
-	  NRF_LOG_FLUSH(); 
-	  //line 73 and on
-	  //this is talking to the thermistor register and getting the ambient temperature
-	   write_byte(m_twi_master, addr, thermistor_addr, dummy_data);
-	   int16_t therm_temp = read_2bytes(m_twi_master, addr, thermistor_addr); 
-	   float celsiusTherm = therm_temp * 0.0625;
-	   NRF_LOG_RAW_INFO("thermistor celsius------->%d\n\r", celsiusTherm);
-	   
-	    aveTemp *= 0.25;
-		
-	 
-	return 0;
-}
-
 int main(void)
 {
-    uint32_t err_code;
-    bool erase_bonds;
+	uint32_t err_code;
+	bool erase_bonds;
 
-    /* Initializing TWI master interface for SuperSensor */
-    err_code = twi_master_init();
-    APP_ERROR_CHECK(err_code);
-
-    APP_ERROR_CHECK(NRF_LOG_INIT(NULL));
-
-    // Initialize.
-    APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
-    uart_init();
-
-    buttons_leds_init(&erase_bonds);
-    ble_stack_init();
-    gap_params_init();
-    services_init();
-    advertising_init();
-    conn_params_init();
-    bsp_board_leds_init();
-
-    //test_supersensor(m_twi_master);
-
-  NRF_LOG_RAW_INFO("UART Start!------->\n\r");
-   err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
-  // NRF_LOG_RAW_INFO("UART Start!------->\n\r");
-    APP_ERROR_CHECK(err_code);
-	
-	//si1153_test();
-   // NRF_LOG_RAW_INFO(",ch0, chan1, chan2\n\r");
-	
-    NRF_LOG_FLUSH();
-
-    create_sensor_timer();
-	nrf_gpio_pin_dir_set(irqPin, GPIO_PIN_CNF_DIR_Input);
-	nrf_gpio_pin_dir_set(pwmPin, GPIO_PIN_CNF_DIR_Output);
-    // Enter main loop.
-    for (;;)
-    {
-	//NRF_LOG_RAW_INFO("UART Start!------->\n\r");
-	//SEGGER_RTT_TerminalOut(1, "Hello World!\n");
-	grid_eye();
-	NRF_LOG_FLUSH(); 
-	err_code = sd_app_evt_wait();
+	/* Initializing TWI master interface for SuperSensor */
+	err_code = twi_master_init();
 	APP_ERROR_CHECK(err_code);
-	
-    }
-	
+
+	APP_ERROR_CHECK(NRF_LOG_INIT(NULL));
+
+	// Initialize.
+	APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
+	uart_init();
+
+	buttons_leds_init(&erase_bonds);
+	ble_stack_init();
+	gap_params_init();
+	services_init();
+	advertising_init();
+	conn_params_init();
+	bsp_board_leds_init();
+
+	NRF_LOG_RAW_INFO("GRIDEYE Starting\n\r");
+	err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
+	APP_ERROR_CHECK(err_code);
+
+	NRF_LOG_FLUSH();
+
+	create_sensor_timer();
+	// Enter main loop.
+	for (;;)
+	{
+		err_code = sd_app_evt_wait();
+		APP_ERROR_CHECK(err_code);
+	}
 }
 
 
