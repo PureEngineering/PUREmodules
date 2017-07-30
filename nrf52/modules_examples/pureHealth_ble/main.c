@@ -40,16 +40,15 @@
 #include "nrf_log_ctrl.h"
 #include "nrf_delay.h"
 #include "i2c_driver.h"
-#include "lis3mdl.h"
-#include "lis2de.h"
-#include "vl53l0.h"
-#include "si1153.h"
-#include "veml6075.h"
-#include "bme280.h"
-#include "supersensor.h"
 #include "ble_driver.h"
-#include "p1234701ct.h"
-#include "apds9250.h"
+#include "lis2de.h"
+#include "bme280.h"
+#include "si1153.h"
+#include "tmp007.h"
+#include "veml6075.h"
+#include "ads1114.h"
+#include "fdc2214.h"
+#include "purehealth.h"
 
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT 0                                           /**< Include the service_changed characteristic. If not enabled, the server's database cannot be changed for the lifetime of the device. */
@@ -99,13 +98,13 @@ static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_NUS_SERVICE, 
 
 bool ble_on = true;
 bool lis2de_on = false;
-bool lis3mdl_on = false;
 bool bme280_on = false;
-bool veml6075_on = false; 
 bool si1153_on = false;
-bool vl53l0_on = false;
-bool apds9250_on = false;
-bool p1234701ct_on = false;
+bool tmp007_on = false; 
+bool veml6075_on = false; 
+bool ads1114_on = false; 
+bool fdc2214_on = false; 
+
 
 
 /**
@@ -193,15 +192,6 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
             lis2de_on = false;
             break;
 
-        case LIS3MDL_ON_MESSAGE:
-            lis3mdl_init(m_twi_master);
-            lis3mdl_on = true;
-            break;
-
-        case LIS3MDL_OFF_MESSAGE:
-            lis3mdl_powerdown(m_twi_master);
-            lis3mdl_on = false;
-            break;
 
         case BME280_ON_MESSAGE:
             bme280_init(m_twi_master);
@@ -233,28 +223,35 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
             si1153_on = false;
             break;
 
-        case APDS9250_ON_MESSAGE:
-            apds9250_init(m_twi_master);
-            apds9250_on = true;
+        case TMP007_ON_MESSAGE:
+            tmp007_begin(m_twi_master);
+            tmp007_on = true;
             break;
 
-        case APDS9250_OFF_MESSAGE:
-            apds9250_powerdown(m_twi_master);
-            apds9250_on = false;
+        case TMP007_OFF_MESSAGE:
+            //tmp007_powerdown(m_twi_master);
+            tmp007_on = false;
             break;
 
-        case P1234701CT_ON_MESSAGE:
-            p1234701ct_init(m_twi_master);
-            p1234701ct_on = true;
+        case ADS1114_ON_MESSAGE:
+            ads1114_begin();
+            ads1114_on = true;
             break;
 
-        case P1234701CT_OFF_MESSAGE:
-            p1234701ct_powerdown(m_twi_master);
-            p1234701ct_on = false;
+        case ADS1114_OFF_MESSAGE:
+            //ads1114_powerdown(m_twi_master);
+            ads1114_on = false;
             break;
 
-        //NEED TO ADD TOF SENSOR
+        case FDC2214_ON_MESSAGE:
+            fdc2214_init(m_twi_master);
+            fdc2214_on = true;
+            break;
 
+        case FDC2214_OFF_MESSAGE:
+            fdc2214_reset(m_twi_master);
+            fdc2214_on = false;
+            break;
 
         default:
             break;
@@ -751,9 +748,6 @@ void print_to_ble(){
     if(lis2de_on){
         run_lis2de_ble(m_twi_master,m_nus);
     }
-    if(lis3mdl_on){
-        run_lis3mdl_ble(m_twi_master,m_nus);
-    }
     if(bme280_on){
         run_bme280_ble(m_twi_master,m_nus);
     }
@@ -763,13 +757,11 @@ void print_to_ble(){
     if(si1153_on){
         run_si1153_ble(m_twi_master,m_nus);
     }
-    if(vl53l0_on){
+    if(tmp007_on){
     }
-    if(apds9250_on){
-        run_apds9250_ble(m_twi_master,m_nus);
+    if(ads1114_on){
     }
-    if(p1234701ct_on){
-        run_p1234701ct_ble(m_twi_master,m_nus);
+    if(fdc2214_on){
     }
 
 }

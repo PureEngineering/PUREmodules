@@ -16,8 +16,9 @@ uint8_t tmp007_whoami(nrf_drv_twi_t twi_master){
 }
 
 
-uint8_t tmp007_begin(nrf_drv_twi_t twi_master,uint16_t samplerate) {
+uint8_t tmp007_begin(nrf_drv_twi_t twi_master) {
 
+  uint16_t samplerate = TMP007_CFG_16SAMPLE;
 
   uint16_t config_word = TMP007_CFG_MODEON | TMP007_CFG_ALERTEN | 
     TMP007_CFG_TRANSC | samplerate;

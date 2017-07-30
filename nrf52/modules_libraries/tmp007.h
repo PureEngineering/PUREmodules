@@ -52,10 +52,7 @@
 
 
 
-  //Adafruit_TMP007(uint8_t addr = TMP007_I2CADDR);
-  //uint16_t samplerate = TMP007_CFG_16SAMPLE;
-
-  uint8_t tmp007_begin(nrf_drv_twi_t twi_master,uint16_t samplerate);  // by default go highres
+  uint8_t tmp007_begin(nrf_drv_twi_t twi_master);  // by default go highres
   bool    tmp007_pass(nrf_drv_twi_t twi_master);
   uint8_t tmp007_whoami(nrf_drv_twi_t twi_master);
 
