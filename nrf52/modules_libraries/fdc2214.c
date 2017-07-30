@@ -135,8 +135,36 @@ uint16_t fdc2214_init(nrf_drv_twi_t twi_master){
   return fdc2214_whoami(twi_master);
 }
 
+uint8_t run_fdc2214(nrf_drv_twi_t twi_master){
+  uint8_t who_am_i = fdc2214_whoami(twi_master);
+  NRF_LOG_RAW_INFO("FDC2214 WhoamI: %x. \r\n",who_am_i);
+
+  uint8_t channel = 0;
+  uint32_t data = fdc2214_readchannel(twi_master, channel); 
+  NRF_LOG_RAW_INFO("FDC2214 Ch0: %f.\r\n", data);
 
 
+  return who_am_i;
+
+}
+
+uint8_t run_fdc2214_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
+  uint8_t length = 15;
+  uint8_t *ble_string[length];
+
+
+  uint8_t who_am_i = fdc2214_whoami(twi_master);
+  sprintf((char *)ble_string, "fdc2214id: %x \r\n",who_am_i);
+  send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
+  uint8_t channel = 0;
+  double data = fdc2214_readchannel(twi_master, channel); 
+  sprintf((char *)ble_string, "fdc2214ch0: %d \r\n",data);
+  send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
+  return who_am_i;
+
+}
 
 
 

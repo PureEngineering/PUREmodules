@@ -59,11 +59,13 @@ uint16_t fdc2214_whoami(nrf_drv_twi_t twi_master);
 
 bool fdc2214_pass(nrf_drv_twi_t twi_master);
 
+uint8_t run_fdc2214(nrf_drv_twi_t twi_master);
+uint8_t run_fdc2214_ble(nrf_drv_twi_t twi_master, ble_nus_t m_nus);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // ADS1114
+#endif // FDC2214
 
