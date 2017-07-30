@@ -55,11 +55,16 @@
   uint8_t tmp007_begin(nrf_drv_twi_t twi_master);  // by default go highres
   bool    tmp007_pass(nrf_drv_twi_t twi_master);
   uint8_t tmp007_whoami(nrf_drv_twi_t twi_master);
+  uint8_t run_tmp007(nrf_drv_twi_t twi_master);
+  uint8_t run_tmp007_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus);
+
+
 
   int16_t tmp007_readRawDieTemperature(nrf_drv_twi_t twi_master);
   int16_t tmp007_readRawVoltage(nrf_drv_twi_t twi_master);
   double  tmp007_readObjTempC(nrf_drv_twi_t twi_master);
   double  tmp007_readDieTempC(nrf_drv_twi_t twi_master);
+
 
 
 #endif

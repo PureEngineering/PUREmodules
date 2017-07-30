@@ -113,3 +113,38 @@ int16_t tmp007_readRawVoltage(nrf_drv_twi_t twi_master) {
   return raw; 
 }
 
+
+
+uint8_t run_tmp007(nrf_drv_twi_t twi_master){
+  uint8_t who_am_i = tmp007_whoami(twi_master);
+  NRF_LOG_RAW_INFO("TempSensor WhoamI: %x. \r\n",who_am_i);
+
+  double dietemp = tmp007_readDieTempC(twi_master);
+  NRF_LOG_RAW_INFO("TempSensor Die: %f.\r\n", dietemp);
+
+  double objtemp = tmp007_readObjTempC(twi_master);
+  NRF_LOG_RAW_INFO("TempSensor Die: %f.\r\n", objtemp);
+
+  return who_am_i;
+
+}
+
+uint8_t run_tmp007_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
+  uint8_t length = 15;
+  uint8_t *ble_string[length];
+
+
+  uint8_t who_am_i = tmp007_whoami(twi_master);
+  sprintf((char *)ble_string, "tmp007id: %x \r\n",who_am_i);
+  send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
+  double dietemp = tmp007_readDieTempC(twi_master);
+  sprintf((char *)ble_string, "tmp007obj: %f \r\n",dietemp);
+  send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
+  double objtemp = tmp007_readObjTempC(twi_master);
+  sprintf((char *)ble_string, "tmp007die: %f \r\n",objtemp);
+  send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
+
+}
