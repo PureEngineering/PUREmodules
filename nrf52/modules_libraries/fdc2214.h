@@ -1,5 +1,5 @@
-#ifndef ADS1114_H
-#define ADS1114_H
+#ifndef FDC2214_H
+#define FDC2214_H
 
 #ifdef __cplusplus
 extern "C" {
