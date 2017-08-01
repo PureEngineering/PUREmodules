@@ -695,7 +695,7 @@ uint16_t read_grideye_2bytes(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subA
 //NRF_LOG_RAW_INFO("%x", temperature);
 //
 static int grid_eye(void) {
-	const uint8_t dummy_data = 0x00; // Declare some dummy data to use for our search for devices on the TWI bus
+	//const uint8_t dummy_data = 0x00; // Declare some dummy data to use for our search for devices on the TWI bus
 	uint8_t ble_string[32];
 	int ble_string_length;
 	int temperature_row[8];
@@ -704,10 +704,11 @@ static int grid_eye(void) {
 
 	//this is talking to the thermistor register and getting the ambient temperature
 	int16_t therm_temp = read_grideye_2bytes(m_twi_master, addr, thermistor_addr); 
-	ble_string_length = sprintf(ble_string, "%x\nGE:\n",therm_temp);
-	send_ble_data(m_nus,ble_string,ble_string_length);
-	NRF_LOG_RAW_INFO("%s", ble_string);
+	ble_string_length = sprintf((char *)ble_string, "%x\nGE:\n",therm_temp);
+	send_ble_data(m_nus,(uint8_t *)ble_string,ble_string_length);
+	NRF_LOG_RAW_INFO("%s", (char *)ble_string);
 	NRF_LOG_FLUSH(); 
+	
 
 	for (int pixel= 0; pixel <64; pixel++) 
 	{
@@ -723,7 +724,7 @@ static int grid_eye(void) {
 		{
 			ble_string_length = sprintf(ble_string, "%02x%02x%02x%02x%02x%02x%02x%02x\n",temperature_row[0],temperature_row[1],temperature_row[2],temperature_row[3],temperature_row[4],temperature_row[5],temperature_row[6],temperature_row[7]);
 		
-			send_ble_data(m_nus,ble_string,ble_string_length);
+			send_ble_data(m_nus,(uint8_t *)ble_string,ble_string_length);
 			NRF_LOG_RAW_INFO("%s", ble_string);
 			NRF_LOG_FLUSH(); 
 		}
