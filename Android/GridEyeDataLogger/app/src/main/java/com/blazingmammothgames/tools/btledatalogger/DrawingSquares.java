@@ -56,7 +56,7 @@ public class DrawingSquares extends View {
             }
         }
         bmp.setPixel(0, 0, Color.WHITE);
- 
+
         canvas.drawBitmap(bmp, null, destinationRect, null);
 
 
