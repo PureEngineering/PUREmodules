@@ -71,6 +71,10 @@ public class UARTDisplayActivity extends BaseActivity {
 
         //we get graph view instance for si1153
         GraphView graph = (GraphView)findViewById(R.id.logGraphView);
+        GraphView si_graph0 = (GraphView)findViewById(R.id.graphView);
+        GraphView si_graph1 = (GraphView)findViewById(R.id.graphView3);
+        GraphView si_graph2 = (GraphView)findViewById(R.id.graphView4);
+
         series = new LineGraphSeries<DataPoint>();
         si1153_series1 = new LineGraphSeries<DataPoint>();
         si1153_series2 = new LineGraphSeries<DataPoint>();
@@ -79,12 +83,18 @@ public class UARTDisplayActivity extends BaseActivity {
         graph.addSeries(series);
         graph.addSeries(si1153_series1);
         graph.addSeries(si1153_series2);
+
+        si_graph0.addSeries(series);
+        si_graph1.addSeries(si1153_series1);
+        si_graph2.addSeries(si1153_series2);
         series.setTitle("ch0");
         si1153_series1.setTitle("ch1");
         si1153_series2.setTitle("ch2");
         setGraphUI(graph);
-
-
+        setGraphUI(si_graph0);
+        setGraphUI(si_graph1);
+        setGraphUI(si_graph2);
+        
         // we get graph view instance for accelerometer
         GraphView accelGraph = (GraphView)findViewById(R.id.graphView2);
         series1 = new LineGraphSeries<DataPoint>();

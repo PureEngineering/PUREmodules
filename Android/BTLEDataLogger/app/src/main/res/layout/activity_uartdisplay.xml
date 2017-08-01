@@ -73,6 +73,30 @@
                 android:layout_gravity="right"
                 android:nestedScrollingEnabled="true" />
 
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graphView"
+                style="@style/AppTheme.LogText"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_gravity="right"
+                android:nestedScrollingEnabled="true" />
+
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graphView3"
+                style="@style/AppTheme.LogText"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_gravity="right"
+                android:nestedScrollingEnabled="true" />
+
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graphView4"
+                style="@style/AppTheme.LogText"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_gravity="right"
+                android:nestedScrollingEnabled="true" />
+
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="match_parent"
