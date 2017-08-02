@@ -57,13 +57,15 @@ public class DrawingSquares extends View {
 
         //drawing on canvas vars
         int canvasWidth = canvas.getWidth();
-        int canvasHeight = canvas.getHeight();
+        int canvasHeight = canvas.getHeight()/2;
 
         int squareWidth = canvasWidth / NUMBER_OF_HORIZONTAL_SQUARES;
-        int squareHeight = (canvasHeight/2) / NUMBER_OF_VERTICAL_SQUARES;
+        int left_offset = squareWidth/2;
+        int squareHeight = canvasHeight / NUMBER_OF_VERTICAL_SQUARES;
+        int top_offset = squareHeight/2;
         Rect destinationRect = new Rect();
 
-        destinationRect.set(0, 0, canvasWidth, canvasWidth);
+        destinationRect.set(0, 0, canvasWidth, canvasHeight);
 
 
         //temp look up table, getting rgb
@@ -112,6 +114,7 @@ public class DrawingSquares extends View {
                     bmp.setPixel(i, j, pixel_color);
                   //  Log.d("color", "pixel color------------> " + Integer.toHexString(pixel_color));
                 }
+
             }
         }
        // int colortest[] = {Color.BLUE, Color.RED, Color.WHITE};
@@ -132,6 +135,19 @@ public class DrawingSquares extends View {
 
         //scale the bitmap to the size of the rectangle
         canvas.drawBitmap(bmp, null, destinationRect, null);
+
+        for(int i=0; i<NUMBER_OF_VERTICAL_SQUARES; i++) {
+            xOffset = (i * squareWidth) + left_offset;
+            for (int j = 0; j < NUMBER_OF_HORIZONTAL_SQUARES; j++) {
+                yOffset = (j * squareHeight) + top_offset;
+                //convert to celsius
+                float temp = (float) (UARTDisplayActivity.data_array[i][j] * 0.25);
+                Paint p = new Paint();
+                p.setColor(Color.WHITE);
+                p.setTextSize(30);
+                canvas.drawText(Integer.toString((int)temp), xOffset, yOffset, p);
+            }
+        }
 
         Log.d("array", "arr: " + Arrays.deepToString(UARTDisplayActivity.data_array));
         Log.d("therm", "arr: " + UARTDisplayActivity.therm_str);

@@ -39,6 +39,10 @@ public class UARTDisplayActivity extends BaseActivity {
     private LineGraphSeries<DataPoint> series1, lisde_series1, lisde_series2;
 
     private int i = 0;
+    String test11[][] = new String[][] {
+            {"1", "23"},
+            {"44", "55"}
+    };
 
     private EditText logFileNameEditText;
     private Button startStopLogButton;
@@ -326,6 +330,11 @@ public class UARTDisplayActivity extends BaseActivity {
                            // Log.d("therm","therm---> " +therm_str);
                         }
 
+//                        Intent myIntent = new Intent(context, GridEyeActivity.class);
+//                        Bundle mB = new Bundle();
+//                        mB.putSerializable("array", test11);
+//                        myIntent.putExtras(mB);
+//                        startActivity(myIntent);
                     }
                     catch(Exception e) {
                         Log.e(TAG, e.toString());
