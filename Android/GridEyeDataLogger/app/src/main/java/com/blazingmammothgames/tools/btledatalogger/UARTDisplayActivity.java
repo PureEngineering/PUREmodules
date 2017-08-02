@@ -39,17 +39,13 @@ public class UARTDisplayActivity extends BaseActivity {
     private LineGraphSeries<DataPoint> series1, lisde_series1, lisde_series2;
 
     private int i = 0;
-    public static String therm_str = new String();
-    public static String data_array[][] = new String[8][8];
-
 
     private EditText logFileNameEditText;
     private Button startStopLogButton;
     private TextView logTextView;
     private TextView statusTextView;
 
-    public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
-    public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+
 
     private boolean uartBound = false;
     private UARTService uartService;
@@ -63,6 +59,11 @@ public class UARTDisplayActivity extends BaseActivity {
 
     //grid eye
     public Button but1;
+    public static String therm_str = new String();
+    public static int data_array[][] = new int[8][8];
+    public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
+    public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+
 
     public void init() {
         but1 = (Button)findViewById(R.id.GE_but1);
@@ -87,36 +88,6 @@ public class UARTDisplayActivity extends BaseActivity {
         init();
 
 
-        //we get graph view instance for si1153
-//        GraphView graph = (GraphView)findViewById(R.id.logGraphView);
-//        series = new LineGraphSeries<DataPoint>();
-//        si1153_series1 = new LineGraphSeries<DataPoint>();
-//        si1153_series2 = new LineGraphSeries<DataPoint>();
-//        si1153_series1.setColor(Color.RED);
-//        si1153_series2.setColor(Color.GREEN);
-//        graph.addSeries(series);
-//        graph.addSeries(si1153_series1);
-//        graph.addSeries(si1153_series2);
-//        series.setTitle("ch0");
-//        si1153_series1.setTitle("ch1");
-//        si1153_series2.setTitle("ch2");
-//        setGraphUI(graph);
-//
-//
-//        // we get graph view instance for accelerometer
-//        GraphView accelGraph = (GraphView)findViewById(R.id.graphView2);
-//        series1 = new LineGraphSeries<DataPoint>();
-//        lisde_series1 = new LineGraphSeries<DataPoint>();
-//        lisde_series2 = new LineGraphSeries<DataPoint>();
-//        lisde_series1.setColor(Color.RED);
-//        lisde_series2.setColor(Color.GREEN);
-//        accelGraph.addSeries(series1);
-//        accelGraph.addSeries(lisde_series1);
-//        accelGraph.addSeries(lisde_series2);
-//        series1.setTitle("Ax");
-//        lisde_series1.setTitle("Ay");
-//        lisde_series2.setTitle("Az");
-//       // setGraphUI(accelGraph);
 
         logFileNameEditText = (EditText)findViewById(R.id.logFileNameEditText);
         startStopLogButton = (Button)findViewById(R.id.startStopLogButton);
@@ -332,12 +303,14 @@ public class UARTDisplayActivity extends BaseActivity {
                         if(rxData[6] != 71 && rxData[7] != 69) {
                             int j = 0, start = 0, end = 2;
                             String temp_str;
-                            Log.i("testing", "rxdata[16]--->"+ rxData[16]);
+                          //  Log.i("testing", "rxdata[16]--->"+ rxData[16]);
                             while (rxData[16] == 10 && j < 8) {
-                                Log.i("testing","i->" +i+ "j->"+ j);
+
+                               // Log.i("testing","i->" +i+ "j->"+ j);
+                                //parse the receiving string
                                 temp_str = text.substring(start, end);
-                              //  int temp_int = (int) Long.parseLong(temp_str, 16);
-                                data_array[i][j]  = temp_str;
+                                int temp_int = (int) Long.parseLong(temp_str, 16);
+                                data_array[i][j]  = temp_int;
                                 j++;
                                 start+=2;
                                 end+=2;
