@@ -12,5 +12,6 @@ public class GridEyeActivity extends ActionBarActivity {
         v = new DrawingSquares(GridEyeActivity.this);
         setContentView(v);
 
+
     }
 }

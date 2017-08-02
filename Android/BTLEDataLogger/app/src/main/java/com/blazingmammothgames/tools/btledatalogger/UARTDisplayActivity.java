@@ -94,7 +94,7 @@ public class UARTDisplayActivity extends BaseActivity {
         setGraphUI(si_graph0);
         setGraphUI(si_graph1);
         setGraphUI(si_graph2);
-        
+
         // we get graph view instance for accelerometer
         GraphView accelGraph = (GraphView)findViewById(R.id.graphView2);
         series1 = new LineGraphSeries<DataPoint>();

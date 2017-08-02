@@ -28,6 +28,7 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.io.IOError;
+import java.util.Arrays;
 import java.util.Random;
 
 
@@ -37,8 +38,9 @@ public class UARTDisplayActivity extends BaseActivity {
     private LineGraphSeries<DataPoint> series, si1153_series1,si1153_series2;
     private LineGraphSeries<DataPoint> series1, lisde_series1, lisde_series2;
 
-    private int lastX = 0;
-    private String packets = new String();
+    private int i = 0;
+    public static String therm_str = new String();
+    public static String data_array[][] = new String[8][8];
 
 
     private EditText logFileNameEditText;
@@ -321,21 +323,36 @@ public class UARTDisplayActivity extends BaseActivity {
                     final byte[] rxData = intent.getByteArrayExtra(UARTService.EXTRA_DATA_RX);
                     try {
                         String text = new String(rxData, "UTF-8");
-
-                       // Log.d("data", "text---> " + text);
-                  //      Log.d("data", "receivedData---------------------> " + channel_0_d);
-
-
-                      //  packets = packets + text;
-                      //  Log.d("data", "rxData[17]--------------> " + (int)rxData[17]);
-                       // if (packets.length() >= 36) {
-                     //   if(rxData[17] == 10){
-                         //   Log.d("data", "packets------------> " + packets);
-                         //   addEntry(packets);
-
-                         //   packets = new String();
-                      ///  }
+                        Log.d("data", text);
                         addToLog(text);
+
+
+
+                        //check for 'G' and 'E' if is not then store everything in an array
+                        if(rxData[6] != 71 && rxData[7] != 69) {
+                            int j = 0, start = 0, end = 2;
+                            String temp_str;
+                            Log.i("testing", "rxdata[16]--->"+ rxData[16]);
+                            while (rxData[16] == 10 && j < 8) {
+                                Log.i("testing","i->" +i+ "j->"+ j);
+                                temp_str = text.substring(start, end);
+                              //  int temp_int = (int) Long.parseLong(temp_str, 16);
+                                data_array[i][j]  = temp_str;
+                                j++;
+                                start+=2;
+                                end+=2;
+                            }
+                            i++;
+                            if (i==8) {
+                              //  Log.d("array", "arr: " + Arrays.deepToString(data_array));
+
+                                i = 0;
+                            }
+                        } else {
+                             therm_str = text.substring(0, 5);
+                           // Log.d("therm","therm---> " +therm_str);
+                        }
+
                     }
                     catch(Exception e) {
                         Log.e(TAG, e.toString());

@@ -6,7 +6,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
+
+import java.util.Arrays;
 
 /**
  * Created by Wuyuan on 7/31/2017.
@@ -59,41 +62,9 @@ public class DrawingSquares extends View {
 
         canvas.drawBitmap(bmp, null, destinationRect, null);
 
-
-
-//       int canvasWidth = canvas.getWidth();
-//        int canvasHeight = canvas.getHeight();
-//
-//
-//        int squareWidth = canvasWidth / NUMBER_OF_HORIZONTAL_SQUARES;
-//        int squareHeight = canvasHeight / NUMBER_OF_VERTICAL_SQUARES;
-//        Rect destinationRect = new Rect();
-//
-//        Paint blue = new Paint();
-//        blue.setColor(Color.BLUE);
-//        blue.setStyle(Paint.Style.FILL);
-
-
-
-    //    destinationRect.set(50, 50, squareWidth+50, squareHeight+50);
-      //  canvas.drawRect(destinationRect, blue);
-        //destinationRect.set(300 , 300, squareWidth, squareHeight);
-      //  canvas.drawRect(destinationRect, blue);
-
-      //  Bitmap bmp = bitmapFromArray(array2d);
-//        for (int i=0; i<2; i++) {
-//            xOffset = i * squareWidth;
-//            for(int j=0; j< 2; j++) {
-//                yOffset = j * squareHeight;
-//                destinationRect.set(xOffset+10, yOffset, squareWidth, squareHeight+yOffset);
-//               // destinationRect.offsetTo(xOffset, yOffset);
-//                canvas.drawRect(destinationRect, blue);
-//            }
-//        }
-     //   canvas.drawRect(destinationRect, blue);
-        //canvas.drawBitmap(bmp, null, destinationRect, null);
-
-
+        Log.d("array", "arr: " + Arrays.deepToString(UARTDisplayActivity.data_array));
+        Log.d("therm", "arr: " + UARTDisplayActivity.therm_str);
+        invalidate();
 
     }
 
