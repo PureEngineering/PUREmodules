@@ -1,0 +1,2 @@
+make flash
+pause
