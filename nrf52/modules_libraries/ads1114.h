@@ -111,6 +111,10 @@ int16_t   ads1114_getLastConversionResults(nrf_drv_twi_t twi_master);
 
 
 
+void run_ads1114(nrf_drv_twi_t twi_master);
+void run_ads1114_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus);
+
+
 #ifdef __cplusplus
 }
 #endif
