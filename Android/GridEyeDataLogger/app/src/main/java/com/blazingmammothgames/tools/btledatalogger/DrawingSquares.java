@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
@@ -20,7 +21,7 @@ public class DrawingSquares extends View {
     private static final int NUMBER_OF_VERTICAL_SQUARES = 8;
     private static final int NUMBER_OF_HORIZONTAL_SQUARES = 8;
 
-
+    int array2[][] = new int[8][8];
     float ave = 0;
     float max_x, max_y;
     float min = 0xffff;
@@ -28,13 +29,7 @@ public class DrawingSquares extends View {
     int xOffset = 0;
     int yOffset = 0;
     Bitmap bmp = Bitmap.createBitmap(NUMBER_OF_VERTICAL_SQUARES, NUMBER_OF_HORIZONTAL_SQUARES, Bitmap.Config.ARGB_8888);
-    int[][] array2d = new int[][]{
-        {1,2,3,4,5},
-        {6,7,8,9,10},
-        {11,12,13,14,15},
-        {15,16,17,18,19},
-        {20,21,22,23,24}
-    };
+
 
 
     public DrawingSquares(Context context) {
@@ -42,9 +37,25 @@ public class DrawingSquares extends View {
 
     }
 
+    public void UpdateData(int[][] x) {
+        for(int i=0; i<8; i++) {
+            for (int j=0; j<8; j++) {
+                array2[i][j] = x[i][j];
+            }
+        }
+        Log.d("array2", Arrays.deepToString(array2));
+
+        invalidate();
+
+
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+
+
 
         //temperature lookup table vars
         min = 0xffff;
@@ -68,11 +79,12 @@ public class DrawingSquares extends View {
         destinationRect.set(0, 0, canvasWidth, canvasHeight);
 
 
+
         //temp look up table, getting rgb
         ave = 0;
         for(int i = 0; i< NUMBER_OF_VERTICAL_SQUARES; i++) {
             for(int j =0; j < NUMBER_OF_HORIZONTAL_SQUARES; j++){
-                float each_pixel = (float) (UARTDisplayActivity.data_array[i][j] * 0.25);
+                float each_pixel = (float) (array2[i][j] * 0.25);
                 ave += each_pixel;
                 if(each_pixel < min) {
                     min = each_pixel;
@@ -89,7 +101,7 @@ public class DrawingSquares extends View {
         for(int i=0; i<NUMBER_OF_VERTICAL_SQUARES; i++) {
             for (int j=0; j< NUMBER_OF_HORIZONTAL_SQUARES; j++) {
                 //convert to celsius
-                float temp = (float)(UARTDisplayActivity.data_array[i][j] * 0.25);
+                float temp = (float)(array2[i][j] * 0.25);
                 float r=0;
                 float b=0;
                 float g=0;
@@ -106,12 +118,12 @@ public class DrawingSquares extends View {
 
                 //convert to rgb and set the pixel color
                 pixel_color = Color.rgb((int)r, (int)g, (int)b);
-                Log.d("color", "r: " + r + " b:" + b + " g:" +g + "pixel_color-->" + Integer.toHexString(pixel_color));
-                bmp.setPixel(i, j, pixel_color);
+           //     Log.d("color", "r: " + r + " b:" + b + " g:" +g + "pixel_color-->" + Integer.toHexString(pixel_color));
+                bmp.setPixel(j, i, pixel_color);
                // Log.d("color", "pixel color-> " + Integer.toHexString(pixel_color));
                 if((i== max_x) && (j==max_y)) {
                     pixel_color = Color.rgb(255, 255, 0);
-                    bmp.setPixel(i, j, pixel_color);
+                    bmp.setPixel(j, i, pixel_color);
                   //  Log.d("color", "pixel color------------> " + Integer.toHexString(pixel_color));
                 }
 
@@ -141,7 +153,7 @@ public class DrawingSquares extends View {
             for (int j = 0; j < NUMBER_OF_HORIZONTAL_SQUARES; j++) {
                 yOffset = (j * squareHeight) + top_offset;
                 //convert to celsius
-                float temp = (float) (UARTDisplayActivity.data_array[i][j] * 0.25);
+                float temp = (float) (array2[i][j] * 0.25);
                 Paint p = new Paint();
                 p.setColor(Color.WHITE);
                 p.setTextSize(30);
@@ -149,14 +161,18 @@ public class DrawingSquares extends View {
             }
         }
 
-        Log.d("array", "arr: " + Arrays.deepToString(UARTDisplayActivity.data_array));
-        Log.d("therm", "arr: " + UARTDisplayActivity.therm_str);
-        invalidate();
+      //  Log.d("array", "arr: " + Arrays.deepToString(UARTDisplayActivity.data_array));
+     //   Log.d("therm", "arr: " + UARTDisplayActivity.therm_str);
+
 
     }
 
     long map(long x, long in_min, long in_max, long out_min, long out_max)
     {
+        if(((in_max - in_min) + out_min ) == 0)
+        {
+            return 0;
+        }
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 
