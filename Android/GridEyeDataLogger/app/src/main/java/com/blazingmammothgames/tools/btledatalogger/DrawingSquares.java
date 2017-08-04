@@ -143,6 +143,7 @@ public class DrawingSquares extends View {
                 }else if (temp < ave) {
                     b = map(temp, min, max, 128, 255);
                 }
+                //hello
 
 
                 //convert to rgb and set the pixel color
