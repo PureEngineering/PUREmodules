@@ -71,6 +71,10 @@ public class UARTDisplayActivity extends BaseActivity {
 
         //we get graph view instance for si1153
         GraphView graph = (GraphView)findViewById(R.id.logGraphView);
+        GraphView si_graph0 = (GraphView)findViewById(R.id.graphView);
+        GraphView si_graph1 = (GraphView)findViewById(R.id.graphView3);
+        GraphView si_graph2 = (GraphView)findViewById(R.id.graphView4);
+
         series = new LineGraphSeries<DataPoint>();
         si1153_series1 = new LineGraphSeries<DataPoint>();
         si1153_series2 = new LineGraphSeries<DataPoint>();
@@ -79,11 +83,17 @@ public class UARTDisplayActivity extends BaseActivity {
         graph.addSeries(series);
         graph.addSeries(si1153_series1);
         graph.addSeries(si1153_series2);
+
+        si_graph0.addSeries(series);
+        si_graph1.addSeries(si1153_series1);
+        si_graph2.addSeries(si1153_series2);
         series.setTitle("ch0");
         si1153_series1.setTitle("ch1");
         si1153_series2.setTitle("ch2");
         setGraphUI(graph);
-
+        setGraphUI(si_graph0);
+        setGraphUI(si_graph1);
+        setGraphUI(si_graph2);
 
         // we get graph view instance for accelerometer
         GraphView accelGraph = (GraphView)findViewById(R.id.graphView2);
@@ -409,10 +419,16 @@ public class UARTDisplayActivity extends BaseActivity {
 //        }catch(Exception e) {
 //
 //        }
-        //here, we choose to display max 10 point on the view port and we scroll to end
+        //here, we choose to display max 400 point on the view port and we scroll to end
+        //this is where we are ploting to the graph, Since all 3 plots will be displaying on the same
+        //graph, the scale of the graph will be huge. In order to see the heartbeat better, comment out
+        //any of the code below and just plot 1 channel.
+        //ch 0 from si1153,
         series.appendData(new DataPoint(lastX++, si1153_ch0), true, 400);
-        si1153_series1.appendData(new DataPoint(lastX++, si1153_ch1), true, 400);
-        si1153_series2.appendData(new DataPoint(lastX++, si1153_ch2), true, 400);
+        //ch1 from si1153
+        si1153_series1.appendData(new DataPoint(lastX++, si1153_ch1), true, 33);
+        //ch2 from si1153
+        si1153_series2.appendData(new DataPoint(lastX++, si1153_ch2), true, 33);
 
         //accel data
         series1.appendData(new DataPoint(lastX++, lis3de_ax), true, 400);

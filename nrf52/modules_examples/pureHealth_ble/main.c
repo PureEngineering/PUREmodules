@@ -758,10 +758,13 @@ void print_to_ble(){
         run_si1153_ble(m_twi_master,m_nus);
     }
     if(tmp007_on){
+        run_tmp007_ble(m_twi_master,m_nus);
+
     }
     if(ads1114_on){
     }
     if(fdc2214_on){
+        run_fdc2214_ble(m_twi_master,m_nus);
     }
 
 }

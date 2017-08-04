@@ -146,5 +146,5 @@ uint8_t run_tmp007_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
   sprintf((char *)ble_string, "tmp007die: %f \r\n",objtemp);
   send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
-
+  return who_am_i;
 }

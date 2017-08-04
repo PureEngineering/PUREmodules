@@ -706,7 +706,11 @@ static int grid_eye(void) {
 
 	//this is talking to the thermistor register and getting the ambient temperature
 	int16_t therm_temp = read_grideye_2bytes(m_twi_master, addr, thermistor_addr); 
+<<<<<<< HEAD
 	ble_string_length = sprintf((char *)ble_string, "\nT%04x\nGE:\n",therm_temp);
+=======
+	ble_string_length = sprintf((char *)ble_string, "%05x\nGE:\n",therm_temp);
+>>>>>>> 77ddb1e3d665d7a3f75657ab31d893cf46963fb3
 	send_ble_data(m_nus,(uint8_t *)ble_string,ble_string_length);
 	NRF_LOG_RAW_INFO("%s", (char *)ble_string);
 	NRF_LOG_FLUSH(); 
