@@ -28,10 +28,16 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.io.IOError;
+import java.util.Arrays;
 import java.util.Random;
 
 
 public class UARTDisplayActivity extends BaseActivity {
+    //GridEyeActivity arrayData;
+    private DrawingSquares arrayData;
+    int array1[][] = new int[8][8];
+    int row_index;
+    int count = 0;
     // tag for logging
     private final static String TAG = UARTService.class.getSimpleName();
     private LineGraphSeries<DataPoint> series, si1153_series1,si1153_series2;
@@ -60,19 +66,19 @@ public class UARTDisplayActivity extends BaseActivity {
 
 
     //grid eye
-    public Button but1;
+     //Button but1;
 
-    public void init() {
-        but1 = (Button)findViewById(R.id.GE_but1);
-        but1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(UARTDisplayActivity.this, GridEyeActivity.class);
-                startActivity(i);
-            }
-        });
-
-    }
+//    public void init() {
+//        but1 = (Button)findViewById(R.id.GE_but1);
+//        but1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent i = new Intent(UARTDisplayActivity.this, GridEyeActivity.class);
+//                startActivity(i);
+//            }
+//        });
+//
+//    }
 
     @Override protected int getLayoutResource() {
         return R.layout.activity_uartdisplay;
@@ -81,40 +87,11 @@ public class UARTDisplayActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_uartdisplay);
-        init();
+       // init();
 
-
-        //we get graph view instance for si1153
-//        GraphView graph = (GraphView)findViewById(R.id.logGraphView);
-//        series = new LineGraphSeries<DataPoint>();
-//        si1153_series1 = new LineGraphSeries<DataPoint>();
-//        si1153_series2 = new LineGraphSeries<DataPoint>();
-//        si1153_series1.setColor(Color.RED);
-//        si1153_series2.setColor(Color.GREEN);
-//        graph.addSeries(series);
-//        graph.addSeries(si1153_series1);
-//        graph.addSeries(si1153_series2);
-//        series.setTitle("ch0");
-//        si1153_series1.setTitle("ch1");
-//        si1153_series2.setTitle("ch2");
-//        setGraphUI(graph);
-//
-//
-//        // we get graph view instance for accelerometer
-//        GraphView accelGraph = (GraphView)findViewById(R.id.graphView2);
-//        series1 = new LineGraphSeries<DataPoint>();
-//        lisde_series1 = new LineGraphSeries<DataPoint>();
-//        lisde_series2 = new LineGraphSeries<DataPoint>();
-//        lisde_series1.setColor(Color.RED);
-//        lisde_series2.setColor(Color.GREEN);
-//        accelGraph.addSeries(series1);
-//        accelGraph.addSeries(lisde_series1);
-//        accelGraph.addSeries(lisde_series2);
-//        series1.setTitle("Ax");
-//        lisde_series1.setTitle("Ay");
-//        lisde_series2.setTitle("Az");
-//       // setGraphUI(accelGraph);
+        arrayData = (DrawingSquares)findViewById(R.id.view3);
 
         logFileNameEditText = (EditText)findViewById(R.id.logFileNameEditText);
         startStopLogButton = (Button)findViewById(R.id.startStopLogButton);
@@ -320,22 +297,33 @@ public class UARTDisplayActivity extends BaseActivity {
                 case UARTService.ACTION_DATA_AVAILABLE: {
                     final byte[] rxData = intent.getByteArrayExtra(UARTService.EXTRA_DATA_RX);
                     try {
+                        count++;
                         String text = new String(rxData, "UTF-8");
 
-                       // Log.d("data", "text---> " + text);
-                  //      Log.d("data", "receivedData---------------------> " + channel_0_d);
+                        Log.d("data", "data------> " +  (char) Long.parseLong(Integer.toHexString((short)rxData[0]), 16) + "," + (short)rxData[0] +"count " + count);
+                        Log.d("data", "data------> " + (char) Long.parseLong(Integer.toHexString((short)rxData[1]), 16) + "," + (short)rxData[1]);
+                        Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[2]), 16) + "," + (short)rxData[2]);
+                        Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[3]), 16) + "," + (short)rxData[3]);
+                        Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[4]), 16) + "," + (short)rxData[4]);
+                        Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[5]), 16) + "," + (short)rxData[5]);
+                        Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[6]), 16) + "," + (short)rxData[6]);
+                        Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[7]), 16) + "," + (short)rxData[7]);
+
+                        if((short)rxData[1] != 'T') {
+                            count++;
+
+                        }else {
+                            count =0;
+                        }
+                        if(count == 8) {
+                            Log.d("data", "fuck you------> " + count);
+                            //  count++;
+                        }
 
 
-                      //  packets = packets + text;
-                      //  Log.d("data", "rxData[17]--------------> " + (int)rxData[17]);
-                       // if (packets.length() >= 36) {
-                     //   if(rxData[17] == 10){
-                         //   Log.d("data", "packets------------> " + packets);
-                         //   addEntry(packets);
-
-                         //   packets = new String();
-                      ///  }
                         addToLog(text);
+
+                        GridEyeImage(rxData, text);
                     }
                     catch(Exception e) {
                         Log.e(TAG, e.toString());
@@ -405,53 +393,36 @@ public class UARTDisplayActivity extends BaseActivity {
         }
     }
 
-    //add  data to graph
-//    private void addEntry(String packet) {
-//        String[] received_Data = packet.split(",");
-//
-//        //    String received_Data1 = received_Data[1];
-//        //   String received_Data2 = received_Data[2];
-//
-//        int si1153_ch0 = Integer.parseInt(received_Data[0]);
-//        int si1153_ch1 = Integer.parseInt(received_Data[1]);
-//        int si1153_ch2 = Integer.parseInt(received_Data[2]);
-//
-//        int lis3de_ax  = Integer.parseInt(received_Data[3]);
-//        int lis3de_Ay  = Integer.parseInt(received_Data[4]);
-//        int lis3de_Az  = Integer.parseInt(received_Data[5].trim());
-//        Log.d("data", "lis3de_Az+++++++++++++++++++++ " + lis3de_Az);
-////        try {
-////            Thread.sleep(1000);
-////        }catch(Exception e) {
-////
-////        }
-//        //here, we choose to display max 10 point on the view port and we scroll to end
-//        series.appendData(new DataPoint(lastX++, si1153_ch0), true, 400);
-//        si1153_series1.appendData(new DataPoint(lastX++, si1153_ch1), true, 400);
-//        si1153_series2.appendData(new DataPoint(lastX++, si1153_ch2), true, 400);
-//
-//        //accel data
-//        series1.appendData(new DataPoint(lastX++, lis3de_ax), true, 400);
-//        lisde_series1.appendData(new DataPoint(lastX++, lis3de_Ay), true, 400);
-//        lisde_series2.appendData(new DataPoint(lastX++, lis3de_Az), true, 400);
-//    }
 
-    //set up the auto scroll and zoom when ploting in real time.
-//    private void setGraphUI(GraphView graph) {
-//        //data
-//        graph.getLegendRenderer().setVisible(true);
-//        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
-//        graph.getLegendRenderer().setTextSize(20);
-//        Viewport viewport = graph.getViewport();
-//        // activate horizontal zooming and scrolling
-//        viewport.setScalable(true);
-//        // activate horizontal scrolling
-//        viewport.setScrollable(true);
-//        // activate horizontal and vertical zooming and scrolling
-//        viewport.setScalableY(true);
-//        // activate vertical scrolling
-//        viewport.setScrollableY(true);
-//        graph.getGridLabelRenderer().setPadding(96);
-//
-//    }
+    private void GridEyeImage(byte[] rxData, String text) {
+
+        String temp_str;
+        int j=0, start =0, end =2;
+
+        if(rxData[7] == 'G' && rxData[8] == 'E') {
+
+            if(row_index == 8) {
+                Log.d("update", "updateData" + Arrays.deepToString(array1));
+                arrayData.updateData(array1);
+            }
+            row_index = 0; j = 0; start = 0; end = 2;
+
+        } else {
+
+            if( row_index <=7)
+            {
+
+
+                while ( j < 8) {
+                    array1[row_index][j] = (int)rxData[j];
+                    Log.d("array3", "array1--> " + array1[row_index][j]);
+                    j++;
+                    start += 2;
+                    end += 2;
+                }
+            }
+            row_index++;
+        }
+    }
+
 }

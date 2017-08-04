@@ -694,17 +694,19 @@ uint16_t read_grideye_2bytes(nrf_drv_twi_t twi_master,uint8_t addr, uint8_t subA
 //celsius = temperature * 0.25;
 //NRF_LOG_RAW_INFO("%x", temperature);
 //
+#define GRID_EYE_BLOCK_SIZE (8)
 static int grid_eye(void) {
 	//const uint8_t dummy_data = 0x00; // Declare some dummy data to use for our search for devices on the TWI bus
 	uint8_t ble_string[32];
 	int ble_string_length;
-	int temperature_row[8];
+	int temperature_row[GRID_EYE_BLOCK_SIZE];
+	uint8_t temperature_row_send[GRID_EYE_BLOCK_SIZE];
 
 	pixelTempL = 0x80;
 
 	//this is talking to the thermistor register and getting the ambient temperature
 	int16_t therm_temp = read_grideye_2bytes(m_twi_master, addr, thermistor_addr); 
-	ble_string_length = sprintf((char *)ble_string, "%x\nGE:\n",therm_temp);
+	ble_string_length = sprintf((char *)ble_string, "\nT%04x\nGE:\n",therm_temp);
 	send_ble_data(m_nus,(uint8_t *)ble_string,ble_string_length);
 	NRF_LOG_RAW_INFO("%s", (char *)ble_string);
 	NRF_LOG_FLUSH(); 
@@ -713,25 +715,38 @@ static int grid_eye(void) {
 	for (int pixel= 0; pixel <64; pixel++) 
 	{
 		//grabs 2 bytes of information from the temperature register
-		temperature_row[pixel%8] = read_grideye_2bytes(m_twi_master, addr, pixelTempL) ;
+		temperature_row[pixel%GRID_EYE_BLOCK_SIZE] = read_grideye_2bytes(m_twi_master, addr, pixelTempL) ;
 
-		if(temperature_row[pixel%8] > 0xff)
+		if(temperature_row[pixel%GRID_EYE_BLOCK_SIZE] > 0xff)
 		{
-			temperature_row[pixel%8] = 0xff;  //cap max temp to prevent data from exceeding 2 bytes
+			temperature_row[pixel%GRID_EYE_BLOCK_SIZE] = 0xff;  //cap max temp to prevent data from exceeding 2 bytes
 		}
+	    temperature_row_send[pixel%GRID_EYE_BLOCK_SIZE] = temperature_row[pixel%8];
 
-		if( (pixel+1) %8 == 0) 
+
+		if( (pixel+1) %GRID_EYE_BLOCK_SIZE == 0) 
 		{
-			ble_string_length = sprintf(ble_string, "%02x%02x%02x%02x%02x%02x%02x%02x\n",temperature_row[0],temperature_row[1],temperature_row[2],temperature_row[3],temperature_row[4],temperature_row[5],temperature_row[6],temperature_row[7]);
-		
-			send_ble_data(m_nus,(uint8_t *)ble_string,ble_string_length);
-			NRF_LOG_RAW_INFO("%s", ble_string);
+			
+			send_ble_data(m_nus,(uint8_t *)temperature_row_send,GRID_EYE_BLOCK_SIZE);
+		//	NRF_LOG_RAW_INFO("%02x,%02x,%02x,%02x, %02x, %02x, %02x, %02x\n", temperature_row_send[0],temperature_row_send[1],temperature_row_send[2],temperature_row_send[3],temperature_row_send[4],temperature_row_send[5],temperature_row_send[6],temperature_row_send[7]);
+		NRF_LOG_RAW_INFO("%02x,%02x, %02x, %02x,", temperature_row_send[0], temperature_row_send[1],temperature_row_send[2],temperature_row_send[3] );
+			NRF_LOG_RAW_INFO("%02x,%02x, %02x, %02x\n",temperature_row_send[4],temperature_row_send[5],temperature_row_send[6],temperature_row_send[7]);
 			NRF_LOG_FLUSH(); 
 		}
+
+///		if( (pixel+1) %8 == 0) 
+//		{
+//			ble_string_length = sprintf(ble_string, "%02x%02x%02x%02x%02x%02x%02x%02x\n",temperature_row[0],temperature_row[1],temperature_row[2],temperature_row[3],temperature_row[4],temperature_row[5],temperature_row[6],temperature_row[7]);
+//			send_ble_data(m_nus,(uint8_t *)ble_string,ble_string_length);
+//			NRF_LOG_RAW_INFO("%s", ble_string);
+//			NRF_LOG_FLUSH(); 
+//		}
+
 
 		pixelTempL += 2;
 
 	}//end for
+
 
 	return 0;
 }

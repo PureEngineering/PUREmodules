@@ -2,6 +2,7 @@ package com.blazingmammothgames.tools.btledatalogger;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 public class GridEyeActivity extends ActionBarActivity {
 
@@ -12,5 +13,9 @@ public class GridEyeActivity extends ActionBarActivity {
         v = new DrawingSquares(GridEyeActivity.this);
         setContentView(v);
 
+    }
+
+    public void Test() {
+        Log.d("hello", "hello world");
     }
 }
