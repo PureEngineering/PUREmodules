@@ -5,7 +5,7 @@ android {
     buildToolsVersion '25.0.0'
 
     defaultConfig {
-        applicationId "com.blazingmammothgames.tools.btledatalogger"
+        applicationId "com.pure_engineering_grid_eye.tools.btledatalogger"
         minSdkVersion 18
         targetSdkVersion 21
         versionCode 2
