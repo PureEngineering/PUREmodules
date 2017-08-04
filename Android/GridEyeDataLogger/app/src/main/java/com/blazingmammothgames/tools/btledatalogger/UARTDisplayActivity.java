@@ -308,9 +308,9 @@ public class UARTDisplayActivity extends BaseActivity {
                         Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[5]), 16) + "," + (short)rxData[5]);
                         Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[6]), 16) + "," + (short)rxData[6]);
                         Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[7]), 16) + "," + (short)rxData[7]);
-                       String text = Integer.toString((int)rxData[0]) + ", " + Integer.toString((int)rxData[1]) + ", " + Integer.toString((int)rxData[2]) + ", " + Integer.toString((int)rxData[3]) + ", "
-                                + Integer.toString((int)rxData[4]) + ", " + Integer.toString((int)rxData[5]) + ", " + Integer.toString((int)rxData[6]) + ", "
-                                + Integer.toString((int)rxData[7]) + "\n";
+                       String text = Integer.toString((int)rxData[0]&0xff) + ", " + Integer.toString((int)rxData[1]&0xff) + ", " + Integer.toString((int)rxData[2]&0xff) + ", " + Integer.toString((int)rxData[3]&0xff) + ", "
+                                + Integer.toString((int)rxData[4]&0xff) + ", " + Integer.toString((int)rxData[5]&0xff) + ", " + Integer.toString((int)rxData[6]&0xff) + ", "
+                                + Integer.toString((int)rxData[7]&0xff) + "\n";
 
                         addToLog(text);
 
@@ -405,13 +405,16 @@ public class UARTDisplayActivity extends BaseActivity {
 
 
                 while ( j < 8) {
+                    /*
                     int temp = 0;
-                    if((int)rxData[j] < -1) {
+                    if((int)(rxData[j]&0xff) < -1) {
                         temp = ((int) rxData[j]) * -1;
                     }else {
                         temp = (int) rxData[j];
                     }
                     array1[row_index][j] = temp;
+                    */
+                    array1[row_index][j] = ((int) rxData[j])&0xff ;
                     Log.d("array3", "array1--> " + array1[row_index][j]);
                     j++;
                     start += 2;

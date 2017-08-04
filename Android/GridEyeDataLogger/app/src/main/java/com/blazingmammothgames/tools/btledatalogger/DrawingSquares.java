@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 
 /**
@@ -22,11 +23,15 @@ public class DrawingSquares extends View {
     private static final int NUMBER_OF_VERTICAL_SQUARES = 8;
     private static final int NUMBER_OF_HORIZONTAL_SQUARES = 8;
 
+    int aR = 0;   int aG = 0; int aB=255;  // RGB for our 1st color (blue in this case).
+    int bR = 255; int bG = 0; int bB=0;    // RGB for our 2nd color (red in this case).
+
     int array2[][] = new int[8][8];
     int array3[][] = new int[8][8];
     float ave = 0;
-    float max_x, max_y;
+    float max_x, max_y, min_x, min_y;
     float min = 0xffff;
+
     float max = 0;
     int xOffset = 0;
     int yOffset = 0;
@@ -43,16 +48,10 @@ public class DrawingSquares extends View {
     }
 
      void updateData(int[][] x) {
-//        for(int i=0, row = 7; i<8; i++, row--) {
-//            for (int j=0, col = 7; j<8; j++, col--) {
-//                array2[i][j] = x[j][row];
-//
-//            }
-//        }
 
          for(int i=0; i<8; i++) {
              for (int j=0; j<8; j++) {
-                 array2[i][j] = x[j][7-i];
+                 array2[i][j] = x[7-j][i];
              }
          }
 
@@ -96,7 +95,26 @@ public class DrawingSquares extends View {
         for(int i = 0; i< NUMBER_OF_VERTICAL_SQUARES; i++) {
             for(int j =0; j < NUMBER_OF_HORIZONTAL_SQUARES; j++){
                 float each_pixel = (float) (array2[i][j] * 0.25);
-                Log.d("temp", "each pixel------------> " + array2[i][j]);
+
+            //    float each_pixel1 = Normalize(each_pixel);
+
+
+//                //new heat map method
+//                float r = (float)(bR - aR) * each_pixel1 + aR;      // Evaluated as -255*value + 255.
+//                float g = (float)(bG - aG) * each_pixel1 + aG;      // Evaluates as 0.
+//                float b = (float)(bB - aB) * each_pixel1 + aB;      // Evaluates as 255*value + 0.
+//
+//
+//                pixel_color = Color.rgb((int)r, (int)g, (int)b);
+//                Log.d("color", "r: " + r + "g: " + g + "b: " + b);
+//                Log.d("color", "pixel_color -----> " + pixel_color);
+//                bmp.setPixel(i, j, pixel_color);
+//
+//                //new heat map method
+
+
+
+
                 ave += each_pixel;
                 if(each_pixel < min) {
                     min = each_pixel;
@@ -119,13 +137,12 @@ public class DrawingSquares extends View {
                 float g=0;
                   Log.d("temp", "temp------------> " + (long)temp);
 
-                g = map((long)temp, (long)min, (long)max, (long)0, (long)75);
+                g = map(temp, min, max, 0, 75);
                 if(temp > ave) {
-                    r = map((long)temp, (long)min, (long)max, (long)0, (long)255);
+                    r = map(temp, min, max, 0, 255);
                 }else if (temp < ave) {
-                    b = map((long)temp, (long)min, (long)max, (long)0, (long)255);
+                    b = map(temp, min, max, 128, 255);
                 }
-
 
 
                 //convert to rgb and set the pixel color
@@ -140,8 +157,11 @@ public class DrawingSquares extends View {
                 }
 
 
-    }
-}
+            }
+        }
+
+
+
 
 
         //scale the bitmap to the size of the rectangle
@@ -153,10 +173,16 @@ public class DrawingSquares extends View {
                 yOffset = (j * squareHeight) + top_offset;
                 //convert to celsius
                 float temp = (float) (array2[i][j] * 0.25);
+
+                DecimalFormat df = new DecimalFormat();
+                df.setMaximumFractionDigits(1);
+                df.setMinimumFractionDigits(1);
+
                 Paint p = new Paint();
                 p.setColor(Color.WHITE);
                 p.setTextSize(30);
-                canvas.drawText(Integer.toString((int)temp), xOffset, yOffset, p);
+                p.setAlpha(0x40);
+                canvas.drawText(df.format(temp), xOffset, yOffset, p);
             }
         }
 
@@ -166,7 +192,7 @@ public class DrawingSquares extends View {
 
     }
 
-    long map(long x, long in_min, long in_max, long out_min, long out_max)
+    float map(float x, float in_min, float in_max, float out_min, float out_max)
     {
         if(((in_max - in_min) + out_min ) == 0)
         {
@@ -174,5 +200,9 @@ public class DrawingSquares extends View {
         }
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
+
+
+
+
 
 }
