@@ -298,28 +298,19 @@ public class UARTDisplayActivity extends BaseActivity {
                     final byte[] rxData = intent.getByteArrayExtra(UARTService.EXTRA_DATA_RX);
                     try {
                         count++;
-                        String text = new String(rxData, "UTF-8");
+                       // String text = new String(rxData, "UTF-8");
 
-                        Log.d("data", "data------> " +  (char) Long.parseLong(Integer.toHexString((short)rxData[0]), 16) + "," + (short)rxData[0] +"count " + count);
-                        Log.d("data", "data------> " + (char) Long.parseLong(Integer.toHexString((short)rxData[1]), 16) + "," + (short)rxData[1]);
+                        Log.d("data", "data------> " +  (char) Long.parseLong(Integer.toHexString((short)rxData[0]), 16) + "," + rxData[0] +"count " + count);
+                        Log.d("data", "data------> " + (char) Long.parseLong(Integer.toHexString((short)rxData[1]), 16) + "," + rxData[1]);
                         Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[2]), 16) + "," + (short)rxData[2]);
                         Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[3]), 16) + "," + (short)rxData[3]);
                         Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[4]), 16) + "," + (short)rxData[4]);
                         Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[5]), 16) + "," + (short)rxData[5]);
                         Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[6]), 16) + "," + (short)rxData[6]);
                         Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[7]), 16) + "," + (short)rxData[7]);
-
-                        if((short)rxData[1] != 'T') {
-                            count++;
-
-                        }else {
-                            count =0;
-                        }
-                        if(count == 8) {
-                            Log.d("data", "fuck you------> " + count);
-                            //  count++;
-                        }
-
+                       String text = Integer.toString((int)rxData[0]) + ", " + Integer.toString((int)rxData[1]) + ", " + Integer.toString((int)rxData[2]) + ", " + Integer.toString((int)rxData[3]) + ", "
+                                + Integer.toString((int)rxData[4]) + ", " + Integer.toString((int)rxData[5]) + ", " + Integer.toString((int)rxData[6]) + ", "
+                                + Integer.toString((int)rxData[7]) + "\n";
 
                         addToLog(text);
 
@@ -414,7 +405,13 @@ public class UARTDisplayActivity extends BaseActivity {
 
 
                 while ( j < 8) {
-                    array1[row_index][j] = (int)rxData[j];
+                    int temp = 0;
+                    if((int)rxData[j] < -1) {
+                        temp = ((int) rxData[j]) * -1;
+                    }else {
+                        temp = (int) rxData[j];
+                    }
+                    array1[row_index][j] = temp;
                     Log.d("array3", "array1--> " + array1[row_index][j]);
                     j++;
                     start += 2;

@@ -79,7 +79,7 @@ public class DrawingSquares extends View {
 
         //drawing on canvas vars
         int canvasWidth = canvas.getWidth();
-        int canvasHeight = canvas.getHeight()/2;
+        int canvasHeight = canvas.getHeight();
 
         int squareWidth = canvasWidth / NUMBER_OF_HORIZONTAL_SQUARES;
         int left_offset = squareWidth/2;
