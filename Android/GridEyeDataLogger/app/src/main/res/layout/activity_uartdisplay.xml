@@ -51,10 +51,9 @@
             <Button
                 android:id="@+id/startStopLogButton"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/linearLayout9"
-                android:layout_weight="1"
                 android:onClick="startStopLogging"
                 android:text="@string/start_logging" />
 

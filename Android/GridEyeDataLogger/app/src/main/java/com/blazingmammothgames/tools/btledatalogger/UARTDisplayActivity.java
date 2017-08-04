@@ -300,21 +300,15 @@ public class UARTDisplayActivity extends BaseActivity {
                         count++;
                        // String text = new String(rxData, "UTF-8");
 
-                        Log.d("data", "data------> " +  (char) Long.parseLong(Integer.toHexString((short)rxData[0]), 16) + "," + rxData[0] +"count " + count);
-                        Log.d("data", "data------> " + (char) Long.parseLong(Integer.toHexString((short)rxData[1]), 16) + "," + rxData[1]);
-                        Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[2]), 16) + "," + (short)rxData[2]);
-                        Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[3]), 16) + "," + (short)rxData[3]);
-                        Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[4]), 16) + "," + (short)rxData[4]);
-                        Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[5]), 16) + "," + (short)rxData[5]);
-                        Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[6]), 16) + "," + (short)rxData[6]);
-                        Log.d("data", "data------> " + (int) Long.parseLong(Integer.toHexString((short)rxData[7]), 16) + "," + (short)rxData[7]);
+                        //convert the data array to a string and concat them together to log it
                        String text = Integer.toString((int)rxData[0]&0xff) + ", " + Integer.toString((int)rxData[1]&0xff) + ", " + Integer.toString((int)rxData[2]&0xff) + ", " + Integer.toString((int)rxData[3]&0xff) + ", "
                                 + Integer.toString((int)rxData[4]&0xff) + ", " + Integer.toString((int)rxData[5]&0xff) + ", " + Integer.toString((int)rxData[6]&0xff) + ", "
                                 + Integer.toString((int)rxData[7]&0xff) + "\n";
 
                         addToLog(text);
 
-                        GridEyeImage(rxData, text);
+                        //store all the data coming from the uC into an 2d array
+                        GridEyeImage(rxData);
                     }
                     catch(Exception e) {
                         Log.e(TAG, e.toString());
@@ -384,41 +378,47 @@ public class UARTDisplayActivity extends BaseActivity {
         }
     }
 
+/*
+data packet format byte encoding:
+\nT%04x\nGE:\n follow by 64 bytes of data
+ */
+    private void GridEyeImage(byte[] rxData) {
 
-    private void GridEyeImage(byte[] rxData, String text) {
+        int j=0;
 
-        String temp_str;
-        int j=0, start =0, end =2;
-
+        //check for 'G' and 'E' also check for the row_index to see if we have store all 8 rows of data
+        //if we stored all 8 rows then send them to the DrawingSquares.java to draw the bitmap
+        //also, rest the row_index to start storing new data
         if(rxData[7] == 'G' && rxData[8] == 'E') {
 
             if(row_index == 8) {
-                Log.d("update", "updateData" + Arrays.deepToString(array1));
-                arrayData.updateData(array1);
+                int amb_temp_int = 0;
+                try {
+                    String text = new String(rxData, "UTF-8");
+
+                     String amb_temp_str = text.substring(2, 6);
+                     amb_temp_int = Integer.decode("0x" +amb_temp_str);
+//                    int amb_temp = (rxData[2] << 8) | (rxData[3]);
+//                    amb_temp = amb_temp & 0xFFFF;
+                 //  Log.d("update", "updateData " + amb_temp_int);
+                } catch(Exception e) {
+                    Log.e(TAG, e.toString());
+                }
+
+                arrayData.updateData(array1, amb_temp_int);
             }
-            row_index = 0; j = 0; start = 0; end = 2;
+            row_index = 0; j = 0;
 
         } else {
 
+            //store all 8 rows of data into a 2d int array
             if( row_index <=7)
             {
-
-
                 while ( j < 8) {
-                    /*
-                    int temp = 0;
-                    if((int)(rxData[j]&0xff) < -1) {
-                        temp = ((int) rxData[j]) * -1;
-                    }else {
-                        temp = (int) rxData[j];
-                    }
-                    array1[row_index][j] = temp;
-                    */
                     array1[row_index][j] = ((int) rxData[j])&0xff ;
                     Log.d("array3", "array1--> " + array1[row_index][j]);
                     j++;
-                    start += 2;
-                    end += 2;
+
                 }
             }
             row_index++;
