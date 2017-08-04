@@ -12,7 +12,7 @@ public class GridEyeActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         v = new DrawingSquares(GridEyeActivity.this);
         setContentView(v);
-
+//testing
     }
 
     public void Test() {
