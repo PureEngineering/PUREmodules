@@ -1,4 +1,4 @@
-package com.blazingmammothgames.tools.btledatalogger;
+package com.pure_engineering_grid_eye.tools.btledatalogger;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;

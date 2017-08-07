@@ -4,7 +4,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.blazingmammothgames.tools.btledatalogger.UARTDisplayActivity"
+    tools:context="com.pure_engineering_grid_eye.tools.btledatalogger.UARTDisplayActivity"
     android:orientation="vertical"
     android:weightSum="1">
 
@@ -73,7 +73,7 @@
 
                 <view
                     android:id="@+id/view3"
-                    class="com.blazingmammothgames.tools.btledatalogger.DrawingSquares"
+                    class="com.pure_engineering_grid_eye.tools.btledatalogger.DrawingSquares"
                     id="@+id/view"
                     android:layout_width="wrap_content"
                     android:layout_height="250dp"

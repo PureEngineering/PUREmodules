@@ -1,4 +1,4 @@
-package com.blazingmammothgames.tools.btledatalogger;
+package com.pure_engineering_grid_eye.tools.btledatalogger;
 
 import android.content.Context;
 import android.graphics.Bitmap;

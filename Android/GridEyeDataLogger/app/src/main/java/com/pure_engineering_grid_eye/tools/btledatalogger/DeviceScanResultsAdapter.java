@@ -1,4 +1,4 @@
-package com.blazingmammothgames.tools.btledatalogger;
+package com.pure_engineering_grid_eye.tools.btledatalogger;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;

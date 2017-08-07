@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.blazingmammothgames.tools.btledatalogger">
+    package="com.pure_engineering_grid_eye.tools.btledatalogger">
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -30,7 +30,7 @@
             android:parentActivityName=".DeviceScanActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.blazingmammothgames.tools.btledatalogger.DeviceScanActivity" />
+                android:value="com.pure_engineering_grid_eye.tools.btledatalogger.DeviceScanActivity" />
         </activity>
 
         <service

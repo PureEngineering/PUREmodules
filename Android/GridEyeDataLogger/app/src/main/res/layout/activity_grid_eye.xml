@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.blazingmammothgames.tools.btledatalogger.GridEyeActivity">
+    tools:context="com.pure_engineering_grid_eye.tools.btledatalogger.GridEyeActivity">
 
 </android.support.constraint.ConstraintLayout>

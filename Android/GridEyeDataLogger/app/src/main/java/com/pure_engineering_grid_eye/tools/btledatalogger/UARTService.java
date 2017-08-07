@@ -1,4 +1,4 @@
-package com.blazingmammothgames.tools.btledatalogger;
+package com.pure_engineering_grid_eye.tools.btledatalogger;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -33,12 +33,12 @@ public class UARTService extends Service {
     private ConnectionState connectionState = ConnectionState.DISCONNECTED;
 
     // BTLE actions / events
-    public final static String ACTION_GATT_CONNECTED = "com.blazingmammothgames.tools.btledatalogger.ACTION_GATT_CONNECTED";
-    public final static String ACTION_GATT_DISCONNECTED = "com.blazingmammothgames.tools.btledatalogger.ACTION_GATT_DISCONNECTED";
-    public final static String ACTION_GATT_SERVICES_DISCOVERED = "com.blazingmammothgames.tools.btledatalogger.ACTION_GATT_SERVICES_DISCOVERED";
-    public final static String ACTION_DATA_AVAILABLE = "com.blazingmammothgames.tools.btledatalogger.ACTION_DATA_AVAILABLE";
+    public final static String ACTION_GATT_CONNECTED = "com.pure_engineering_grid_eye.tools.btledatalogger.ACTION_GATT_CONNECTED";
+    public final static String ACTION_GATT_DISCONNECTED = "com.pure_engineering_grid_eye.tools.btledatalogger.ACTION_GATT_DISCONNECTED";
+    public final static String ACTION_GATT_SERVICES_DISCOVERED = "com.pure_engineering_grid_eye.tools.btledatalogger.ACTION_GATT_SERVICES_DISCOVERED";
+    public final static String ACTION_DATA_AVAILABLE = "com.pure_engineering_grid_eye.tools.btledatalogger.ACTION_DATA_AVAILABLE";
 
-    public final static String EXTRA_DATA_RX = "com.blazingmammothgames.tools.btledatalogger.EXTRA_DATA_RX";
+    public final static String EXTRA_DATA_RX = "com.pure_engineering_grid_eye.tools.btledatalogger.EXTRA_DATA_RX";
 
     // UUIDs for the BTLE services
     public static final UUID TX_POWER_UUID = UUID.fromString("00001804-0000-1000-8000-00805f9b34fb");
