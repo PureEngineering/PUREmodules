@@ -228,6 +228,7 @@ int main(void)
 			passed_test = veml6075_pass(m_twi_master);
 			if(passed_test){
 				NRF_LOG_RAW_INFO("vemo6075 pass");NRF_LOG_FLUSH();
+				run_veml6075(m_twi_master);
 			}
 			else{
 				NRF_LOG_RAW_INFO("veml6075 failed");NRF_LOG_FLUSH();
