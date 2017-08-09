@@ -181,61 +181,81 @@ int si1153_test(void)
  */
 int main(void)
 {
+	uint32_t err_code;
+	 
+	 
+	APP_ERROR_CHECK(NRF_LOG_INIT(NULL));
+    err_code = twi_master_init();
+    APP_ERROR_CHECK(err_code);
 	bool purehealth_allpass = true;
-
-	bool passed_test = tmp007_pass(m_twi_master);
-	if(passed_test){
-		NRF_LOG_RAW_INFO("Tmp007 pass");
-	}
-	else{
-		NRF_LOG_RAW_INFO("Tmp007 failed");
-		purehealth_allpass = false;
-	}
+	lis2de_init(m_twi_master);
+	tmp007_begin(m_twi_master);
+	bme280_init(m_twi_master);
 	
-	passed_test = fdc2214_pass(m_twi_master);
-	if(passed_test){
-		NRF_LOG_RAW_INFO("fdc2214 pass");
-	}
-	else{
-		NRF_LOG_RAW_INFO("fdc2214 failed");
-		purehealth_allpass = false;
-	}
-	passed_test = bme280_pass(m_twi_master);
-	if(passed_test){
-		NRF_LOG_RAW_INFO("bme280 pass");
-	}
-	else{
-		NRF_LOG_RAW_INFO("bme280 failed");
-		purehealth_allpass = false;
-	}
-	passed_test = veml6075_pass(m_twi_master);
-	if(passed_test){
-		NRF_LOG_RAW_INFO("vemo6075 pass");
-	}
-	else{
-		NRF_LOG_RAW_INFO("veml6075 failed");
-		purehealth_allpass = false;
-	}
-	passed_test = lis2de_pass(m_twi_master);
-	if(passed_test){
-		NRF_LOG_RAW_INFO("lis2de pass");
-	}
-	else{
-		NRF_LOG_RAW_INFO("lis2de failed");
-		purehealth_allpass = false;
-	}
-	passed_test = si1153_pass(m_twi_master);
-	if(passed_test){
-		NRF_LOG_RAW_INFO("si1153 pass");
-	}
-	else{
-		NRF_LOG_RAW_INFO("si1153 failed");
-		purehealth_allpass = false;
-	}
+	
+	NRF_LOG_RAW_INFO("start testing all sensors!!!!\n");
+	NRF_LOG_FLUSH();
 
-	if(purehealth_allpass){
-		NRF_LOG_RAW_INFO("----All PureHealth Sensors Passed----");
+	///lis2de, si1153, bme280, vem16075,  tmp007 passed, fdc2214  failed
+	while(1) {
+			bool passed_test = tmp007_pass(m_twi_master);
+			if(passed_test){
+				NRF_LOG_RAW_INFO("Tmp007 pass");NRF_LOG_FLUSH();
+				run_tmp007(m_twi_master);
+			}
+			else{
+				NRF_LOG_RAW_INFO("Tmp007 failed");NRF_LOG_FLUSH();
+				purehealth_allpass = false;
+			}
+			
+			passed_test = fdc2214_pass(m_twi_master);
+			if(passed_test){
+				NRF_LOG_RAW_INFO("fdc2214 pass");NRF_LOG_FLUSH();
+			}
+			else{
+				NRF_LOG_RAW_INFO("fdc2214 failed");NRF_LOG_FLUSH();
+				purehealth_allpass = false;
+			}
+			passed_test = bme280_pass(m_twi_master);
+			if(passed_test){
+				NRF_LOG_RAW_INFO("bme280 pass");NRF_LOG_FLUSH();
+				run_bme280(m_twi_master);
+			}
+			else{
+				NRF_LOG_RAW_INFO("bme280 failed");NRF_LOG_FLUSH();
+				purehealth_allpass = false;
+			}
+			passed_test = veml6075_pass(m_twi_master);
+			if(passed_test){
+				NRF_LOG_RAW_INFO("vemo6075 pass");NRF_LOG_FLUSH();
+			}
+			else{
+				NRF_LOG_RAW_INFO("veml6075 failed");NRF_LOG_FLUSH();
+				purehealth_allpass = false;
+			}
+			passed_test = lis2de_pass(m_twi_master);
+			if(passed_test){
+				NRF_LOG_RAW_INFO("lis2de pass");NRF_LOG_FLUSH();
+			}
+			else{
+				NRF_LOG_RAW_INFO("lis2de failed");NRF_LOG_FLUSH();
+				purehealth_allpass = false;
+			}
+			passed_test = si1153_pass(m_twi_master);
+			if(passed_test){
+				NRF_LOG_RAW_INFO("si1153 pass");NRF_LOG_FLUSH();
+			}
+			else{
+				NRF_LOG_RAW_INFO("si1153 failed");NRF_LOG_FLUSH();
+				purehealth_allpass = false;
+			}
 
+			if(purehealth_allpass){
+				NRF_LOG_RAW_INFO("----All PureHealth Sensors Passed----");NRF_LOG_FLUSH();
+
+			}
+			
+			
 	}
     //si1153_test();
 }

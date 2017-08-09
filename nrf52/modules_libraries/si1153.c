@@ -215,7 +215,6 @@ uint8_t si1153_init(nrf_drv_twi_t twi_master){
 bool si1153_pass(nrf_drv_twi_t twi_master){
 	uint8_t who_am_i = si1153_whoami(twi_master);
 
-
 	if(who_am_i==0x53){
 		NRF_LOG_RAW_INFO("Si1153: Pass %x \r\n", who_am_i); NRF_LOG_FLUSH();   
 		//printf("Si1153: Pass %x == 0x53 \r\n", who_am_i);
