@@ -147,8 +147,8 @@ uint8_t run_bme280(nrf_drv_twi_t twi_master){
 	uint32_t pressure = bme280_readFloatPressure(twi_master);
     NRF_LOG_RAW_INFO("BME280 Pressure: %d(Pa).\r\n", pressure);
 
-	uint8_t altitude = bme280_readFloatAltitudeFeet(twi_master);
-    NRF_LOG_RAW_INFO("BME280 Altitude: %d ft.\r\n", altitude);
+	float altitude = bme280_readFloatAltitudeFeet(twi_master);
+    NRF_LOG_RAW_INFO("BME280 Altitude: " NRF_LOG_FLOAT_MARKER "ft.\r\n", NRF_LOG_FLOAT(altitude));
 
 	uint8_t humidity = bme280_readFloatHumidity(twi_master);
     NRF_LOG_RAW_INFO("BME280 Humidity: %d percent\r\n", humidity);
@@ -173,13 +173,15 @@ uint8_t run_bme280_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
 	uint8_t tempc = bme280_readTempC(twi_master);
     sprintf((char *)ble_string, "bme280tempc: %d\r\n",tempc);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
-
+	
+	memset((char *)ble_string, 0, length);
 	float pressure = bme280_readFloatPressure(twi_master);
-    sprintf((char *)ble_string, "bme280press: %4.2f\r\n",pressure);
-	send_ble_data(m_nus,(uint8_t *)ble_string,length+10);
-
-	uint8_t altitude = bme280_readFloatAltitudeFeet(twi_master);
-    sprintf((char *)ble_string, "bme280alt:   %d\r\n",altitude);
+    sprintf((char *)ble_string, "press:%d\n", (int)pressure);
+	send_ble_data(m_nus,(uint8_t *)ble_string,length);
+    
+	memset((char *)ble_string, 0, length);
+	float altitude = bme280_readFloatAltitudeFeet(twi_master);
+    sprintf((char *)ble_string, "bme280alt:   %d\r\n",(int)altitude);
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
 	uint8_t humidity = bme280_readFloatHumidity(twi_master);

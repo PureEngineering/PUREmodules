@@ -189,15 +189,17 @@ int main(void)
     APP_ERROR_CHECK(err_code);
 	bool purehealth_allpass = true;
 	lis2de_init(m_twi_master);
-	tmp007_begin(m_twi_master);
 	bme280_init(m_twi_master);
-	
-	
+	si1153_init(m_twi_master);
+	veml6075_init(m_twi_master);
+	tmp007_begin(m_twi_master);
 	NRF_LOG_RAW_INFO("start testing all sensors!!!!\n");
 	NRF_LOG_FLUSH();
 
 	///lis2de, si1153, bme280, vem16075,  tmp007 passed, fdc2214  failed
 	while(1) {
+		
+		//sometime it gives output, sometime it just gives you zero.
 			bool passed_test = tmp007_pass(m_twi_master);
 			if(passed_test){
 				NRF_LOG_RAW_INFO("Tmp007 pass");NRF_LOG_FLUSH();
@@ -234,9 +236,14 @@ int main(void)
 				NRF_LOG_RAW_INFO("veml6075 failed");NRF_LOG_FLUSH();
 				purehealth_allpass = false;
 			}
+			
+			//As strange as it is, inorder for this code to output accelerometer values, you have to
+			//flash the puremodule code, turn on the accelerometer switch on the app, then flash this code, 
+			//then you will get an output for X, Y, Z.
 			passed_test = lis2de_pass(m_twi_master);
 			if(passed_test){
 				NRF_LOG_RAW_INFO("lis2de pass");NRF_LOG_FLUSH();
+				run_lis2de(m_twi_master);
 			}
 			else{
 				NRF_LOG_RAW_INFO("lis2de failed");NRF_LOG_FLUSH();
@@ -245,6 +252,7 @@ int main(void)
 			passed_test = si1153_pass(m_twi_master);
 			if(passed_test){
 				NRF_LOG_RAW_INFO("si1153 pass");NRF_LOG_FLUSH();
+				run_si1153(m_twi_master);
 			}
 			else{
 				NRF_LOG_RAW_INFO("si1153 failed");NRF_LOG_FLUSH();
