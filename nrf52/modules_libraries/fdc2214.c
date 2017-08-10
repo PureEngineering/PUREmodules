@@ -141,7 +141,7 @@ uint8_t run_fdc2214(nrf_drv_twi_t twi_master){
 
   uint8_t channel = 0;
   uint32_t data = fdc2214_readchannel(twi_master, channel); 
-  NRF_LOG_RAW_INFO("FDC2214 Ch0: %f.\r\n", data);
+  NRF_LOG_RAW_INFO("FDC2214 Ch0: %d.\r\n", data);
 
 
   return who_am_i;
