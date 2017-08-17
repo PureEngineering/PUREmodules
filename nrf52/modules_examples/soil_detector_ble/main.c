@@ -57,6 +57,7 @@
 #include <math.h>
 
 #include "ble_fdcs.h"
+#include "fdc2214.h"
 
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT 0                                           /**< Include the service_changed characteristic. If not enabled, the server's database cannot be changed for the lifetime of the device. */
@@ -508,7 +509,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
     ble_conn_params_on_ble_evt(p_ble_evt);
-    ble_nus_on_ble_evt(&m_nus, p_ble_evt);
+	ble_fdc_service_on_ble_evt(&m_fdcs_service, p_ble_evt);
     on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
     bsp_btn_ble_on_ble_evt(p_ble_evt);
@@ -756,7 +757,68 @@ static ret_code_t twi_master_init(void)
     return ret;
 }
 
+static uint16_t fdc2214_init_git(nrf_drv_twi_t twi_master){
 
+  uint8_t config_word_lsb;
+  uint8_t config_word_msb;
+
+  config_word_lsb = 0xFF;
+  config_word_msb = 0xFF;
+
+  //set RCOUNT Registers for each channel
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_RCOUNT_CH0,config_word_lsb,config_word_msb);
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_RCOUNT_CH1,config_word_lsb,config_word_msb);
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_RCOUNT_CH2,config_word_lsb,config_word_msb);
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_RCOUNT_CH3,config_word_lsb,config_word_msb);
+
+  config_word_lsb = 0x00;
+  config_word_msb = 0x00;
+
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_OFFSET_CH0,config_word_lsb,config_word_msb);
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_OFFSET_CH1,config_word_lsb,config_word_msb);
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_OFFSET_CH2,config_word_lsb,config_word_msb);
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_OFFSET_CH3,config_word_lsb,config_word_msb);
+
+
+  config_word_lsb = 0x04;
+  config_word_msb = 0x00;
+
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_SETTLECOUNT_CH0,config_word_lsb,config_word_msb);
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_SETTLECOUNT_CH1,config_word_lsb,config_word_msb);
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_SETTLECOUNT_CH2,config_word_lsb,config_word_msb);
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_SETTLECOUNT_CH3,config_word_lsb,config_word_msb);
+
+  config_word_lsb = 0x10;
+  config_word_msb = 0x01;
+
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_CLOCK_DIVIDERS_CH0,config_word_lsb,config_word_msb);
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_CLOCK_DIVIDERS_CH1,config_word_lsb,config_word_msb);
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_CLOCK_DIVIDERS_CH2,config_word_lsb,config_word_msb);
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_CLOCK_DIVIDERS_CH3,config_word_lsb,config_word_msb);
+  
+  //set driven current, value 0x7C00
+  config_word_lsb = 0x7C;
+  config_word_msb = 0x00; 
+  
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_DRIVE_CURRENT_CH0,config_word_lsb,config_word_msb);
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_DRIVE_CURRENT_CH1,config_word_lsb,config_word_msb);
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_DRIVE_CURRENT_CH2,config_word_lsb,config_word_msb);
+ 
+  config_word_lsb = 0x00;
+  config_word_msb = 0x01;
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_ERROR_CONFIG,config_word_lsb,config_word_msb);
+
+  config_word_lsb = 0xA2;
+  config_word_msb = 0x0C;
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_MUX_CONFIG,config_word_lsb,config_word_msb);
+  
+  config_word_lsb = 0x1E;
+  config_word_msb = 0x01;
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_CONFIG,config_word_lsb,config_word_msb);
+  
+
+  return fdc2214_whoami(twi_master);
+}
 
 int main(void)
 {
@@ -764,8 +826,8 @@ int main(void)
     bool erase_bonds;
 
     /* Initializing TWI master interface for SuperSensor */
-    //err_code = twi_master_init();
-  //  APP_ERROR_CHECK(err_code);
+    err_code = twi_master_init();
+    APP_ERROR_CHECK(err_code);
 
     APP_ERROR_CHECK(NRF_LOG_INIT(NULL));
 
@@ -780,27 +842,38 @@ int main(void)
     advertising_init();
     conn_params_init();
     bsp_board_leds_init();
+	fdc2214_init_git(m_twi_master);
 
-    //test_supersensor(m_twi_master);
 
-  NRF_LOG_RAW_INFO("UART Start!------->\n\r");
-   err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
-  // NRF_LOG_RAW_INFO("UART Start!------->\n\r");
+	NRF_LOG_RAW_INFO("UART Start!------->\n\r");  NRF_LOG_FLUSH();
+	err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
 	
 	
-    NRF_LOG_FLUSH();
+  
 
    // create_sensor_timer();
 
     // Enter main loop.
     for (;;)
     {
-	//NRF_LOG_RAW_INFO("UART Start!------->\n\r");
-	//SEGGER_RTT_TerminalOut(1, "Hello World!\n");
-	NRF_LOG_FLUSH(); 
-	err_code = sd_app_evt_wait();
-	APP_ERROR_CHECK(err_code);
+		//NRF_LOG_RAW_INFO("UART Start!------->\n\r");
+		//SEGGER_RTT_TerminalOut(1, "Hello World!\n");
+		bool passed_test = fdc2214_pass(m_twi_master);
+		if(passed_test){
+			uint16_t status = run_fdc2214(m_twi_master);
+			NRF_LOG_RAW_INFO("fdc2214 pass ");
+			NRF_LOG_FLUSH();
+			
+		}
+		else{
+			NRF_LOG_RAW_INFO("fdc2214 failed\n");NRF_LOG_FLUSH();
+			//purehealth_allpass = false;
+		}
+		
+		NRF_LOG_FLUSH(); 
+		err_code = sd_app_evt_wait();
+		APP_ERROR_CHECK(err_code);
 	
     }
 	

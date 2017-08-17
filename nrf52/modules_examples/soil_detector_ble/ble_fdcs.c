@@ -48,9 +48,23 @@
  *
  */
  // ALREADY_DONE_FOR_YOU: Declaration of a function that will take care of some housekeeping of ble connections related to our service and characteristic
+ //This function is called by the SoftDevice when a BLE stack event has occurs. To keep our service up to date with the latest connection events we will 
+ //call ble_our_service_on_ble_evt() from the dispatch function
 void ble_fdc_service_on_ble_evt(ble_fdcs_t * p_our_service, ble_evt_t * p_ble_evt)
 {
     // OUR_JOB: Step 3.D Implement switch case handling BLE events related to our service. 
+	switch (p_ble_evt->header.evt_id)
+	{
+		case BLE_GAP_EVT_CONNECTED:
+			p_our_service->conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
+			break;
+		case BLE_GAP_EVT_DISCONNECTED:
+			p_our_service->conn_handle = BLE_CONN_HANDLE_INVALID;
+			break;
+		default:
+			// No implementation needed.
+			break;
+	}
 }
 
 /**@brief Function for adding our new characterstic to "Our service" that we initiated in the previous tutorial. 
@@ -133,7 +147,10 @@ void ble_fdcs_init(ble_fdcs_t * p_our_service)
 	err_code = sd_ble_uuid_vs_add(&base_uuid, &service_uuid.type);
 	APP_ERROR_CHECK(err_code);
     
-    // STEP 4: Add our service
+	// OUR_JOB: Step 3.B, Set our service connection handle to default value. I.e. an invalid handle since we are not yet in a connection.
+	p_our_service->conn_handle = BLE_CONN_HANDLE_INVALID;
+    
+	// STEP 4: Add our service
 	err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, 
 											&service_uuid, 
 											&p_our_service->service_handle);
@@ -143,12 +160,41 @@ void ble_fdcs_init(ble_fdcs_t * p_our_service)
 	if (err_code != NRF_SUCCESS)
     {
 		NRF_LOG_RAW_INFO("FAILED222---------- %d", err_code); NRF_LOG_FLUSH();
-        return err_code;
+       
     }
-    // Print messages to Segger Real Time Terminal
-    // UNCOMMENT THE FOUR LINES BELOW AFTER INITIALIZING THE SERVICE OR THE EXAMPLE WILL NOT COMPILE.
-   // SEGGER_RTT_WriteString(0, "Exectuing our_service_init().\n"); // Print message to RTT to the application flow
-   // SEGGER_RTT_printf(0, "Service UUID: 0x%#04x\n", service_uuid.uuid); // Print service UUID should match definition BLE_UUID_OUR_SERVICE
-   // SEGGER_RTT_printf(0, "Service UUID type: 0x%#02x\n", service_uuid.type); // Print UUID type. Should match BLE_UUID_TYPE_VENDOR_BEGIN. Search for BLE_UUID_TYPES in ble_types.h for more info
-   // SEGGER_RTT_printf(0, "Service handle: 0x%#04x\n", p_our_service->service_handle); // Print out the service handle. Should match service handle shown in MCP under Attribute values
+}
+	
+
+/*
+Function to be called when updating characteristic value
+hvx : Handle Value X, where x symbolize either notification or indication
+So to do a notification we declare a variable, hvx_params, of type ble_gatts_hvx_params_t. This will hold the necessary parameters to do a notification and provide them to the sd_ble_gatts_hvx() function. Here is what we will store in the variable:
+
+handle: The SoftDevice needs to know what characteristic value we are working on. In applications with two or more characteristics naturally we will need to reference the handle of the specific characteristic value we want to use. Our example only has one characteristic and we will use the handle stored in p_our_service->char_handles.value_handle.
+type: The SoftDevice needs to know what "hvx type" we want to do; a notification or indication. As we are doing a notification we use BLE_GATT_HVX_NOTIFICATION. The other option would be BLE_GATT_HVX_INDICATION.
+offset: Your characteristic value might be a sequence of many bytes. If you want to transmit only a couple of these bytes and the bytes are located in the middle of the sequence you can use the offset to extract them. Since we want to update all of our four bytes we will set the offset to zero.
+p_len: The SoftDevice needs to know how many bytes to transmit. There is no need to send 20 bytes every time if you only have four bytes of relevant data. As an example, let's say you have a characteristic with the following sequence of bytes: 0x01, 0x02, 0x03, 0x04, 0x05 and you want to send just the 3rd and the 4th byte. Then set offset to 2 and len to 2.
+p_data: Here we add a pointer to the actual data.
+
+*/
+void fdc_ch0_characteristic_update(ble_fdcs_t *p_our_service, int32_t *temperature_value)
+{
+    // OUR_JOB: Step 3.E, Update characteristic value
+	if (p_our_service->conn_handle != BLE_CONN_HANDLE_INVALID)
+	{
+		uint16_t				len = 4;
+		ble_gatts_hvx_params_t	hvx_params;
+		memset(&hvx_params, 0, sizeof(hvx_params));
+		
+		hvx_params.handle = p_our_service->char_handles.value_handle;
+		hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
+		hvx_params.offset = 0;
+		hvx_params.p_len  = &len;
+		hvx_params.p_data = (uint8_t*)temperature_value;  
+
+		sd_ble_gatts_hvx(p_our_service->conn_handle, &hvx_params);
+
+
+	}
+
 }

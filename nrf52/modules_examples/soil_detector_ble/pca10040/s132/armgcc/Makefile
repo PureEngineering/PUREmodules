@@ -59,6 +59,7 @@ SRC_FILES += \
   $(LIB_DIR)/supersensor.c \
   $(LIB_DIR)/apds9250.c \
   $(LIB_DIR)/p1234701ct.c \
+  $(LIB_DIR)/fdc2214.c \
   $(PROJ_DIR)/ble_fdcs.c \
 
 
