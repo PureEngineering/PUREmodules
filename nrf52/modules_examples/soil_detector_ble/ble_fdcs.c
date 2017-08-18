@@ -334,6 +334,8 @@ p_data: Here we add a pointer to the actual data.
 */
 void fdc_ch1_characteristic_update(ble_fdcs_t *p_our_service, int32_t *temperature_value)
 {
+	NRF_LOG_RAW_INFO("temperature_value----> %x\n", *(temperature_value));
+	
     // OUR_JOB: Step 3.E, Update characteristic value
 	if (p_our_service->conn_handle != BLE_CONN_HANDLE_INVALID)
 	{
@@ -356,6 +358,9 @@ void fdc_ch1_characteristic_update(ble_fdcs_t *p_our_service, int32_t *temperatu
 
 void fdc_ch0_characteristic_update(ble_fdcs_t *p_our_service, int32_t *temperature_value)
 {
+	//NRF_LOG_RAW_INFO("temperature_value----> %x\n", *(temperature_value));
+	
+	//*temperature_value = 0x12345678;
     // OUR_JOB: Step 3.E, Update characteristic value
 	if (p_our_service->conn_handle != BLE_CONN_HANDLE_INVALID)
 	{
@@ -368,6 +373,8 @@ void fdc_ch0_characteristic_update(ble_fdcs_t *p_our_service, int32_t *temperatu
 		hvx_params.offset = 0;
 		hvx_params.p_len  = &len;
 		hvx_params.p_data = (uint8_t*)temperature_value;  
+		
+		//NRF_LOG_RAW_INFO("hvx_params.p_data----> %x\n", *(hvx_params.p_data));
 
 		sd_ble_gatts_hvx(p_our_service->conn_handle, &hvx_params);
 
