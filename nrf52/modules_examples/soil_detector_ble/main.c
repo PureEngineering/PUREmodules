@@ -761,11 +761,27 @@ static ret_code_t twi_master_init(void)
 }
 
 void print_to_ble(void){
-		uint8_t channel = 1;
+			
+		uint8_t channel = 0;
 		NRF_LOG_RAW_INFO("print to ble reach\n");
 		uint32_t data = fdc2214_readchannel(m_twi_master, channel); 
+		NRF_LOG_RAW_INFO("CH0 === %x\n", data); NRF_LOG_FLUSH();
+		fdc_ch0_characteristic_update(&m_fdcs_service, (int32_t *)(&data));
+		
+		channel = 1;
+		NRF_LOG_RAW_INFO("print to ble reach\n");
+		data = fdc2214_readchannel(m_twi_master, channel); 
 		NRF_LOG_RAW_INFO("CH1 === %x\n", data); NRF_LOG_FLUSH();
 		fdc_ch1_characteristic_update(&m_fdcs_service, (int32_t *)(&data));
+	
+/******COMMENT IT BACK WHEN YOU ARE CONNECTED TO CHANNEL 2 *******************************/	
+		// channel = 2;
+		// NRF_LOG_RAW_INFO("print to ble reach\n");
+		// data = fdc2214_readchannel(m_twi_master, channel); 
+		// NRF_LOG_RAW_INFO("CH2 === %x\n", data); NRF_LOG_FLUSH();
+		// fdc_ch2_characteristic_update(&m_fdcs_service, (int32_t *)(&data));
+
+		
 }
 
 APP_TIMER_DEF(sensor_loop_timer_id);
