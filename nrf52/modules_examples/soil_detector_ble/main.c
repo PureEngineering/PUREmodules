@@ -118,6 +118,9 @@ bool vl53l0_on = false;
 bool apds9250_on = false;
 bool p1234701ct_on = false;
 
+bool fdc2214_on = false;
+
+APP_TIMER_DEF(sensor_loop_timer_id);
 
 /**
  * @brief TWI master instance
@@ -127,6 +130,50 @@ bool p1234701ct_on = false;
  */
 //TW0_USE_EAY added in nrf_drv_twi line 80
 static const nrf_drv_twi_t m_twi_master = NRF_DRV_TWI_INSTANCE(MASTER_TWI_INST);
+
+void print_to_ble(void){
+			
+		uint8_t channel = 0;
+		NRF_LOG_RAW_INFO("print to ble reach\n");
+		uint32_t data = fdc2214_readchannel(m_twi_master, channel); 
+		NRF_LOG_RAW_INFO("CH0 === %x\n", data); NRF_LOG_FLUSH();
+		fdc_ch0_characteristic_update(&m_fdcs_service, (int32_t *)(&data));
+		
+		channel = 1;
+		NRF_LOG_RAW_INFO("print to ble reach\n");
+		data = fdc2214_readchannel(m_twi_master, channel); 
+		NRF_LOG_RAW_INFO("CH1 === %x\n", data); NRF_LOG_FLUSH();
+		fdc_ch1_characteristic_update(&m_fdcs_service, (int32_t *)(&data));
+	
+/******COMMENT IT BACK WHEN YOU ARE CONNECTED TO CHANNEL 2 *******************************/	
+		// channel = 2;
+		// NRF_LOG_RAW_INFO("print to ble reach\n");
+		// data = fdc2214_readchannel(m_twi_master, channel); 
+		// NRF_LOG_RAW_INFO("CH2 === %x\n", data); NRF_LOG_FLUSH();
+		// fdc_ch2_characteristic_update(&m_fdcs_service, (int32_t *)(&data));
+
+		
+}
+
+
+static void sensor_loop_handler(void * p_context)
+{
+   print_to_ble();  
+}
+
+static void create_sensor_timer()
+{   
+
+    uint32_t err_code;
+
+    // Create timers
+	NRF_LOG_RAW_INFO("REACH TIMER\n");
+	err_code = app_timer_create(&sensor_loop_timer_id, APP_TIMER_MODE_REPEATED, sensor_loop_handler);
+	APP_ERROR_CHECK(err_code);
+		err_code = app_timer_start(sensor_loop_timer_id, APP_TIMER_TICKS(1000, APP_TIMER_PRESCALER), NULL);
+		APP_ERROR_CHECK(err_code);
+
+}
 
 
 
@@ -415,12 +462,16 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             err_code = bsp_indication_set(BSP_INDICATE_CONNECTED);
             APP_ERROR_CHECK(err_code);
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
+			//start the timer and transimit data when it is connected to a client
+			create_sensor_timer();
             break; // BLE_GAP_EVT_CONNECTED
 
         case BLE_GAP_EVT_DISCONNECTED:
             err_code = bsp_indication_set(BSP_INDICATE_IDLE);
             APP_ERROR_CHECK(err_code);
             m_conn_handle = BLE_CONN_HANDLE_INVALID;
+			//stop the timer when the client disconnects
+			app_timer_stop(sensor_loop_timer_id);
             break; // BLE_GAP_EVT_DISCONNECTED
 
         case BLE_GAP_EVT_SEC_PARAMS_REQUEST:
@@ -760,47 +811,7 @@ static ret_code_t twi_master_init(void)
     return ret;
 }
 
-void print_to_ble(void){
-			
-		uint8_t channel = 0;
-		NRF_LOG_RAW_INFO("print to ble reach\n");
-		uint32_t data = fdc2214_readchannel(m_twi_master, channel); 
-		NRF_LOG_RAW_INFO("CH0 === %x\n", data); NRF_LOG_FLUSH();
-		fdc_ch0_characteristic_update(&m_fdcs_service, (int32_t *)(&data));
-		
-		channel = 1;
-		NRF_LOG_RAW_INFO("print to ble reach\n");
-		data = fdc2214_readchannel(m_twi_master, channel); 
-		NRF_LOG_RAW_INFO("CH1 === %x\n", data); NRF_LOG_FLUSH();
-		fdc_ch1_characteristic_update(&m_fdcs_service, (int32_t *)(&data));
-	
-/******COMMENT IT BACK WHEN YOU ARE CONNECTED TO CHANNEL 2 *******************************/	
-		// channel = 2;
-		// NRF_LOG_RAW_INFO("print to ble reach\n");
-		// data = fdc2214_readchannel(m_twi_master, channel); 
-		// NRF_LOG_RAW_INFO("CH2 === %x\n", data); NRF_LOG_FLUSH();
-		// fdc_ch2_characteristic_update(&m_fdcs_service, (int32_t *)(&data));
 
-		
-}
-
-APP_TIMER_DEF(sensor_loop_timer_id);
-static void sensor_loop_handler(void * p_context)
-{
-   print_to_ble();  
-}
-
-static void create_sensor_timer()
-{   
-    uint32_t err_code;
-
-    // Create timers
-    err_code = app_timer_create(&sensor_loop_timer_id, APP_TIMER_MODE_REPEATED, sensor_loop_handler);
-    APP_ERROR_CHECK(err_code);
-
-     err_code = app_timer_start(sensor_loop_timer_id, APP_TIMER_TICKS(1000, APP_TIMER_PRESCALER), NULL);
-     APP_ERROR_CHECK(err_code);
-}
 
 static uint16_t fdc2214_init_git(nrf_drv_twi_t twi_master){
 
@@ -897,7 +908,7 @@ int main(void)
 	
   
 
-    create_sensor_timer();
+  //  create_sensor_timer();
 
     // Enter main loop.
     for (;;)
