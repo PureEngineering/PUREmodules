@@ -177,7 +177,7 @@ p_len: The SoftDevice needs to know how many bytes to transmit. There is no need
 p_data: Here we add a pointer to the actual data.
 
 */
-void fdc_ch0_characteristic_update(ble_fdcs_t *p_our_service, int32_t *temperature_value)
+void fdc_ch1_characteristic_update(ble_fdcs_t *p_our_service, int32_t *temperature_value)
 {
     // OUR_JOB: Step 3.E, Update characteristic value
 	if (p_our_service->conn_handle != BLE_CONN_HANDLE_INVALID)

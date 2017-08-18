@@ -71,11 +71,12 @@ uint16_t fdc2214_whoami(nrf_drv_twi_t twi_master){
     return device_id;
 }
 
-
+//fdc values are little endian encoding, write_2bytes() are big endian encoding
 uint16_t fdc2214_init(nrf_drv_twi_t twi_master){
 
-  uint8_t config_word_lsb;
+ uint8_t config_word_lsb;
   uint8_t config_word_msb;
+
 
   config_word_lsb = 0xFF;
   config_word_msb = 0xFF;
@@ -85,8 +86,8 @@ uint16_t fdc2214_init(nrf_drv_twi_t twi_master){
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_RCOUNT_CH1,config_word_lsb,config_word_msb);
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_RCOUNT_CH2,config_word_lsb,config_word_msb);
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_RCOUNT_CH3,config_word_lsb,config_word_msb);
-
-
+ 
+  //offset
   config_word_lsb = 0x00;
   config_word_msb = 0x00;
 
@@ -95,39 +96,43 @@ uint16_t fdc2214_init(nrf_drv_twi_t twi_master){
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_OFFSET_CH2,config_word_lsb,config_word_msb);
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_OFFSET_CH3,config_word_lsb,config_word_msb);
 
-
+  //settle count
   config_word_lsb = 0x04;
   config_word_msb = 0x00;
-
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_OFFSET_CH0,config_word_lsb,config_word_msb);
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_OFFSET_CH1,config_word_lsb,config_word_msb);
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_OFFSET_CH2,config_word_lsb,config_word_msb);
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_OFFSET_CH3,config_word_lsb,config_word_msb);
-
-  config_word_lsb = 0x10;
-  config_word_msb = 0x01;
 
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_SETTLECOUNT_CH0,config_word_lsb,config_word_msb);
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_SETTLECOUNT_CH1,config_word_lsb,config_word_msb);
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_SETTLECOUNT_CH2,config_word_lsb,config_word_msb);
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_SETTLECOUNT_CH3,config_word_lsb,config_word_msb);
 
-  config_word_lsb = 0x88;
-  config_word_msb = 0x00;
+  //clock divider
+  config_word_lsb = 0x10;
+  config_word_msb = 0x01;
 
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_CLOCK_DIVIDERS_CH0,config_word_lsb,config_word_msb);
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_CLOCK_DIVIDERS_CH1,config_word_lsb,config_word_msb);
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_CLOCK_DIVIDERS_CH2,config_word_lsb,config_word_msb);
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_CLOCK_DIVIDERS_CH3,config_word_lsb,config_word_msb);
-
+  
+  //set driven current, value 0x7C00
+  config_word_lsb = 0x88;
+  config_word_msb = 0x00; 
+  
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_DRIVE_CURRENT_CH0,config_word_lsb,config_word_msb);
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_DRIVE_CURRENT_CH1,config_word_lsb,config_word_msb);
+  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_DRIVE_CURRENT_CH2,config_word_lsb,config_word_msb);
+ 
+  // error config
   config_word_lsb = 0x00;
   config_word_msb = 0x01;
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_ERROR_CONFIG,config_word_lsb,config_word_msb);
 
+  //mux config
   config_word_lsb = 0x82;
   config_word_msb = 0x0C;
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_MUX_CONFIG,config_word_lsb,config_word_msb);
   
+  //config
   config_word_lsb = 0x1E;
   config_word_msb = 0x01;
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_CONFIG,config_word_lsb,config_word_msb);
@@ -139,7 +144,7 @@ uint8_t run_fdc2214(nrf_drv_twi_t twi_master){
   uint8_t who_am_i = fdc2214_whoami(twi_master);
   NRF_LOG_RAW_INFO("FDC2214 WhoamI: %x. \r\n",who_am_i);
 
-  uint8_t channel = 0;
+  uint8_t channel = 1;
   uint32_t data = fdc2214_readchannel(twi_master, channel); 
   NRF_LOG_RAW_INFO("FDC2214 Ch0: %d.\r\n", data);
 
@@ -157,9 +162,9 @@ uint8_t run_fdc2214_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
   sprintf((char *)ble_string, "fdc2214id: %x \r\n",who_am_i);
   send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
-  uint8_t channel = 0;
-  double data = fdc2214_readchannel(twi_master, channel); 
-  sprintf((char *)ble_string, "fdc2214ch0: %f \r\n",data);
+  uint8_t channel = 1;
+  uint8_t data = fdc2214_readchannel(twi_master, channel); 
+  sprintf((char *)ble_string, "fdc2214ch0: %x \r\n",data);
   send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
   return who_am_i;

@@ -543,6 +543,9 @@ static void ble_stack_init(void)
 #if (NRF_SD_BLE_API_VERSION == 3)
     ble_enable_params.gatt_enable_params.att_mtu = NRF_BLE_MAX_MTU_SIZE;
 #endif
+
+    
+	//ble_enable_params.gatts_enable_params.service_changed = IS_SRVC_CHANGED_CHARACT_PRESENT;
     err_code = softdevice_enable(&ble_enable_params);
     APP_ERROR_CHECK(err_code);
 
@@ -757,6 +760,32 @@ static ret_code_t twi_master_init(void)
     return ret;
 }
 
+void print_to_ble(void){
+		uint8_t channel = 1;
+		NRF_LOG_RAW_INFO("print to ble reach\n");
+		uint32_t data = fdc2214_readchannel(m_twi_master, channel); 
+		NRF_LOG_RAW_INFO("CH1 === %x\n", data); NRF_LOG_FLUSH();
+		fdc_ch1_characteristic_update(&m_fdcs_service, (int32_t *)(&data));
+}
+
+APP_TIMER_DEF(sensor_loop_timer_id);
+static void sensor_loop_handler(void * p_context)
+{
+   print_to_ble();  
+}
+
+static void create_sensor_timer()
+{   
+    uint32_t err_code;
+
+    // Create timers
+    err_code = app_timer_create(&sensor_loop_timer_id, APP_TIMER_MODE_REPEATED, sensor_loop_handler);
+    APP_ERROR_CHECK(err_code);
+
+     err_code = app_timer_start(sensor_loop_timer_id, APP_TIMER_TICKS(1000, APP_TIMER_PRESCALER), NULL);
+     APP_ERROR_CHECK(err_code);
+}
+
 static uint16_t fdc2214_init_git(nrf_drv_twi_t twi_master){
 
   uint8_t config_word_lsb;
@@ -842,7 +871,7 @@ int main(void)
     advertising_init();
     conn_params_init();
     bsp_board_leds_init();
-	fdc2214_init_git(m_twi_master);
+	fdc2214_init(m_twi_master);
 
 
 	NRF_LOG_RAW_INFO("UART Start!------->\n\r");  NRF_LOG_FLUSH();
@@ -852,24 +881,24 @@ int main(void)
 	
   
 
-   // create_sensor_timer();
+    create_sensor_timer();
 
     // Enter main loop.
     for (;;)
     {
 		//NRF_LOG_RAW_INFO("UART Start!------->\n\r");
 		//SEGGER_RTT_TerminalOut(1, "Hello World!\n");
-		bool passed_test = fdc2214_pass(m_twi_master);
-		if(passed_test){
-			uint16_t status = run_fdc2214(m_twi_master);
-			NRF_LOG_RAW_INFO("fdc2214 pass ");
-			NRF_LOG_FLUSH();
+		// bool passed_test = fdc2214_pass(m_twi_master);
+		// if(passed_test){
+			// uint16_t status = run_fdc2214(m_twi_master);
+			// NRF_LOG_RAW_INFO("fdc2214 pass ");
+			// NRF_LOG_FLUSH();
 			
-		}
-		else{
-			NRF_LOG_RAW_INFO("fdc2214 failed\n");NRF_LOG_FLUSH();
-			//purehealth_allpass = false;
-		}
+		// }
+		// else{
+			// NRF_LOG_RAW_INFO("fdc2214 failed\n");NRF_LOG_FLUSH();
+		//	purehealth_allpass = false;
+		// }
 		
 		NRF_LOG_FLUSH(); 
 		err_code = sd_app_evt_wait();
