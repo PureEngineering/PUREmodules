@@ -83,7 +83,8 @@ public class UartService extends Service {
 
     //soil moisture detector
     public static final UUID RX_SERVICE_UUID = UUID.fromString("0000abcd-1212-efde-1523-785fef13d123");
-    public static final UUID TX_CHAR_UUID = UUID.fromString("0000fdc1-1212-efde-1523-785fef13d123");
+    public static final UUID CH0_CHAR_UUID = UUID.fromString("0000fdc0-1212-efde-1523-785fef13d123");
+    public static final UUID CH1_CHAR_UUID = UUID.fromString("0000fdc1-1212-efde-1523-785fef13d123");
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
@@ -145,7 +146,7 @@ public class UartService extends Service {
         final Intent intent = new Intent(action);
 
         // This is handling for the notification on TX Character of NUS service
-        if (TX_CHAR_UUID.equals(characteristic.getUuid())) {
+        if (CH1_CHAR_UUID.equals(characteristic.getUuid())) {
         	
            // Log.d(TAG, String.format("Received TX: %d",characteristic.getValue() ));
             intent.putExtra(EXTRA_DATA, characteristic.getValue());
@@ -314,7 +315,7 @@ public class UartService extends Service {
             broadcastUpdate(DEVICE_DOES_NOT_SUPPORT_UART);
             return;
         }
-        BluetoothGattCharacteristic TxChar = RxService.getCharacteristic(TX_CHAR_UUID);
+        BluetoothGattCharacteristic TxChar = RxService.getCharacteristic(CH1_CHAR_UUID);
         if (TxChar == null) {
             showMessage("Tx charateristic not found!");
             broadcastUpdate(DEVICE_DOES_NOT_SUPPORT_UART);
