@@ -875,7 +875,8 @@ static uint16_t fdc2214_init_git(nrf_drv_twi_t twi_master){
 
   return fdc2214_whoami(twi_master);
 }
-
+// start the timer to transmit data to a phone when the fdc2214 connects to a phone
+// it stop transmitting data when it is disconnected
 int main(void)
 {
     uint32_t err_code;
