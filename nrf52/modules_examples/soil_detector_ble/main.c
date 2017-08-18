@@ -136,13 +136,13 @@ void print_to_ble(void){
 		uint8_t channel = 0;
 		NRF_LOG_RAW_INFO("print to ble reach\n");
 		uint32_t data = fdc2214_readchannel(m_twi_master, channel); 
-		NRF_LOG_RAW_INFO("CH0 === %x\n", data); NRF_LOG_FLUSH();
+		NRF_LOG_RAW_INFO("CH0 === %d\n", data); NRF_LOG_FLUSH();
 		fdc_ch0_characteristic_update(&m_fdcs_service, (int32_t *)(&data));
 		
 		channel = 1;
 		NRF_LOG_RAW_INFO("print to ble reach\n");
 		data = fdc2214_readchannel(m_twi_master, channel); 
-		NRF_LOG_RAW_INFO("CH1 === %x\n", data); NRF_LOG_FLUSH();
+		NRF_LOG_RAW_INFO("CH1 === %d\n", data); NRF_LOG_FLUSH();
 		fdc_ch1_characteristic_update(&m_fdcs_service, (int32_t *)(&data));
 	
 /******COMMENT IT BACK WHEN YOU ARE CONNECTED TO CHANNEL 2 *******************************/	
