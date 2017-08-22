@@ -140,11 +140,11 @@ uint8_t run_tmp007_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
   send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
   double dietemp = tmp007_readDieTempC(twi_master);
-  sprintf((char *)ble_string, "tmp007obj: %f \r\n",dietemp);
+  sprintf((char *)ble_string, "tmp007obj: %d \r\n",(int)dietemp);
   send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
   double objtemp = tmp007_readObjTempC(twi_master);
-  sprintf((char *)ble_string, "tmp007die: %f \r\n",objtemp);
+  sprintf((char *)ble_string, "tmp007die: %d \r\n",(int)objtemp);
   send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
   return who_am_i;

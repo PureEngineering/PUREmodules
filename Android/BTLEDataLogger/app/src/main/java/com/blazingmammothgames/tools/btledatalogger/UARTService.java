@@ -50,6 +50,7 @@ public class UARTService extends Service {
     public static final UUID RX_CHAR_UUID = UUID.fromString("6e400002-b5a3-f393-e0a9-e50e24dcca9e");
     public static final UUID TX_CHAR_UUID = UUID.fromString("6e400003-b5a3-f393-e0a9-e50e24dcca9e");
 
+
     private BluetoothManager btManager;
     private BluetoothAdapter btAdapter;
     private String btAddress;
