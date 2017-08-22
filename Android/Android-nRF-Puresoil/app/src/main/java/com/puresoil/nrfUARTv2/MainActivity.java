@@ -60,6 +60,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements RadioGroup.OnCheckedChangeListener {
+    private static int counter = 0;
     private static final int REQUEST_SELECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 2;
     private static final int UART_PROFILE_READY = 10;
@@ -227,11 +228,13 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
           //*********************//
             if (action.equals(UartService.ACTION_GATT_SERVICES_DISCOVERED)) {
              	 mService.enableTXNotification();
+                 mService.enableCh0TXNotification();
             }
           //*********************//
             if (action.equals(UartService.ACTION_DATA_AVAILABLE)) {
               
                  final byte[] txValue = intent.getByteArrayExtra(UartService.EXTRA_DATA);
+                final byte[] txValue1 = intent.getByteArrayExtra(UartService.CH0_DATA);
                  runOnUiThread(new Runnable() {
                      public void run() {
                          try {
