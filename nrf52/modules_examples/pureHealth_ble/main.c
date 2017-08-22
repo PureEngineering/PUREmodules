@@ -164,6 +164,34 @@ static void gap_params_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
+void si1153_health_init(){
+    send_command(m_twi_master,Si1153_RESET_SW);
+    nrf_delay_ms(10);
+    //si1153_init(m_twi_master);
+
+    param_set(m_twi_master, Si1153_CHAN_LIST, 0x07);
+
+    param_set(m_twi_master, Si1153_LED1_A, 0x3F);
+    param_set(m_twi_master, Si1153_LED2_A, 0x3F);
+    param_set(m_twi_master, Si1153_LED3_A, 0x3F);
+
+    param_set(m_twi_master, Si1153_ADCCONFIG_0, 0x62);
+    param_set(m_twi_master, Si1153_MEASCONFIG_0, 0x01);
+    param_set(m_twi_master, Si1153_ADCSENS_0, 0x01);
+
+    param_set(m_twi_master, Si1153_ADCCONFIG_1, 0x62);
+    param_set(m_twi_master, Si1153_MEASCONFIG_1, 0x02);
+    param_set(m_twi_master, Si1153_ADCSENS_1, 0x01);
+
+    param_set(m_twi_master, Si1153_ADCCONFIG_2, 0x62);
+    param_set(m_twi_master, Si1153_MEASCONFIG_2, 0x04);
+    param_set(m_twi_master, Si1153_ADCSENS_2, 0x01);
+
+    send_command(m_twi_master,Si1153_FORCE);
+
+    NRF_LOG_FLUSH();   
+}
+
 
 /**@brief Function for handling the data from the Nordic UART Service.
  *
@@ -214,7 +242,8 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
             break;
 
         case SI1153_ON_MESSAGE:
-            si1153_init(m_twi_master);
+            //si1153_init(m_twi_master);
+            si1153_health_init();
             si1153_on = true;
             break;
 
@@ -743,6 +772,73 @@ static ret_code_t twi_master_init(void)
     return ret;
 }
 
+
+
+
+
+void si1153_test(ble_nus_t m_nus)
+{
+    //int i = 0;
+    int si1153_data;
+    //int si1153_R;
+    int si1153_IR1 = 0;
+    //int si1153_IR2;
+
+    uint8_t length = 20;
+    uint8_t *ble_string[length];
+
+
+    /* Initialization of UART */
+    //bsp_board_leds_init();
+
+    //APP_ERROR_CHECK(NRF_LOG_INIT(NULL));
+
+    /* Initializing TWI master interface for EEPROM */
+  //  err_code = twi_master_init();
+  //  APP_ERROR_CHECK(err_code);
+  //  NRF_LOG_RAW_INFO("si1153 test\n\r");
+  //  NRF_LOG_FLUSH();   
+
+   // while (1)
+    for(int j=0;j<100;j++)
+    {
+        //nrf_delay_ms(1000);
+
+        NRF_LOG_FLUSH();   
+/*
+        if(0==1)
+        {
+            si1153_data = si1153_get_data(m_twi_master);
+            NRF_LOG_RAW_INFO("%04d:",si1153_data );
+            for(i=0;i<((si1153_data/4)%70);i++)
+            {
+                NRF_LOG_RAW_INFO("-");
+                NRF_LOG_FLUSH();   
+            }
+            NRF_LOG_RAW_INFO("*\n\r");
+            NRF_LOG_FLUSH();   
+        }*/
+
+        //NRF_LOG_RAW_INFO("%d------------------------\r\n",i++);
+        nrf_delay_ms(10);
+
+        //run_si1153(m_twi_master);
+        //bsp_board_led_invert(0);
+
+        si1153_IR1 = si1153_data = si1153_get_channel_data(m_twi_master,0);
+        //si1153_IR2 = si1153_get_channel_data(m_twi_master,1);
+        //si1153_R = si1153_get_channel_data(m_twi_master,2);
+        //NRF_LOG_RAW_INFO("%06d,%06d,%06d\n\r",si1153_IR1,si1153_IR2,si1153_R);
+        
+        sprintf((char *)ble_string, "sx:%06d \r\n",si1153_IR1);
+        send_ble_data(m_nus,(uint8_t *)ble_string,length);
+
+        send_command(m_twi_master,Si1153_FORCE);
+
+        NRF_LOG_FLUSH();
+    }
+}
+
 //Code that runs in main to read data from sensors that are on
 void print_to_ble(){
     if(lis2de_on){
@@ -755,7 +851,8 @@ void print_to_ble(){
         run_veml6075_ble(m_twi_master,m_nus);
     }
     if(si1153_on){
-        run_si1153_ble(m_twi_master,m_nus);
+        //run_si1153_ble(m_twi_master,m_nus);
+        si1153_test(m_nus);
     }
     if(tmp007_on){
         run_tmp007_ble(m_twi_master,m_nus);
@@ -784,7 +881,7 @@ static void create_sensor_timer()
     err_code = app_timer_create(&sensor_loop_timer_id, APP_TIMER_MODE_REPEATED, sensor_loop_handler);
     APP_ERROR_CHECK(err_code);
 
-     err_code = app_timer_start(sensor_loop_timer_id, APP_TIMER_TICKS(3000, APP_TIMER_PRESCALER), NULL);
+     err_code = app_timer_start(sensor_loop_timer_id, APP_TIMER_TICKS(1000, APP_TIMER_PRESCALER), NULL);
      APP_ERROR_CHECK(err_code);
 }
 

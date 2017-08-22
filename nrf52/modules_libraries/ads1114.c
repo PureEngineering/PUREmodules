@@ -238,7 +238,7 @@ int16_t ads1114_getLastConversionResults(nrf_drv_twi_t twi_master)
 void run_ads1114(nrf_drv_twi_t twi_master){
 
     int16_t data = ads1114_readADC_Differential_0_1(twi_master);
-    NRF_LOG_RAW_INFO("ADC Differential0_1 : %x.\r\n", data);
+    NRF_LOG_RAW_INFO("ads1114out: %x.\r\n", data);
 
 }
 
@@ -248,7 +248,7 @@ void run_ads1114_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
 
 
   int16_t data = ads1114_readADC_Differential_0_1(twi_master);
-  sprintf((char *)ble_string, "ADC Differential0_1 : %x.\r\n", data);
+  sprintf((char *)ble_string, "ads1114out: %x.\r\n", data);
   send_ble_data(m_nus,(uint8_t *)ble_string,length);
 
 }

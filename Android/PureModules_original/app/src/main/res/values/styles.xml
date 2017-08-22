@@ -1,0 +1,22 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="AppTheme" parent="AppBaseTheme">
+
+    </style>
+    <color name="black">#FF000000</color>
+    <color name="whitegrey">#FFF2F2F2</color>
+
+    <style name="DialogLight" parent="@android:style/Theme.Dialog">
+
+        <item name="android:windowBackground">@color/whitegrey</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+</resources>
