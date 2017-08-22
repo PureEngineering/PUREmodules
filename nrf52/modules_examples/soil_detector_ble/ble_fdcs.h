@@ -87,7 +87,7 @@ void ble_fdcs_init(ble_fdcs_t * p_our_service);
  * @param[in]   characteristic_value     New characteristic value.
  */
  
-void fdc_ch0_characteristic_update(ble_fdcs_t *p_our_service, int32_t *temperature_value);
+void fdc_chx_characteristic_update(ble_fdcs_t *p_our_service, uint32_t *temperature_value,  uint16_t ch_handles_value);
 void fdc_ch1_characteristic_update(ble_fdcs_t *p_our_service, int32_t *temperature_value);
 
 #endif  /* _ OUR_SERVICE_H__ */

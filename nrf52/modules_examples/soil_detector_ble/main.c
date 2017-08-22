@@ -137,22 +137,21 @@ void print_to_ble(void){
 		NRF_LOG_RAW_INFO("print to ble reach\n");
 		//uint32_t data1 = 0x12345678;
 		uint32_t data = fdc2214_readchannel(m_twi_master, channel); 
-		NRF_LOG_RAW_INFO("CH0 === %d\n", data); NRF_LOG_FLUSH();
-		fdc_ch0_characteristic_update(&m_fdcs_service, (int32_t *)(&data));
+		NRF_LOG_RAW_INFO("CH0 === %x\n", data); NRF_LOG_FLUSH();
+		fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch0_char_handles.value_handle);
 		
 		channel = 1;
 		NRF_LOG_RAW_INFO("print to ble reach\n");
 		data = fdc2214_readchannel(m_twi_master, channel); 
-		NRF_LOG_RAW_INFO("CH1 === %d\n", data); NRF_LOG_FLUSH();
-		fdc_ch1_characteristic_update(&m_fdcs_service, (int32_t *)(&data));
+		NRF_LOG_RAW_INFO("CH1 === %x\n", data); NRF_LOG_FLUSH();
+		fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch1_char_handles.value_handle);
 	
 /******COMMENT IT BACK WHEN YOU ARE CONNECTED TO CHANNEL 2 *******************************/	
-		// channel = 2;
-		// NRF_LOG_RAW_INFO("print to ble reach\n");
-		// data = fdc2214_readchannel(m_twi_master, channel); 
-		// NRF_LOG_RAW_INFO("CH2 === %x\n", data); NRF_LOG_FLUSH();
-		// fdc_ch2_characteristic_update(&m_fdcs_service, (int32_t *)(&data));
-
+		channel = 2;
+		NRF_LOG_RAW_INFO("print to ble reach\n");
+		data = fdc2214_readchannel(m_twi_master, channel); 
+		NRF_LOG_RAW_INFO("CH2 === %x\n", data); NRF_LOG_FLUSH();
+		fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch2_char_handles.value_handle);
 		
 }
 
