@@ -48,7 +48,7 @@ uint32_t fdc2214_readchannel(nrf_drv_twi_t twi_master, uint8_t channelNo){
   uint16_t data_MSW = read_2bytes(twi_master,FDC2214_DEVICE_ADDRESS, MSW_REG);
   uint16_t data_LSW = read_2bytes(twi_master,FDC2214_DEVICE_ADDRESS, LSW_REG);
 
-  uint32_t data = (data_MSW << 16 | data_LSW);
+  uint32_t data = (data_MSW << 16 | data_LSW) &0x3fff;
 
   return data;
 
