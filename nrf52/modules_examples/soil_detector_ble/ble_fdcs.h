@@ -41,10 +41,14 @@
 #include "ble_srv_common.h"
 
 #define BLE_UUID_FDC_BASE_UUID              {{0x23, 0xD1, 0x13, 0xEF, 0x5F, 0x78, 0x23, 0x15, 0xDE, 0xEF, 0x12, 0x12, 0x00, 0x00, 0x00, 0x00}} // 128-bit base UUID
-//#define BLE_UUID_FDC_BASE_UUID              {{0x9E, 0xCA, 0xDC, 0x24, 0x0E, 0xE5, 0xA9, 0xE0, 0x93, 0xF3, 0xA3, 0xB5, 0x00, 0x00, 0x40, 0x6E}}
 
-#define BLE_UUID_FDC_SERVICE               /* 0x0001 */ 0xABCD // Just a random, but recognizable value
-#define BLE_UUID_FDC_CHARACTERISTC_UUID    /* 0x0002 */ 0xBEEF // Just a random, but recognizable value
+
+#define BLE_UUID_FDC_SERVICE                	0xABCD // Just a random, but recognizable value
+#define BLE_UUID_FDC_CH0_CHARACTERISTC_UUID     0xFDC0 // Just a random, but recognizable value
+#define BLE_UUID_FDC_CH1_CHARACTERISTC_UUID     0xFDC1 // Just a random, but recognizable value
+#define BLE_UUID_FDC_CH2_CHARACTERISTC_UUID     0xFDC2 // Just a random, but recognizable value
+
+
 
 /**
  * @brief This structure contains various status information for our service. 
@@ -57,7 +61,9 @@ typedef struct
 {
 	uint16_t 					conn_handle;
     uint16_t    				service_handle;     /**< Handle of Our Service (as provided by the BLE stack). */
-	ble_gatts_char_handles_t 	char_handles;
+	ble_gatts_char_handles_t 	ch0_char_handles;   /*helps fdc service know which characteristic is is on*/
+	ble_gatts_char_handles_t 	ch1_char_handles;	/*helps fdc service know which characteristic is is on*/
+	ble_gatts_char_handles_t 	ch2_char_handles;	/*helps fdc service know which characteristic is is on*/
 }ble_fdcs_t;
 
 
@@ -80,6 +86,8 @@ void ble_fdcs_init(ble_fdcs_t * p_our_service);
  * @param[in]   p_our_service                     Our Service structure.
  * @param[in]   characteristic_value     New characteristic value.
  */
+ 
+void fdc_chx_characteristic_update(ble_fdcs_t *p_our_service, uint32_t *temperature_value,  uint16_t ch_handles_value);
 void fdc_ch1_characteristic_update(ble_fdcs_t *p_our_service, int32_t *temperature_value);
 
 #endif  /* _ OUR_SERVICE_H__ */

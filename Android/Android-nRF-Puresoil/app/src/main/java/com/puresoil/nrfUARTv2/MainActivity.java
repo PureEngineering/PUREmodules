@@ -60,6 +60,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements RadioGroup.OnCheckedChangeListener {
+    private static int counter = 0;
     private static final int REQUEST_SELECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 2;
     private static final int UART_PROFILE_READY = 10;
@@ -226,31 +227,68 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
           
           //*********************//
             if (action.equals(UartService.ACTION_GATT_SERVICES_DISCOVERED)) {
-             	 mService.enableTXNotification();
+             	 mService.enableChannelxNotification(UartService.CH0_CHAR_UUID);
+                mService.enableChannelxNotification(UartService.CH1_CHAR_UUID);
+                mService.enableChannelxNotification(UartService.CH2_CHAR_UUID);
             }
           //*********************//
             if (action.equals(UartService.ACTION_DATA_AVAILABLE)) {
               
                  final byte[] txValue = intent.getByteArrayExtra(UartService.EXTRA_DATA);
+                final byte[] txValue1 = intent.getByteArrayExtra(UartService.CH0_DATA);
+                final byte[] txValue2 = intent.getByteArrayExtra(UartService.CH2_DATA);
                  runOnUiThread(new Runnable() {
                      public void run() {
                          try {
                              int i = 0;
+                             int j = 0;
+                             int index = 0;
                              String text1 = " ";
-                             int txValue_len = txValue.length -1;
-                             while (i <=txValue_len) {
-                                 text1 = text1 + Integer.toHexString(txValue[txValue_len-i]&0xff);
+                             if(txValue != null) {
+                                 int txValue_len = txValue.length - 1;
+                                 while (i <= txValue_len) {
+                                     text1 = text1 + Integer.toHexString(txValue[txValue_len - i] & 0xff);
 
-                                 i++;
+                                     i++;
+                                 }
+                                 Log.d("data", "text1---> " + text1 + "length ---> " + txValue.length);
+
+
+                                 //String text = new String(txValue, "UTF-8");
+                                 String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+                                 listAdapter.add("[" + currentDateTimeString + "] CH1: " + text1);
+                              //   messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
                              }
-                             Log.d("data", "text1---> " +text1 + "length ---> " + txValue.length);
+                             if ( txValue1 != null) {
+                                 int txValue1_len = txValue1.length - 1;
+                                 while (j <= txValue1_len) {
+                                     text1 = text1 + Integer.toHexString(txValue1[txValue1_len - j] & 0xff);
+
+                                     j++;
+                                 }
+                                 Log.d("data", "text1---> " + text1 + "length ---> " + txValue1.length);
 
 
-                         	//String text = new String(txValue, "UTF-8");
-                         	String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                        	 	listAdapter.add("["+currentDateTimeString+"] CH1: "+text1);
-                        	 	messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-                        	
+                                 //String text = new String(txValue, "UTF-8");
+                                 String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+                                 listAdapter.add("[" + currentDateTimeString + "] CH0: " + text1);
+                             }
+                             if(txValue2 != null) {
+                                 int txValue2_len = txValue2.length - 1;
+                                 while (index <= txValue2_len) {
+                                     text1 = text1 + Integer.toHexString(txValue2[txValue2_len - index] & 0xff);
+
+                                     index++;
+                                 }
+                                 Log.d("data", "text1---> " + text1 + "length ---> " + txValue2.length);
+
+
+                                 //String text = new String(txValue, "UTF-8");
+                                 String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+                                 listAdapter.add("[" + currentDateTimeString + "] CH2: " + text1);
+                             }
+
+                             messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
                          } catch (Exception e) {
                              Log.e(TAG, e.toString());
                          }

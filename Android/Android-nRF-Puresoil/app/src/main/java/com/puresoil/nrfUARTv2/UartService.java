@@ -39,6 +39,7 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,6 +49,9 @@ import java.util.UUID;
  */
 public class UartService extends Service {
     private final static String TAG = UartService.class.getSimpleName();
+
+    private int counter = 0;
+    private static final int NUM_OF_CHARS = 3;
 
     private BluetoothManager mBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
@@ -69,6 +73,10 @@ public class UartService extends Service {
             "com.nordicsemi.nrfUART.ACTION_DATA_AVAILABLE";
     public final static String EXTRA_DATA =
             "com.nordicsemi.nrfUART.EXTRA_DATA";
+    public final static String CH0_DATA =
+            "com.nordicsemi.nrfUART.CH0_DATA";
+    public final static String CH2_DATA =
+            "com.nordicsemi.nrfUART.CH2_DATA";
     public final static String DEVICE_DOES_NOT_SUPPORT_UART =
             "com.nordicsemi.nrfUART.DEVICE_DOES_NOT_SUPPORT_UART";
     //  {{0x23, 0xD1, 0x13, 0xEF, 0x5F, 0x78, 0x23, 0x15, 0xDE, 0xEF, 0x12, 0x12, 0x00, 0x00, 0x00, 0x00}}
@@ -83,14 +91,19 @@ public class UartService extends Service {
 
     //soil moisture detector
     public static final UUID RX_SERVICE_UUID = UUID.fromString("0000abcd-1212-efde-1523-785fef13d123");
-    public static final UUID TX_CHAR_UUID = UUID.fromString("0000fdc1-1212-efde-1523-785fef13d123");
+    public static final UUID CH0_CHAR_UUID = UUID.fromString("0000fdc0-1212-efde-1523-785fef13d123");
+    public static final UUID CH1_CHAR_UUID = UUID.fromString("0000fdc1-1212-efde-1523-785fef13d123");
+    public static final UUID CH2_CHAR_UUID = UUID.fromString("0000fdc2-1212-efde-1523-785fef13d123");
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
+        ArrayList<BluetoothGattCharacteristic> gatt_chara = new ArrayList<>();
+
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             String intentAction;
-            
+
+
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 intentAction = ACTION_GATT_CONNECTED;
                 mConnectionState = STATE_CONNECTED;
@@ -112,11 +125,22 @@ public class UartService extends Service {
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
             	Log.w(TAG, "mBluetoothGatt = " + mBluetoothGatt );
-            	
+                BluetoothGattService srv = mBluetoothGatt.getService(RX_SERVICE_UUID);
+                for( BluetoothGattCharacteristic chara :  srv.getCharacteristics() ) {
+                    // UUID chr_uuid = chara.getUuid();
+                    gatt_chara.add(chara);
+                }
+                requestCharacteristics(gatt, 0);
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
             } else {
                 Log.w(TAG, "onServicesDiscovered received: " + status);
             }
+        }
+
+        public void requestCharacteristics(BluetoothGatt gatt, int count) {
+
+                gatt.readCharacteristic(gatt_chara.get(counter));
+
         }
 
         @Override
@@ -124,6 +148,14 @@ public class UartService extends Service {
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
+                if(counter == NUM_OF_CHARS){
+                    counter = 0;
+                }
+                if (counter < NUM_OF_CHARS) {
+                    requestCharacteristics(gatt, counter);
+                    counter++;
+                }
+
                 broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
             }
         }
@@ -144,15 +176,29 @@ public class UartService extends Service {
                                  final BluetoothGattCharacteristic characteristic) {
         final Intent intent = new Intent(action);
 
-        // This is handling for the notification on TX Character of NUS service
-        if (TX_CHAR_UUID.equals(characteristic.getUuid())) {
-        	
-           // Log.d(TAG, String.format("Received TX: %d",characteristic.getValue() ));
-            intent.putExtra(EXTRA_DATA, characteristic.getValue());
-        } else {
-        	
-        }
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        //loop through the characteristics
+     //   BluetoothGattService srv1 = mBluetoothGatt.getService(RX_SERVICE_UUID);
+   //     for( BluetoothGattCharacteristic chara :  srv1.getCharacteristics() ) {
+            UUID chr_uuid = characteristic.getUuid();
+            // This is handling for the notification on TX Character of NUS service
+            if (CH0_CHAR_UUID.equals(chr_uuid)) {
+                intent.putExtra(CH0_DATA, characteristic.getValue());
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+            } else if (CH1_CHAR_UUID.equals(chr_uuid)) {
+                // Log.d(TAG, String.format("Received TX: %d",characteristic.getValue() ));
+                intent.putExtra(EXTRA_DATA, characteristic.getValue());
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            }else if (CH2_CHAR_UUID.equals(chr_uuid)) {
+                intent.putExtra(CH2_DATA, characteristic.getValue());
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            }else{
+
+            }
+
+
+      //  }end of for
+
     }
 
     public class LocalBinder extends Binder {
@@ -299,7 +345,7 @@ public class UartService extends Service {
      *
      * @return
      */
-    public void enableTXNotification()
+    public void enableChannelxNotification(UUID chx_uuid)
     {
     	/*
     	if (mBluetoothGatt == null) {
@@ -314,9 +360,44 @@ public class UartService extends Service {
             broadcastUpdate(DEVICE_DOES_NOT_SUPPORT_UART);
             return;
         }
-        BluetoothGattCharacteristic TxChar = RxService.getCharacteristic(TX_CHAR_UUID);
+        BluetoothGattCharacteristic TxChar = RxService.getCharacteristic(chx_uuid);
         if (TxChar == null) {
             showMessage("Tx charateristic not found!");
+            broadcastUpdate(DEVICE_DOES_NOT_SUPPORT_UART);
+            return;
+        }
+        mBluetoothGatt.setCharacteristicNotification(TxChar,true);
+
+        BluetoothGattDescriptor descriptor = TxChar.getDescriptor(CCCD);
+        descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+        mBluetoothGatt.writeDescriptor(descriptor);
+
+    }
+
+
+    /**
+     * Enable Notification on channel 0 TX characteristic
+     *
+     * @return
+     */
+    public void enableCh0TXNotification()
+    {
+    	/*
+    	if (mBluetoothGatt == null) {
+    		showMessage("mBluetoothGatt null" + mBluetoothGatt);
+    		broadcastUpdate(DEVICE_DOES_NOT_SUPPORT_UART);
+    		return;
+    	}
+    		*/
+        BluetoothGattService RxService = mBluetoothGatt.getService(RX_SERVICE_UUID);
+        if (RxService == null) {
+            showMessage("Rx service not found!");
+            broadcastUpdate(DEVICE_DOES_NOT_SUPPORT_UART);
+            return;
+        }
+        BluetoothGattCharacteristic TxChar = RxService.getCharacteristic(CH0_CHAR_UUID);
+        if (TxChar == null) {
+            showMessage("ch0 charateristic not found!");
             broadcastUpdate(DEVICE_DOES_NOT_SUPPORT_UART);
             return;
         }
