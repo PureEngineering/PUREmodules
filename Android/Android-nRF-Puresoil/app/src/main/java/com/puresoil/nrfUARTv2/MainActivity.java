@@ -239,21 +239,38 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                      public void run() {
                          try {
                              int i = 0;
+                             int j = 0;
                              String text1 = " ";
-                             int txValue_len = txValue.length -1;
-                             while (i <=txValue_len) {
-                                 text1 = text1 + Integer.toHexString(txValue[txValue_len-i]&0xff);
+                             if(txValue != null && txValue1 == null) {
+                                 int txValue_len = txValue.length - 1;
+                                 while (i <= txValue_len) {
+                                     text1 = text1 + Integer.toHexString(txValue[txValue_len - i] & 0xff);
 
-                                 i++;
+                                     i++;
+                                 }
+                                 Log.d("data", "text1---> " + text1 + "length ---> " + txValue.length);
+
+
+                                 //String text = new String(txValue, "UTF-8");
+                                 String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+                                 listAdapter.add("[" + currentDateTimeString + "] CH1: " + text1);
+                              //   messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+                             } else if (txValue == null && txValue1 != null) {
+                                 int txValue1_len = txValue1.length - 1;
+                                 while (j <= txValue1_len) {
+                                     text1 = text1 + Integer.toHexString(txValue1[txValue1_len - j] & 0xff);
+
+                                     j++;
+                                 }
+                                 Log.d("data", "text1---> " + text1 + "length ---> " + txValue1.length);
+
+
+                                 //String text = new String(txValue, "UTF-8");
+                                 String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+                                 listAdapter.add("[" + currentDateTimeString + "] CH0: " + text1);
                              }
-                             Log.d("data", "text1---> " +text1 + "length ---> " + txValue.length);
 
-
-                         	//String text = new String(txValue, "UTF-8");
-                         	String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                        	 	listAdapter.add("["+currentDateTimeString+"] CH1: "+text1);
-                        	 	messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-                        	
+                             messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
                          } catch (Exception e) {
                              Log.e(TAG, e.toString());
                          }

@@ -39,6 +39,7 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,6 +49,9 @@ import java.util.UUID;
  */
 public class UartService extends Service {
     private final static String TAG = UartService.class.getSimpleName();
+
+    private int counter = 0;
+    private static final int NUM_OF_CHARS = 3;
 
     private BluetoothManager mBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
@@ -90,10 +94,13 @@ public class UartService extends Service {
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
+        ArrayList<BluetoothGattCharacteristic> gatt_chara = new ArrayList<>();
+
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             String intentAction;
-            
+
+
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 intentAction = ACTION_GATT_CONNECTED;
                 mConnectionState = STATE_CONNECTED;
@@ -115,11 +122,22 @@ public class UartService extends Service {
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
             	Log.w(TAG, "mBluetoothGatt = " + mBluetoothGatt );
-            	
+                BluetoothGattService srv = mBluetoothGatt.getService(RX_SERVICE_UUID);
+                for( BluetoothGattCharacteristic chara :  srv.getCharacteristics() ) {
+                    // UUID chr_uuid = chara.getUuid();
+                    gatt_chara.add(chara);
+                }
+                requestCharacteristics(gatt, 0);
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
             } else {
                 Log.w(TAG, "onServicesDiscovered received: " + status);
             }
+        }
+
+        public void requestCharacteristics(BluetoothGatt gatt, int count) {
+
+                gatt.readCharacteristic(gatt_chara.get(counter));
+
         }
 
         @Override
@@ -127,6 +145,14 @@ public class UartService extends Service {
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
+                if(counter == NUM_OF_CHARS-1){
+                    counter = 0;
+                }
+                if (counter < NUM_OF_CHARS) {
+                    requestCharacteristics(gatt, counter);
+                    counter++;
+                }
+
                 broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
             }
         }
@@ -148,23 +174,24 @@ public class UartService extends Service {
         final Intent intent = new Intent(action);
 
         //loop through the characteristics
-        BluetoothGattService srv = mBluetoothGatt.getService(RX_SERVICE_UUID);
-        for( BluetoothGattCharacteristic chara :  srv.getCharacteristics() ) {
-            UUID chr_uuid = chara.getUuid();
+     //   BluetoothGattService srv1 = mBluetoothGatt.getService(RX_SERVICE_UUID);
+   //     for( BluetoothGattCharacteristic chara :  srv1.getCharacteristics() ) {
+            UUID chr_uuid = characteristic.getUuid();
             // This is handling for the notification on TX Character of NUS service
             if (CH0_CHAR_UUID.equals(chr_uuid)) {
-                intent.putExtra(CH0_DATA, chara.getValue());
+                intent.putExtra(CH0_DATA, characteristic.getValue());
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
             } else if (CH1_CHAR_UUID.equals(chr_uuid)) {
                 // Log.d(TAG, String.format("Received TX: %d",characteristic.getValue() ));
-                intent.putExtra(EXTRA_DATA, chara.getValue());
+                intent.putExtra(EXTRA_DATA, characteristic.getValue());
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             }  else{
 
             }
 
-        }
+
+      //  }end of for
 
     }
 
