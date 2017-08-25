@@ -132,7 +132,7 @@ uint16_t fdc2214_init(nrf_drv_twi_t twi_master){
   config_word_msb = 0x0C;
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_MUX_CONFIG,config_word_lsb,config_word_msb);
   
-  //config
+  //config // sleep mode
   config_word_lsb = 0x1E;
   config_word_msb = 0x01;
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_CONFIG,config_word_lsb,config_word_msb);

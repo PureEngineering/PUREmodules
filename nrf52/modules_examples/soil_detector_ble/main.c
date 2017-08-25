@@ -134,21 +134,21 @@ static const nrf_drv_twi_t m_twi_master = NRF_DRV_TWI_INSTANCE(MASTER_TWI_INST);
 void print_to_ble(void){
 			
 		uint8_t channel = 0;
-		NRF_LOG_RAW_INFO("print to ble reach\n");
+		
 		//uint32_t data1 = 0x12345678;
 		uint32_t data = fdc2214_readchannel(m_twi_master, channel); 
 		NRF_LOG_RAW_INFO("CH0 === %x\n", data); NRF_LOG_FLUSH();
 		fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch0_char_handles.value_handle);
 		
 		channel = 1;
-		NRF_LOG_RAW_INFO("print to ble reach\n");
+		//NRF_LOG_RAW_INFO("print to ble reach\n");
 		data = fdc2214_readchannel(m_twi_master, channel); 
 		NRF_LOG_RAW_INFO("CH1 === %x\n", data); NRF_LOG_FLUSH();
 		fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch1_char_handles.value_handle);
 	
 /******COMMENT IT BACK WHEN YOU ARE CONNECTED TO CHANNEL 2 *******************************/	
 		channel = 2;
-		NRF_LOG_RAW_INFO("print to ble reach\n");
+		
 		data = fdc2214_readchannel(m_twi_master, channel); 
 		NRF_LOG_RAW_INFO("CH2 === %x\n", data); NRF_LOG_FLUSH();
 		fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch2_char_handles.value_handle);
@@ -234,99 +234,19 @@ static void gap_params_init(void)
  * @param[in] length   Length of the data.
  */
 /**@snippet [Handling the data received over BLE] */
-static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
+static void fdcs_data_handler(ble_fdcs_t * p_nus, uint8_t * p_data, uint16_t length)
 {
-    app_uart_put(p_data[0]);
-    //Parses the input from the android app to turn on or off
-    //the different sensors. 
-    switch (p_data[0])
-    {
-        case LIS2DE_ON_MESSAGE:
-            lis2de_init(m_twi_master);
-            lis2de_on = true;
-            break;
-
-        case LIS2DE_OFF_MESSAGE:
-            lis2de_powerdown(m_twi_master);
-            lis2de_on = false;
-            break;
-
-        case LIS3MDL_ON_MESSAGE:
-            lis3mdl_init(m_twi_master);
-            lis3mdl_on = true;
-            break;
-
-        case LIS3MDL_OFF_MESSAGE:
-            lis3mdl_powerdown(m_twi_master);
-            lis3mdl_on = false;
-            break;
-
-        case BME280_ON_MESSAGE:
-            bme280_init(m_twi_master);
-            bme280_on = true;
-            break;
-
-        case BME280_OFF_MESSAGE:
-            bme280_powerdown(m_twi_master);
-            bme280_on = false;
-            break;
-
-        case VEML6075_ON_MESSAGE:
-            veml6075_init(m_twi_master);
-            veml6075_on = true;
-            break;
-
-        case VEML6075_OFF_MESSAGE:
-            veml6075_powerdown(m_twi_master);
-            veml6075_on = false;
-            break;
-
-        case SI1153_ON_MESSAGE:
-            si1153_init(m_twi_master);
-            si1153_on = true;
-            break;
-
-        case SI1153_OFF_MESSAGE:
-            //Si1153 automatically moves to Standby Mode
-            si1153_on = false;
-            break;
-
-        case APDS9250_ON_MESSAGE:
-            apds9250_init(m_twi_master);
-            apds9250_on = true;
-            break;
-
-        case APDS9250_OFF_MESSAGE:
-            apds9250_powerdown(m_twi_master);
-            apds9250_on = false;
-            break;
-
-        case P1234701CT_ON_MESSAGE:
-            p1234701ct_init(m_twi_master);
-            p1234701ct_on = true;
-            break;
-
-        case P1234701CT_OFF_MESSAGE:
-            p1234701ct_powerdown(m_twi_master);
-            p1234701ct_on = false;
-            break;
-
-        //NEED TO ADD TOF SENSOR
-
-
-        default:
-            break;
-    }
-
+     NRF_LOG_RAW_INFO("p_data OUT SIDE of fdcs_data_handler----> %x\n", *p_data); NRF_LOG_FLUSH();
     //Code to put ble received messages into uart
 
-    /*for (uint32_t i = 0; i < length; i++)
+    for (uint32_t i = 0; i < length; i++)
     {       
+		NRF_LOG_RAW_INFO("p_data----> %x\n", p_data[i]); NRF_LOG_FLUSH();
         while (app_uart_put(p_data[i]) != NRF_SUCCESS);
     }
 
     while (app_uart_put('\r') != NRF_SUCCESS);
-    while (app_uart_put('\n') != NRF_SUCCESS);*/
+    while (app_uart_put('\n') != NRF_SUCCESS);
 }
 
 /**@snippet [Handling the data received over BLE] */
@@ -336,14 +256,14 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
  */
 static void services_init(void)
 {
-    //uint32_t       err_code;
-   // ble_nus_init_t nus_init;
+    uint32_t       err_code;
+    ble_fdcs_t    fdcs_data_receiver;
 
-  //  memset(&nus_init, 0, sizeof(nus_init));
+    memset(&fdcs_data_receiver, 0, sizeof(fdcs_data_receiver));
 
-   // nus_init.data_handler = nus_data_handler;
+    fdcs_data_receiver.data_handler = fdcs_data_handler;
 
-    ble_fdcs_init(&m_fdcs_service);
+    ble_fdcs_init(&m_fdcs_service, &fdcs_data_receiver);
    // APP_ERROR_CHECK(err_code);
 }
 

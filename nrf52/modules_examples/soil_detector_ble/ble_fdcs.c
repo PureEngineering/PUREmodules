@@ -42,6 +42,29 @@
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 
+/**@brief Function for handling the @ref BLE_GATTS_EVT_WRITE event from the S110 SoftDevice.
+ *
+ * @param[in] p_fdcs     Nordic UART Service structure.
+ * @param[in] p_ble_evt Pointer to the event received from BLE stack.
+ */
+static void on_write(ble_fdcs_t * p_fdcs, ble_evt_t * p_ble_evt)
+{
+    ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
+
+if (
+             (p_evt_write->handle == p_fdcs->ch0_char_handles.value_handle)
+             &&
+             (p_fdcs->data_handler != NULL)
+            )
+    {
+        p_fdcs->data_handler(p_fdcs, p_evt_write->data, p_evt_write->len);
+    }
+    else
+    {
+        // Do Nothing. This event is not relevant for this service.
+    }
+}
+
 /**@brief Function for initiating our new service.
  *
  * @param[in]   p_our_service        Our Service structure.
@@ -61,6 +84,9 @@ void ble_fdc_service_on_ble_evt(ble_fdcs_t * p_our_service, ble_evt_t * p_ble_ev
 		case BLE_GAP_EVT_DISCONNECTED:
 			p_our_service->conn_handle = BLE_CONN_HANDLE_INVALID;
 			break;
+	    case BLE_GATTS_EVT_WRITE:
+            on_write(p_our_service, p_ble_evt);
+            break;
 		default:
 			// No implementation needed.
 			break;
@@ -135,7 +161,7 @@ static uint32_t fdc_chx_char_add(ble_fdcs_t * p_our_service, ble_gatts_char_hand
 
  
  
-void ble_fdcs_init(ble_fdcs_t * p_our_service)
+void ble_fdcs_init(ble_fdcs_t * p_our_service, ble_fdcs_t * fdc_data_handler)
 {
     // STEP 3: Declare 16 bit service and 128 bit base UUIDs and add them to BLE stack table     
 	uint32_t err_code;
@@ -146,7 +172,8 @@ void ble_fdcs_init(ble_fdcs_t * p_our_service)
 	APP_ERROR_CHECK(err_code);
     
 	// OUR_JOB: Step 3.B, Set our service connection handle to default value. I.e. an invalid handle since we are not yet in a connection.
-	p_our_service->conn_handle = BLE_CONN_HANDLE_INVALID;
+	p_our_service->conn_handle  = BLE_CONN_HANDLE_INVALID;
+	p_our_service->data_handler = fdc_data_handler->data_handler;
     
 	// STEP 4: Add our service
 	err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, 
@@ -204,7 +231,7 @@ void fdc_chx_characteristic_update(ble_fdcs_t *p_our_service, uint32_t *channel_
 	data_array[2] = (data>>16) & 0xff;
 	data_array[3] = (data>>24) & 0xff;
 	
-	NRF_LOG_RAW_INFO("channel_value----> %x, %x, %x, %x, %x\n", data, data_array[0], data_array[1], data_array[2], data_array[3]);
+	//NRF_LOG_RAW_INFO("channel_value----> %x, %x, %x, %x, %x\n", data, data_array[0], data_array[1], data_array[2], data_array[3]);
 	
 	
 	//*channel_value = 0x12345678;
