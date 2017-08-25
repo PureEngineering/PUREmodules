@@ -98,6 +98,8 @@
 #define TWI_SDA_M                26   //!< Master SDA pin                                       /**< UART RX buffer size. */
 #define MASTER_TWI_INST          0    //!< TWI interface used as a master accessing EEPROM memory
 
+#define FDC_SLEEP           0x3E
+#define FDC_WAKE            0x1E
 
 static ble_fdcs_t 						m_fdcs_service;
 
@@ -108,6 +110,8 @@ static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;
 
 static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_FDC_SERVICE, BLE_UUID_TYPE_VENDOR_BEGIN}};  /**< Universally unique service identifier. */
 
+static uint8_t startRead = 0; //signal(0xAA) coming from the phone is going to store here to tell the fdc2214 to start reading data
+static uint8_t timer_count = 0; //allow fdc2214 to read data for a certain amount of time
 bool ble_on = true;
 bool lis2de_on = true;
 bool lis3mdl_on = false;
@@ -131,27 +135,49 @@ APP_TIMER_DEF(sensor_loop_timer_id);
 //TW0_USE_EAY added in nrf_drv_twi line 80
 static const nrf_drv_twi_t m_twi_master = NRF_DRV_TWI_INSTANCE(MASTER_TWI_INST);
 
+static void fdc2214_sleep_mode_local(uint8_t sleep_mode) {
+			//config sleep mode
+			uint8_t config_word_lsb = sleep_mode;
+			uint8_t config_word_msb = 0x01;
+			write_2bytes(m_twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_CONFIG,config_word_lsb,config_word_msb);
+}
+
 void print_to_ble(void){
 			
-		uint8_t channel = 0;
+		//if we recevie 0xAA from the phone then we start reading data from fdc2214 chip
+		NRF_LOG_RAW_INFO("start read *********************> %x\n", startRead);
+		if(startRead == 0xAA) {
+			startRead = 0xAA;
+			fdc2214_sleep_mode_local(FDC_WAKE);
+		//	startRead = 0x00;
 		
-		//uint32_t data1 = 0x12345678;
-		uint32_t data = fdc2214_readchannel(m_twi_master, channel); 
-		NRF_LOG_RAW_INFO("CH0 === %x\n", data); NRF_LOG_FLUSH();
-		fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch0_char_handles.value_handle);
+			uint8_t channel = 0;
+			uint32_t data = fdc2214_readchannel(m_twi_master, channel); 
+			NRF_LOG_RAW_INFO("CH0 === %x\n", data); NRF_LOG_FLUSH();
+			fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch0_char_handles.value_handle);
+			
+			channel = 1;
+			//NRF_LOG_RAW_INFO("print to ble reach\n");
+			data = fdc2214_readchannel(m_twi_master, channel); 
+			NRF_LOG_RAW_INFO("CH1 === %x\n", data); NRF_LOG_FLUSH();
+			fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch1_char_handles.value_handle);
 		
-		channel = 1;
-		//NRF_LOG_RAW_INFO("print to ble reach\n");
-		data = fdc2214_readchannel(m_twi_master, channel); 
-		NRF_LOG_RAW_INFO("CH1 === %x\n", data); NRF_LOG_FLUSH();
-		fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch1_char_handles.value_handle);
-	
-/******COMMENT IT BACK WHEN YOU ARE CONNECTED TO CHANNEL 2 *******************************/	
-		channel = 2;
+	        /******COMMENT IT BACK WHEN YOU ARE CONNECTED TO CHANNEL 2 *******************************/	
+			channel = 2;
+			
+			data = fdc2214_readchannel(m_twi_master, channel); 
+			NRF_LOG_RAW_INFO("CH2 === %x\n", data); NRF_LOG_FLUSH();
+			fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch2_char_handles.value_handle);
+			//startRead = 0x00;
+		}
 		
-		data = fdc2214_readchannel(m_twi_master, channel); 
-		NRF_LOG_RAW_INFO("CH2 === %x\n", data); NRF_LOG_FLUSH();
-		fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch2_char_handles.value_handle);
+		NRF_LOG_RAW_INFO("timer count -----------------------> %d\n", timer_count);
+		if(timer_count == 5) {
+			fdc2214_sleep_mode_local(FDC_SLEEP);
+			startRead = 0x00;
+			timer_count = 0;
+		}
+		timer_count++;
 		
 }
 
@@ -167,7 +193,6 @@ static void create_sensor_timer()
     uint32_t err_code;
 
     // Create timers
-	NRF_LOG_RAW_INFO("REACH TIMER\n");
 	err_code = app_timer_create(&sensor_loop_timer_id, APP_TIMER_MODE_REPEATED, sensor_loop_handler);
 	APP_ERROR_CHECK(err_code);
 		err_code = app_timer_start(sensor_loop_timer_id, APP_TIMER_TICKS(1000, APP_TIMER_PRESCALER), NULL);
@@ -236,12 +261,12 @@ static void gap_params_init(void)
 /**@snippet [Handling the data received over BLE] */
 static void fdcs_data_handler(ble_fdcs_t * p_nus, uint8_t * p_data, uint16_t length)
 {
-     NRF_LOG_RAW_INFO("p_data OUT SIDE of fdcs_data_handler----> %x\n", *p_data); NRF_LOG_FLUSH();
-    //Code to put ble received messages into uart
-
+    timer_count = 0; //reset timer once receives data from the phone
+    //save the data from the phone to startRead (checking for 0xAA)
+	startRead = p_data[0];
     for (uint32_t i = 0; i < length; i++)
     {       
-		NRF_LOG_RAW_INFO("p_data----> %x\n", p_data[i]); NRF_LOG_FLUSH();
+	
         while (app_uart_put(p_data[i]) != NRF_SUCCESS);
     }
 
@@ -391,6 +416,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             APP_ERROR_CHECK(err_code);
             m_conn_handle = BLE_CONN_HANDLE_INVALID;
 			//stop the timer when the client disconnects
+			fdc2214_sleep_mode_local(FDC_SLEEP);
 			app_timer_stop(sensor_loop_timer_id);
             break; // BLE_GAP_EVT_DISCONNECTED
 
@@ -819,7 +845,9 @@ int main(void)
     advertising_init();
     conn_params_init();
     bsp_board_leds_init();
+	//it inits with sleep mode on
 	fdc2214_init(m_twi_master);
+	fdc2214_sleep_mode_local(FDC_SLEEP);
 
 
 	NRF_LOG_RAW_INFO("UART Start!------->\n\r");  NRF_LOG_FLUSH();
@@ -834,20 +862,8 @@ int main(void)
     // Enter main loop.
     for (;;)
     {
-		//NRF_LOG_RAW_INFO("UART Start!------->\n\r");
-		//SEGGER_RTT_TerminalOut(1, "Hello World!\n");
-		// bool passed_test = fdc2214_pass(m_twi_master);
-		// if(passed_test){
-			// uint16_t status = run_fdc2214(m_twi_master);
-			// NRF_LOG_RAW_INFO("fdc2214 pass ");
-			// NRF_LOG_FLUSH();
-			
-		// }
-		// else{
-			// NRF_LOG_RAW_INFO("fdc2214 failed\n");NRF_LOG_FLUSH();
-		//	purehealth_allpass = false;
-		// }
-		
+	
+		// NRF_LOG_RAW_INFO("startread----> %x\n", startRead); NRF_LOG_FLUSH();
 		NRF_LOG_FLUSH(); 
 		err_code = sd_app_evt_wait();
 		APP_ERROR_CHECK(err_code);
