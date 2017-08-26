@@ -74,7 +74,7 @@
 #define DEVICE_NAME                     "HelloWorld"                               /**< Name of device. Will be included in the advertising data. */
 #define NUS_SERVICE_UUID_TYPE           BLE_UUID_TYPE_VENDOR_BEGIN                  /**< UUID type for the Nordic UART Service (vendor specific). */
 
-#define APP_ADV_INTERVAL                300                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
+#define APP_ADV_INTERVAL                64                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS      180                                         /**< The advertising timeout (in units of seconds). */
 
 #define APP_ADV_INTERVAL_SLOW             0x0664
@@ -176,6 +176,7 @@ void print_to_ble(void){
 			fdc2214_sleep_mode_local(FDC_SLEEP);
 			startRead = 0x00;
 			timer_count = 0;
+			app_timer_stop(sensor_loop_timer_id);
 		}
 		timer_count++;
 		
@@ -262,6 +263,7 @@ static void gap_params_init(void)
 static void fdcs_data_handler(ble_fdcs_t * p_nus, uint8_t * p_data, uint16_t length)
 {
     timer_count = 0; //reset timer once receives data from the phone
+	create_sensor_timer(); //start timer;
     //save the data from the phone to startRead (checking for 0xAA)
 	startRead = p_data[0];
     for (uint32_t i = 0; i < length; i++)
@@ -408,7 +410,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             APP_ERROR_CHECK(err_code);
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
 			//start the timer and transimit data when it is connected to a client
-			create_sensor_timer();
+			
             break; // BLE_GAP_EVT_CONNECTED
 
         case BLE_GAP_EVT_DISCONNECTED:
@@ -706,9 +708,12 @@ static void buttons_leds_init(bool * p_erase_bonds)
 {
     bsp_event_t startup_event;
 
-    uint32_t err_code = bsp_init(BSP_INIT_LED | BSP_INIT_BUTTONS,
+    // uint32_t err_code = bsp_init(BSP_INIT_LED | BSP_INIT_BUTTONS,
+                                 // APP_TIMER_TICKS(100, APP_TIMER_PRESCALER),
+                                 // bsp_event_handler);
+	    uint32_t err_code = bsp_init(BSP_INIT_BUTTONS,
                                  APP_TIMER_TICKS(100, APP_TIMER_PRESCALER),
-                                 bsp_event_handler);
+                                 bsp_event_handler);							 
     APP_ERROR_CHECK(err_code);
 
     err_code = bsp_btn_ble_init(NULL, &startup_event);
@@ -865,7 +870,9 @@ int main(void)
 	
 		// NRF_LOG_RAW_INFO("startread----> %x\n", startRead); NRF_LOG_FLUSH();
 		NRF_LOG_FLUSH(); 
+	
 		err_code = sd_app_evt_wait();
+	   // err_code = sd_power_system_off();
 		APP_ERROR_CHECK(err_code);
 	
     }
