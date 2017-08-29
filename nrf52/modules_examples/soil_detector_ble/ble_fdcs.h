@@ -57,14 +57,22 @@
  * 'ble’ indicates that it is a Bluetooth Low Energy relevant structure and 
  * ‘os’ is short for Our Service). 
  */
-typedef struct
+typedef struct ble_fdcs_s ble_fdcs_t;
+
+typedef void (*ble_fdcs_data_handler_t) (ble_fdcs_t * p_nus, uint8_t * p_data, uint16_t length);
+
+struct ble_fdcs_s
 {
 	uint16_t 					conn_handle;
     uint16_t    				service_handle;     /**< Handle of Our Service (as provided by the BLE stack). */
 	ble_gatts_char_handles_t 	ch0_char_handles;   /*helps fdc service know which characteristic is is on*/
 	ble_gatts_char_handles_t 	ch1_char_handles;	/*helps fdc service know which characteristic is is on*/
 	ble_gatts_char_handles_t 	ch2_char_handles;	/*helps fdc service know which characteristic is is on*/
-}ble_fdcs_t;
+	ble_fdcs_data_handler_t     data_handler;            /**< Event handler to be called for handling received data. */
+};
+
+
+
 
 
 
@@ -77,7 +85,7 @@ void ble_fdc_service_on_ble_evt(ble_fdcs_t * p_our_service, ble_evt_t * p_ble_ev
  * @param[in]   p_our_service       Pointer to Our Service structure.
  
  */
-void ble_fdcs_init(ble_fdcs_t * p_our_service);
+void ble_fdcs_init(ble_fdcs_t * p_our_service, ble_fdcs_t * fdc_data_handler);
 
 /**@brief Function for updating and sending new characteristic values
  *
