@@ -74,8 +74,8 @@
 #define DEVICE_NAME                     "HelloWorld"                               /**< Name of device. Will be included in the advertising data. */
 #define NUS_SERVICE_UUID_TYPE           BLE_UUID_TYPE_VENDOR_BEGIN                  /**< UUID type for the Nordic UART Service (vendor specific). */
 
-#define APP_ADV_INTERVAL                64                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
-#define APP_ADV_TIMEOUT_IN_SECONDS      180                                         /**< The advertising timeout (in units of seconds). */
+#define APP_ADV_INTERVAL                1600                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 1000 ms). */
+#define APP_ADV_TIMEOUT_IN_SECONDS      180                                        /**< The advertising timeout (in units of seconds). */
 
 #define APP_ADV_INTERVAL_SLOW             0x0664
 
@@ -101,6 +101,9 @@
 #define FDC_SLEEP           0x3E
 #define FDC_WAKE            0x1E
 
+
+
+
 static ble_fdcs_t 						m_fdcs_service;
 
 
@@ -109,6 +112,7 @@ static ble_nus_t                        m_nus;                                  
 static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;    /**< Handle of the current connection. */
 
 static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_FDC_SERVICE, BLE_UUID_TYPE_VENDOR_BEGIN}};  /**< Universally unique service identifier. */
+
 
 static uint8_t startRead = 0; //signal(0xAA) coming from the phone is going to store here to tell the fdc2214 to start reading data
 static uint8_t timer_count = 0; //allow fdc2214 to read data for a certain amount of time
@@ -196,7 +200,7 @@ static void create_sensor_timer()
     // Create timers
 	err_code = app_timer_create(&sensor_loop_timer_id, APP_TIMER_MODE_REPEATED, sensor_loop_handler);
 	APP_ERROR_CHECK(err_code);
-		err_code = app_timer_start(sensor_loop_timer_id, APP_TIMER_TICKS(100, APP_TIMER_PRESCALER), NULL);
+		err_code = app_timer_start(sensor_loop_timer_id, APP_TIMER_TICKS(1000, APP_TIMER_PRESCALER), NULL);
 		APP_ERROR_CHECK(err_code);
 
 }
@@ -270,11 +274,11 @@ static void fdcs_data_handler(ble_fdcs_t * p_nus, uint8_t * p_data, uint16_t len
     for (uint32_t i = 0; i < length; i++)
     {       
 	
-        while (app_uart_put(p_data[i]) != NRF_SUCCESS);
+    //    while (app_uart_put(p_data[i]) != NRF_SUCCESS);
     }
 
-    while (app_uart_put('\r') != NRF_SUCCESS);
-    while (app_uart_put('\n') != NRF_SUCCESS);
+    //while (app_uart_put('\r') != NRF_SUCCESS);
+  //  while (app_uart_put('\n') != NRF_SUCCESS);
 }
 
 /**@snippet [Handling the data received over BLE] */
@@ -284,7 +288,7 @@ static void fdcs_data_handler(ble_fdcs_t * p_nus, uint8_t * p_data, uint16_t len
  */
 static void services_init(void)
 {
-    uint32_t       err_code;
+   // uint32_t       err_code;
     ble_fdcs_t    fdcs_data_receiver;
 
     memset(&fdcs_data_receiver, 0, sizeof(fdcs_data_receiver));
@@ -484,6 +488,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
                 }
             }
         } break; // BLE_GATTS_EVT_RW_AUTHORIZE_REQUEST
+		
 
 #if (NRF_SD_BLE_API_VERSION == 3)
         case BLE_GATTS_EVT_EXCHANGE_MTU_REQUEST:
@@ -775,8 +780,11 @@ static ret_code_t twi_master_init(void)
 // it stop transmitting data when it is disconnected
 int main(void)
 {
+	
+
+	
     uint32_t err_code;
-    bool erase_bonds;
+   // bool erase_bonds;
 
 //	gpio_init();
 	
@@ -789,7 +797,7 @@ int main(void)
 
     // Initialize.
     APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
-    uart_init();
+   // uart_init();
 		
 		
 		
@@ -799,7 +807,7 @@ int main(void)
     services_init();
     advertising_init();
     conn_params_init();
-    bsp_board_leds_init();
+   // bsp_board_leds_init();
 	//it inits with sleep mode on
 	fdc2214_init(m_twi_master);
 	fdc2214_sleep_mode_local(FDC_SLEEP);
@@ -817,9 +825,8 @@ int main(void)
     // Enter main loop.
     for (;;)
     {
-	
-		// NRF_LOG_RAW_INFO("startread----> %x\n", startRead); NRF_LOG_FLUSH();
-	//	NRF_LOG_FLUSH(); 
+		
+		
 	
 		  err_code = sd_app_evt_wait();
 	 // err_code = sd_power_system_off();
