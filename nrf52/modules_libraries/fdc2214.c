@@ -128,7 +128,7 @@ uint16_t fdc2214_init(nrf_drv_twi_t twi_master){
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_ERROR_CONFIG,config_word_lsb,config_word_msb);
 
   //mux config
-  config_word_lsb = 0x82;
+  config_word_lsb = 0xC2;
   config_word_msb = 0x0C;
   write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_MUX_CONFIG,config_word_lsb,config_word_msb);
   
