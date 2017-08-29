@@ -58,7 +58,7 @@
 
 #include "ble_fdcs.h"
 #include "fdc2214.h"
-
+#include "nrf_drv_gpiote.h"
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT 0                                           /**< Include the service_changed characteristic. If not enabled, the server's database cannot be changed for the lifetime of the device. */
 
@@ -74,8 +74,8 @@
 #define DEVICE_NAME                     "HelloWorld"                               /**< Name of device. Will be included in the advertising data. */
 #define NUS_SERVICE_UUID_TYPE           BLE_UUID_TYPE_VENDOR_BEGIN                  /**< UUID type for the Nordic UART Service (vendor specific). */
 
-#define APP_ADV_INTERVAL                300                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
-#define APP_ADV_TIMEOUT_IN_SECONDS      180                                         /**< The advertising timeout (in units of seconds). */
+#define APP_ADV_INTERVAL                1600                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 1000 ms). */
+#define APP_ADV_TIMEOUT_IN_SECONDS      180                                        /**< The advertising timeout (in units of seconds). */
 
 #define APP_ADV_INTERVAL_SLOW             0x0664
 
@@ -98,6 +98,11 @@
 #define TWI_SDA_M                26   //!< Master SDA pin                                       /**< UART RX buffer size. */
 #define MASTER_TWI_INST          0    //!< TWI interface used as a master accessing EEPROM memory
 
+#define FDC_SLEEP           0x3E
+#define FDC_WAKE            0x1E
+
+
+
 
 static ble_fdcs_t 						m_fdcs_service;
 
@@ -108,6 +113,9 @@ static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;
 
 static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_FDC_SERVICE, BLE_UUID_TYPE_VENDOR_BEGIN}};  /**< Universally unique service identifier. */
 
+
+static uint8_t startRead = 0; //signal(0xAA) coming from the phone is going to store here to tell the fdc2214 to start reading data
+static uint8_t timer_count = 0; //allow fdc2214 to read data for a certain amount of time
 bool ble_on = true;
 bool lis2de_on = true;
 bool lis3mdl_on = false;
@@ -131,27 +139,50 @@ APP_TIMER_DEF(sensor_loop_timer_id);
 //TW0_USE_EAY added in nrf_drv_twi line 80
 static const nrf_drv_twi_t m_twi_master = NRF_DRV_TWI_INSTANCE(MASTER_TWI_INST);
 
+static void fdc2214_sleep_mode_local(uint8_t sleep_mode) {
+			//config sleep mode
+			uint8_t config_word_lsb = sleep_mode;
+			uint8_t config_word_msb = 0x01;
+			write_2bytes(m_twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_CONFIG,config_word_lsb,config_word_msb);
+}
+
 void print_to_ble(void){
 			
-		uint8_t channel = 0;
-		NRF_LOG_RAW_INFO("print to ble reach\n");
-		//uint32_t data1 = 0x12345678;
-		uint32_t data = fdc2214_readchannel(m_twi_master, channel); 
-		NRF_LOG_RAW_INFO("CH0 === %x\n", data); NRF_LOG_FLUSH();
-		fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch0_char_handles.value_handle);
+		//if we recevie 0xAA from the phone then we start reading data from fdc2214 chip
+		//NRF_LOG_RAW_INFO("start read *********************> %x\n", startRead);
+		if(startRead == 0xAA) {
+			startRead = 0xAA;
+			fdc2214_sleep_mode_local(FDC_WAKE);
+		//	startRead = 0x00;
 		
-		channel = 1;
-		NRF_LOG_RAW_INFO("print to ble reach\n");
-		data = fdc2214_readchannel(m_twi_master, channel); 
-		NRF_LOG_RAW_INFO("CH1 === %x\n", data); NRF_LOG_FLUSH();
-		fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch1_char_handles.value_handle);
-	
-/******COMMENT IT BACK WHEN YOU ARE CONNECTED TO CHANNEL 2 *******************************/	
-		channel = 2;
-		NRF_LOG_RAW_INFO("print to ble reach\n");
-		data = fdc2214_readchannel(m_twi_master, channel); 
-		NRF_LOG_RAW_INFO("CH2 === %x\n", data); NRF_LOG_FLUSH();
-		fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch2_char_handles.value_handle);
+			uint8_t channel = 0;
+			uint32_t data = fdc2214_readchannel(m_twi_master, channel); 
+			NRF_LOG_RAW_INFO("CH0 === ,%d,\n", data); NRF_LOG_FLUSH();
+			fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch0_char_handles.value_handle);
+			
+			channel = 1;
+			//NRF_LOG_RAW_INFO("print to ble reach\n");
+			data = fdc2214_readchannel(m_twi_master, channel); 
+			NRF_LOG_RAW_INFO("CH1 === ,%d,\n", data); NRF_LOG_FLUSH();
+			fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch1_char_handles.value_handle);
+		
+	        /******COMMENT IT BACK WHEN YOU ARE CONNECTED TO CHANNEL 2 *******************************/	
+			channel = 2;
+			
+			data = fdc2214_readchannel(m_twi_master, channel); 
+			NRF_LOG_RAW_INFO("CH2 === ,%d,\n", data); NRF_LOG_FLUSH();
+			fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch2_char_handles.value_handle);
+			//startRead = 0x00;
+		}
+		
+		//NRF_LOG_RAW_INFO("timer count -----------------------> %d\n", timer_count);
+		if(timer_count == 5) {
+			//fdc2214_sleep_mode_local(FDC_SLEEP);
+			//startRead = 0x00;
+			timer_count = 0;
+			//app_timer_stop(sensor_loop_timer_id);
+		}
+		timer_count++;
 		
 }
 
@@ -167,7 +198,6 @@ static void create_sensor_timer()
     uint32_t err_code;
 
     // Create timers
-	NRF_LOG_RAW_INFO("REACH TIMER\n");
 	err_code = app_timer_create(&sensor_loop_timer_id, APP_TIMER_MODE_REPEATED, sensor_loop_handler);
 	APP_ERROR_CHECK(err_code);
 		err_code = app_timer_start(sensor_loop_timer_id, APP_TIMER_TICKS(1000, APP_TIMER_PRESCALER), NULL);
@@ -234,99 +264,21 @@ static void gap_params_init(void)
  * @param[in] length   Length of the data.
  */
 /**@snippet [Handling the data received over BLE] */
-static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
+static void fdcs_data_handler(ble_fdcs_t * p_nus, uint8_t * p_data, uint16_t length)
 {
-    app_uart_put(p_data[0]);
-    //Parses the input from the android app to turn on or off
-    //the different sensors. 
-    switch (p_data[0])
-    {
-        case LIS2DE_ON_MESSAGE:
-            lis2de_init(m_twi_master);
-            lis2de_on = true;
-            break;
-
-        case LIS2DE_OFF_MESSAGE:
-            lis2de_powerdown(m_twi_master);
-            lis2de_on = false;
-            break;
-
-        case LIS3MDL_ON_MESSAGE:
-            lis3mdl_init(m_twi_master);
-            lis3mdl_on = true;
-            break;
-
-        case LIS3MDL_OFF_MESSAGE:
-            lis3mdl_powerdown(m_twi_master);
-            lis3mdl_on = false;
-            break;
-
-        case BME280_ON_MESSAGE:
-            bme280_init(m_twi_master);
-            bme280_on = true;
-            break;
-
-        case BME280_OFF_MESSAGE:
-            bme280_powerdown(m_twi_master);
-            bme280_on = false;
-            break;
-
-        case VEML6075_ON_MESSAGE:
-            veml6075_init(m_twi_master);
-            veml6075_on = true;
-            break;
-
-        case VEML6075_OFF_MESSAGE:
-            veml6075_powerdown(m_twi_master);
-            veml6075_on = false;
-            break;
-
-        case SI1153_ON_MESSAGE:
-            si1153_init(m_twi_master);
-            si1153_on = true;
-            break;
-
-        case SI1153_OFF_MESSAGE:
-            //Si1153 automatically moves to Standby Mode
-            si1153_on = false;
-            break;
-
-        case APDS9250_ON_MESSAGE:
-            apds9250_init(m_twi_master);
-            apds9250_on = true;
-            break;
-
-        case APDS9250_OFF_MESSAGE:
-            apds9250_powerdown(m_twi_master);
-            apds9250_on = false;
-            break;
-
-        case P1234701CT_ON_MESSAGE:
-            p1234701ct_init(m_twi_master);
-            p1234701ct_on = true;
-            break;
-
-        case P1234701CT_OFF_MESSAGE:
-            p1234701ct_powerdown(m_twi_master);
-            p1234701ct_on = false;
-            break;
-
-        //NEED TO ADD TOF SENSOR
-
-
-        default:
-            break;
-    }
-
-    //Code to put ble received messages into uart
-
-    /*for (uint32_t i = 0; i < length; i++)
+    timer_count = 0; //reset timer once receives data from the phone
+	
+	create_sensor_timer(); //start timer;
+    //save the data from the phone to startRead (checking for 0xAA)
+	startRead = p_data[0];
+    for (uint32_t i = 0; i < length; i++)
     {       
-        while (app_uart_put(p_data[i]) != NRF_SUCCESS);
+	
+    //    while (app_uart_put(p_data[i]) != NRF_SUCCESS);
     }
 
-    while (app_uart_put('\r') != NRF_SUCCESS);
-    while (app_uart_put('\n') != NRF_SUCCESS);*/
+    //while (app_uart_put('\r') != NRF_SUCCESS);
+  //  while (app_uart_put('\n') != NRF_SUCCESS);
 }
 
 /**@snippet [Handling the data received over BLE] */
@@ -336,14 +288,14 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
  */
 static void services_init(void)
 {
-    //uint32_t       err_code;
-   // ble_nus_init_t nus_init;
+   // uint32_t       err_code;
+    ble_fdcs_t    fdcs_data_receiver;
 
-  //  memset(&nus_init, 0, sizeof(nus_init));
+    memset(&fdcs_data_receiver, 0, sizeof(fdcs_data_receiver));
 
-   // nus_init.data_handler = nus_data_handler;
+    fdcs_data_receiver.data_handler = fdcs_data_handler;
 
-    ble_fdcs_init(&m_fdcs_service);
+    ble_fdcs_init(&m_fdcs_service, &fdcs_data_receiver);
    // APP_ERROR_CHECK(err_code);
 }
 
@@ -436,10 +388,12 @@ static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
     switch (ble_adv_evt)
     {
         case BLE_ADV_EVT_FAST:
+		NRF_LOG_RAW_INFO("reach BLE_ADV_EVT_FAST ---- >\n"); NRF_LOG_FLUSH();
             err_code = bsp_indication_set(BSP_INDICATE_ADVERTISING);
             APP_ERROR_CHECK(err_code);
             break;
         case BLE_ADV_EVT_IDLE:
+			NRF_LOG_RAW_INFO("reach BLE_ADV_EVT_IDLE ---- >\n"); NRF_LOG_FLUSH();
             sleep_mode_enter();
             break;
         default:
@@ -463,7 +417,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             APP_ERROR_CHECK(err_code);
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
 			//start the timer and transimit data when it is connected to a client
-			create_sensor_timer();
+			
             break; // BLE_GAP_EVT_CONNECTED
 
         case BLE_GAP_EVT_DISCONNECTED:
@@ -471,6 +425,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             APP_ERROR_CHECK(err_code);
             m_conn_handle = BLE_CONN_HANDLE_INVALID;
 			//stop the timer when the client disconnects
+			fdc2214_sleep_mode_local(FDC_SLEEP);
 			app_timer_stop(sensor_loop_timer_id);
             break; // BLE_GAP_EVT_DISCONNECTED
 
@@ -533,6 +488,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
                 }
             }
         } break; // BLE_GATTS_EVT_RW_AUTHORIZE_REQUEST
+		
 
 #if (NRF_SD_BLE_API_VERSION == 3)
         case BLE_GATTS_EVT_EXCHANGE_MTU_REQUEST:
@@ -617,6 +573,7 @@ void bsp_event_handler(bsp_event_t event)
     {
         case BSP_EVENT_SLEEP:
             sleep_mode_enter();
+			NRF_LOG_INFO("reach bsp_event_handler BSP_EVENT_SLEEP\r\n"); NRF_LOG_FLUSH();
             break;
 
         case BSP_EVENT_DISCONNECT:
@@ -760,9 +717,12 @@ static void buttons_leds_init(bool * p_erase_bonds)
 {
     bsp_event_t startup_event;
 
-    uint32_t err_code = bsp_init(BSP_INIT_LED | BSP_INIT_BUTTONS,
+    // uint32_t err_code = bsp_init(BSP_INIT_LED | BSP_INIT_BUTTONS,
+                                 // APP_TIMER_TICKS(100, APP_TIMER_PRESCALER),
+                                 // bsp_event_handler);
+	    uint32_t err_code = bsp_init(BSP_INIT_BUTTONS,
                                  APP_TIMER_TICKS(100, APP_TIMER_PRESCALER),
-                                 bsp_event_handler);
+                                 bsp_event_handler);							 
     APP_ERROR_CHECK(err_code);
 
     err_code = bsp_btn_ble_init(NULL, &startup_event);
@@ -813,75 +773,22 @@ static ret_code_t twi_master_init(void)
 
 
 
-static uint16_t fdc2214_init_git(nrf_drv_twi_t twi_master){
-
-  uint8_t config_word_lsb;
-  uint8_t config_word_msb;
-
-  config_word_lsb = 0xFF;
-  config_word_msb = 0xFF;
-
-  //set RCOUNT Registers for each channel
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_RCOUNT_CH0,config_word_lsb,config_word_msb);
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_RCOUNT_CH1,config_word_lsb,config_word_msb);
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_RCOUNT_CH2,config_word_lsb,config_word_msb);
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_RCOUNT_CH3,config_word_lsb,config_word_msb);
-
-  config_word_lsb = 0x00;
-  config_word_msb = 0x00;
-
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_OFFSET_CH0,config_word_lsb,config_word_msb);
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_OFFSET_CH1,config_word_lsb,config_word_msb);
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_OFFSET_CH2,config_word_lsb,config_word_msb);
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_OFFSET_CH3,config_word_lsb,config_word_msb);
 
 
-  config_word_lsb = 0x04;
-  config_word_msb = 0x00;
 
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_SETTLECOUNT_CH0,config_word_lsb,config_word_msb);
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_SETTLECOUNT_CH1,config_word_lsb,config_word_msb);
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_SETTLECOUNT_CH2,config_word_lsb,config_word_msb);
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_SETTLECOUNT_CH3,config_word_lsb,config_word_msb);
-
-  config_word_lsb = 0x10;
-  config_word_msb = 0x01;
-
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_CLOCK_DIVIDERS_CH0,config_word_lsb,config_word_msb);
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_CLOCK_DIVIDERS_CH1,config_word_lsb,config_word_msb);
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_CLOCK_DIVIDERS_CH2,config_word_lsb,config_word_msb);
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_CLOCK_DIVIDERS_CH3,config_word_lsb,config_word_msb);
-  
-  //set driven current, value 0x7C00
-  config_word_lsb = 0x7C;
-  config_word_msb = 0x00; 
-  
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_DRIVE_CURRENT_CH0,config_word_lsb,config_word_msb);
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_DRIVE_CURRENT_CH1,config_word_lsb,config_word_msb);
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_DRIVE_CURRENT_CH2,config_word_lsb,config_word_msb);
- 
-  config_word_lsb = 0x00;
-  config_word_msb = 0x01;
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_ERROR_CONFIG,config_word_lsb,config_word_msb);
-
-  config_word_lsb = 0xA2;
-  config_word_msb = 0x0C;
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_MUX_CONFIG,config_word_lsb,config_word_msb);
-  
-  config_word_lsb = 0x1E;
-  config_word_msb = 0x01;
-  write_2bytes(twi_master,FDC2214_DEVICE_ADDRESS,FDC2214_CONFIG,config_word_lsb,config_word_msb);
-  
-
-  return fdc2214_whoami(twi_master);
-}
 // start the timer to transmit data to a phone when the fdc2214 connects to a phone
 // it stop transmitting data when it is disconnected
 int main(void)
 {
-    uint32_t err_code;
-    bool erase_bonds;
+	
 
+	
+    uint32_t err_code;
+   // bool erase_bonds;
+
+//	gpio_init();
+	
+	
     /* Initializing TWI master interface for SuperSensor */
     err_code = twi_master_init();
     APP_ERROR_CHECK(err_code);
@@ -890,23 +797,27 @@ int main(void)
 
     // Initialize.
     APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
-    uart_init();
-
-    buttons_leds_init(&erase_bonds);
+   // uart_init();
+		
+		
+		
+   // buttons_leds_init(&erase_bonds);
     ble_stack_init();
     gap_params_init();
     services_init();
     advertising_init();
     conn_params_init();
-    bsp_board_leds_init();
+   // bsp_board_leds_init();
+	//it inits with sleep mode on
 	fdc2214_init(m_twi_master);
+	fdc2214_sleep_mode_local(FDC_SLEEP);
 
 
 	NRF_LOG_RAW_INFO("UART Start!------->\n\r");  NRF_LOG_FLUSH();
 	err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
 	
-	
+	//sleep_mode_enter();
   
 
   //  create_sensor_timer();
@@ -914,23 +825,16 @@ int main(void)
     // Enter main loop.
     for (;;)
     {
-		//NRF_LOG_RAW_INFO("UART Start!------->\n\r");
-		//SEGGER_RTT_TerminalOut(1, "Hello World!\n");
-		// bool passed_test = fdc2214_pass(m_twi_master);
-		// if(passed_test){
-			// uint16_t status = run_fdc2214(m_twi_master);
-			// NRF_LOG_RAW_INFO("fdc2214 pass ");
-			// NRF_LOG_FLUSH();
-			
-		// }
-		// else{
-			// NRF_LOG_RAW_INFO("fdc2214 failed\n");NRF_LOG_FLUSH();
-		//	purehealth_allpass = false;
-		// }
 		
-		NRF_LOG_FLUSH(); 
-		err_code = sd_app_evt_wait();
-		APP_ERROR_CHECK(err_code);
+		
+	
+		  err_code = sd_app_evt_wait();
+	 // err_code = sd_power_system_off();
+	      APP_ERROR_CHECK(err_code);
+		
+				// __WFE();
+				// __SEV();
+				// __WFE();
 	
     }
 	
