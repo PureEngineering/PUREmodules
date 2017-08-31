@@ -815,7 +815,7 @@ int main(void)
 
 
 	//NRF_LOG_RAW_INFO("UART Start!------->\n\r");  NRF_LOG_FLUSH();
-	//err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
+	err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
   //  APP_ERROR_CHECK(err_code);
 	
 	//sleep_mode_enter();
