@@ -187,7 +187,7 @@
  
 
 #ifndef BLE_NUS_ENABLED
-#define BLE_NUS_ENABLED 1
+#define BLE_NUS_ENABLED 0
 #endif
 
 // <q> BLE_RSCS_C_ENABLED  - ble_rscs_c - Running Speed and Cadence Client
@@ -255,7 +255,7 @@
 // <4=> Debug 
 
 #ifndef ADC_CONFIG_LOG_LEVEL
-#define ADC_CONFIG_LOG_LEVEL 3
+#define ADC_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> ADC_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -344,7 +344,7 @@
 // <e> CLOCK_ENABLED - nrf_drv_clock - CLOCK peripheral driver
 //==========================================================
 #ifndef CLOCK_ENABLED
-#define CLOCK_ENABLED 1
+#define CLOCK_ENABLED 0
 #endif
 #if  CLOCK_ENABLED
 // <o> CLOCK_CONFIG_XTAL_FREQ  - HF XTAL Frequency
@@ -397,7 +397,7 @@
 // <4=> Debug 
 
 #ifndef CLOCK_CONFIG_LOG_LEVEL
-#define CLOCK_CONFIG_LOG_LEVEL 3
+#define CLOCK_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> CLOCK_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -472,7 +472,7 @@
 // <2=> High speed 
 
 #ifndef COMP_CONFIG_SPEED_MODE
-#define COMP_CONFIG_SPEED_MODE 2
+#define COMP_CONFIG_SPEED_MODE 0
 #endif
 
 // <o> COMP_CONFIG_HYST  - Hystheresis
@@ -542,7 +542,7 @@
 // <4=> Debug 
 
 #ifndef COMP_CONFIG_LOG_LEVEL
-#define COMP_CONFIG_LOG_LEVEL 3
+#define COMP_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> COMP_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -604,7 +604,7 @@
 // <4=> Debug 
 
 #ifndef SWI_CONFIG_LOG_LEVEL
-#define SWI_CONFIG_LOG_LEVEL 3
+#define SWI_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> SWI_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -648,12 +648,12 @@
 // <e> GPIOTE_ENABLED - nrf_drv_gpiote - GPIOTE peripheral driver
 //==========================================================
 #ifndef GPIOTE_ENABLED
-#define GPIOTE_ENABLED 1
+#define GPIOTE_ENABLED 0
 #endif
 #if  GPIOTE_ENABLED
 // <o> GPIOTE_CONFIG_NUM_OF_LOW_POWER_EVENTS - Number of lower power input pins 
 #ifndef GPIOTE_CONFIG_NUM_OF_LOW_POWER_EVENTS
-#define GPIOTE_CONFIG_NUM_OF_LOW_POWER_EVENTS 4
+#define GPIOTE_CONFIG_NUM_OF_LOW_POWER_EVENTS 0
 #endif
 
 // <o> GPIOTE_CONFIG_IRQ_PRIORITY  - Interrupt priority
@@ -688,7 +688,7 @@
 // <4=> Debug 
 
 #ifndef GPIOTE_CONFIG_LOG_LEVEL
-#define GPIOTE_CONFIG_LOG_LEVEL 3
+#define GPIOTE_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> GPIOTE_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -739,14 +739,14 @@
 
 
 #ifndef I2S_CONFIG_SCK_PIN
-#define I2S_CONFIG_SCK_PIN 31
+#define I2S_CONFIG_SCK_PIN 0
 #endif
 
 // <o> I2S_CONFIG_LRCK_PIN - LRCK pin  <1-31> 
 
 
 #ifndef I2S_CONFIG_LRCK_PIN
-#define I2S_CONFIG_LRCK_PIN 30
+#define I2S_CONFIG_LRCK_PIN 0
 #endif
 
 // <o> I2S_CONFIG_MCK_PIN - MCK pin 
@@ -838,7 +838,7 @@
 // <34340864=> 32MHz/125 
 
 #ifndef I2S_CONFIG_MCK_SETUP
-#define I2S_CONFIG_MCK_SETUP 536870912
+#define I2S_CONFIG_MCK_SETUP 0
 #endif
 
 // <o> I2S_CONFIG_RATIO  - MCK/LRCK ratio
@@ -854,7 +854,7 @@
 // <8=> 512x 
 
 #ifndef I2S_CONFIG_RATIO
-#define I2S_CONFIG_RATIO 2000
+#define I2S_CONFIG_RATIO 0
 #endif
 
 // <o> I2S_CONFIG_IRQ_PRIORITY  - Interrupt priority
@@ -889,7 +889,7 @@
 // <4=> Debug 
 
 #ifndef I2S_CONFIG_LOG_LEVEL
-#define I2S_CONFIG_LOG_LEVEL 3
+#define I2S_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> I2S_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -957,7 +957,7 @@
 // <65543=> External Ref 1 
 
 #ifndef LPCOMP_CONFIG_REFERENCE
-#define LPCOMP_CONFIG_REFERENCE 3
+#define LPCOMP_CONFIG_REFERENCE 8
 #endif
 
 // <o> LPCOMP_CONFIG_DETECTION  - Detection
@@ -1024,7 +1024,7 @@
 // <4=> Debug 
 
 #ifndef LPCOMP_CONFIG_LOG_LEVEL
-#define LPCOMP_CONFIG_LOG_LEVEL 3
+#define LPCOMP_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> LPCOMP_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -1193,7 +1193,7 @@
 // <4=> Debug 
 
 #ifndef COMMON_CONFIG_LOG_LEVEL
-#define COMMON_CONFIG_LOG_LEVEL 3
+#define COMMON_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> COMMON_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -1299,7 +1299,7 @@
 // <4=> Debug 
 
 #ifndef PPI_CONFIG_LOG_LEVEL
-#define PPI_CONFIG_LOG_LEVEL 3
+#define PPI_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> PPI_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -1476,7 +1476,7 @@
 // <4=> Debug 
 
 #ifndef PWM_CONFIG_LOG_LEVEL
-#define PWM_CONFIG_LOG_LEVEL 3
+#define PWM_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> PWM_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -1550,7 +1550,7 @@
 // <7=> 16384 us 
 
 #ifndef QDEC_CONFIG_SAMPLEPER
-#define QDEC_CONFIG_SAMPLEPER 7
+#define QDEC_CONFIG_SAMPLEPER 0
 #endif
 
 // <o> QDEC_CONFIG_PIO_A - A pin  <0-31> 
@@ -1634,7 +1634,7 @@
 // <4=> Debug 
 
 #ifndef QDEC_CONFIG_LOG_LEVEL
-#define QDEC_CONFIG_LOG_LEVEL 3
+#define QDEC_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> QDEC_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -1725,7 +1725,7 @@
 // <4=> Debug 
 
 #ifndef RNG_CONFIG_LOG_LEVEL
-#define RNG_CONFIG_LOG_LEVEL 3
+#define RNG_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> RNG_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -1776,7 +1776,7 @@
 
 
 #ifndef RTC_DEFAULT_CONFIG_FREQUENCY
-#define RTC_DEFAULT_CONFIG_FREQUENCY 32768
+#define RTC_DEFAULT_CONFIG_FREQUENCY 16
 #endif
 
 // <q> RTC_DEFAULT_CONFIG_RELIABLE  - Ensures safe compare event triggering
@@ -1844,7 +1844,7 @@
 // <4=> Debug 
 
 #ifndef RTC_CONFIG_LOG_LEVEL
-#define RTC_CONFIG_LOG_LEVEL 3
+#define RTC_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> RTC_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -1956,8 +1956,8 @@
 // <3=> Info 
 // <4=> Debug 
 
-#ifndef SAADC_CONFIG_LOG_LEVEL
-#define SAADC_CONFIG_LOG_LEVEL 3
+#ifndef SAADC_CONFIG_LOG_LEVE
+#define SAADC_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> SAADC_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -2091,7 +2091,7 @@
 // <4=> Debug 
 
 #ifndef SPIS_CONFIG_LOG_LEVEL
-#define SPIS_CONFIG_LOG_LEVEL 3
+#define SPIS_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> SPIS_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -2165,7 +2165,7 @@
  
 
 #ifndef SPI0_USE_EASY_DMA
-#define SPI0_USE_EASY_DMA 1
+#define SPI0_USE_EASY_DMA 0
 #endif
 
 // <o> SPI0_DEFAULT_FREQUENCY  - SPI frequency
@@ -2195,7 +2195,7 @@
  
 
 #ifndef SPI1_USE_EASY_DMA
-#define SPI1_USE_EASY_DMA 1
+#define SPI1_USE_EASY_DMA 0
 #endif
 
 // <o> SPI1_DEFAULT_FREQUENCY  - SPI frequency
@@ -2225,14 +2225,14 @@
  
 
 #ifndef SPI2_USE_EASY_DMA
-#define SPI2_USE_EASY_DMA 1
+#define SPI2_USE_EASY_DMA 0
 #endif
 
 // <q> SPI2_DEFAULT_FREQUENCY  - Use EasyDMA
  
 
 #ifndef SPI2_DEFAULT_FREQUENCY
-#define SPI2_DEFAULT_FREQUENCY 1
+#define SPI2_DEFAULT_FREQUENCY 0
 #endif
 
 #endif //SPI2_ENABLED
@@ -2253,7 +2253,7 @@
 // <4=> Debug 
 
 #ifndef SPI_CONFIG_LOG_LEVEL
-#define SPI_CONFIG_LOG_LEVEL 3
+#define SPI_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> SPI_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -2404,7 +2404,7 @@
 // <4=> Debug 
 
 #ifndef TIMER_CONFIG_LOG_LEVEL
-#define TIMER_CONFIG_LOG_LEVEL 3
+#define TIMER_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> TIMER_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -2680,7 +2680,7 @@
 // <4=> Debug 
 
 #ifndef TWI_CONFIG_LOG_LEVEL
-#define TWI_CONFIG_LOG_LEVEL 3
+#define TWI_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> TWI_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -2724,7 +2724,7 @@
 // <e> UART_ENABLED - nrf_drv_uart - UART/UARTE peripheral driver
 //==========================================================
 #ifndef UART_ENABLED
-#define UART_ENABLED 1
+#define UART_ENABLED 0
 #endif
 #if  UART_ENABLED
 // <o> UART_DEFAULT_CONFIG_HWFC  - Hardware Flow Control
@@ -2789,27 +2789,27 @@
  
 
 #ifndef UART_EASY_DMA_SUPPORT
-#define UART_EASY_DMA_SUPPORT 1
+#define UART_EASY_DMA_SUPPORT 0
 #endif
 
 // <q> UART_LEGACY_SUPPORT  - Driver supporting Legacy mode
  
 
 #ifndef UART_LEGACY_SUPPORT
-#define UART_LEGACY_SUPPORT 1
+#define UART_LEGACY_SUPPORT 0
 #endif
 
 // <e> UART0_ENABLED - Enable UART0 instance
 //==========================================================
 #ifndef UART0_ENABLED
-#define UART0_ENABLED 1
+#define UART0_ENABLED 0
 #endif
 #if  UART0_ENABLED
 // <q> UART0_CONFIG_USE_EASY_DMA  - Default setting for using EasyDMA
  
 
 #ifndef UART0_CONFIG_USE_EASY_DMA
-#define UART0_CONFIG_USE_EASY_DMA 1
+#define UART0_CONFIG_USE_EASY_DMA 0
 #endif
 
 #endif //UART0_ENABLED
@@ -2830,7 +2830,7 @@
 // <4=> Debug 
 
 #ifndef UART_CONFIG_LOG_LEVEL
-#define UART_CONFIG_LOG_LEVEL 3
+#define UART_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> UART_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -2952,7 +2952,7 @@
 // <4=> Debug 
 
 #ifndef WDT_CONFIG_LOG_LEVEL
-#define WDT_CONFIG_LOG_LEVEL 3
+#define WDT_CONFIG_LOG_LEVEL 0
 #endif
 
 // <o> WDT_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -3003,7 +3003,7 @@
  
 
 #ifndef APP_FIFO_ENABLED
-#define APP_FIFO_ENABLED 1
+#define APP_FIFO_ENABLED 0
 #endif
 
 // <q> APP_GPIOTE_ENABLED  - app_gpiote - GPIOTE events dispatcher
@@ -3079,7 +3079,7 @@
 // <e> APP_UART_ENABLED - app_uart - UART driver
 //==========================================================
 #ifndef APP_UART_ENABLED
-#define APP_UART_ENABLED 1
+#define APP_UART_ENABLED 0
 #endif
 #if  APP_UART_ENABLED
 // <o> APP_UART_DRIVER_INSTANCE  - UART instance used
