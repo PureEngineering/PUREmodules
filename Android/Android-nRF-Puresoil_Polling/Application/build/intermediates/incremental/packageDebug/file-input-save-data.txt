@@ -1,0 +1,36 @@
+#Internal package file, do not edit.
+#Tue Sep 05 13:53:40 PDT 2017
+2.base=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_
+5.file=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_\\res\\layout\\button_control.xml
+5.set=ANDROID_RESOURCE
+3.base=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_
+6.file=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_\\res\\layout\\listitem_device.xml
+2.set=ANDROID_RESOURCE
+10.set=ANDROID_RESOURCE
+10.file=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_\\res\\layout\\actionbar_indeterminate_progress.xml
+4.base=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_
+7.file=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\1f\\main\\classes.dex
+7.set=DEX
+count=11
+0.file=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_\\res\\drawable-hdpi-v4\\tile.9.png
+5.base=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_
+8.file=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_\\AndroidManifest.xml
+4.set=ANDROID_RESOURCE
+6.base=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_
+1.file=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_\\resources.arsc
+9.set=ANDROID_RESOURCE
+9.file=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_\\res\\menu\\main.xml
+10.base=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_
+1.set=ANDROID_RESOURCE
+7.base=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\1f\\main
+2.file=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_\\res\\drawable-xxhdpi-v4\\ic_launcher.png
+6.set=ANDROID_RESOURCE
+0.base=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_
+8.base=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_
+3.file=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_\\res\\layout\\gatt_services_characteristics.xml
+3.set=ANDROID_RESOURCE
+1.base=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_
+9.base=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_
+4.file=C\:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\resources-debug.ap_\\res\\menu\\gatt_services.xml
+8.set=ANDROID_RESOURCE
+0.set=ANDROID_RESOURCE

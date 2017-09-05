@@ -54,8 +54,8 @@
       <file leaf-file-name="DeviceControlActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="124">
-              <caret line="343" column="25" selection-start-line="343" selection-start-column="25" selection-end-line="343" selection-end-column="25" />
+            <state relative-caret-position="474">
+              <caret line="357" column="35" selection-start-line="357" selection-start-column="35" selection-end-line="357" selection-end-column="35" />
               <folding />
             </state>
           </provider>
@@ -1637,10 +1637,10 @@
         <option value="$PROJECT_DIR$/Application/src/main/res/layout/button_control.xml" />
         <option value="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothlegatt/BluetoothLeService.java" />
         <option value="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothlegatt/DeviceControlActivity.java" />
-        <option value="$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java" />
         <option value="$PROJECT_DIR$/Application/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/Application/build.gradle" />
         <option value="$PROJECT_DIR$/Application/src/main/res/values/base-strings.xml" />
+        <option value="$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java" />
       </list>
     </option>
   </component>
@@ -2648,8 +2648,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="124">
-          <caret line="343" column="25" selection-start-line="343" selection-start-column="25" selection-end-line="343" selection-end-column="25" />
+        <state relative-caret-position="474">
+          <caret line="357" column="35" selection-start-line="357" selection-start-column="35" selection-end-line="357" selection-end-column="35" />
           <folding />
         </state>
       </provider>
