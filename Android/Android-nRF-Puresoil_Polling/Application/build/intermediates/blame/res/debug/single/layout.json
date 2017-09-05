@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "C:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\merged\\debug\\layout\\actionbar_indeterminate_progress.xml",
+        "source": "C:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\src\\main\\res\\layout\\actionbar_indeterminate_progress.xml"
+    },
+    {
+        "merged": "C:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\merged\\debug\\layout\\gatt_services_characteristics.xml",
+        "source": "C:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\src\\main\\res\\layout\\gatt_services_characteristics.xml"
+    },
+    {
+        "merged": "C:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\merged\\debug\\layout\\button_control.xml",
+        "source": "C:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\src\\main\\res\\layout\\button_control.xml"
+    },
+    {
+        "merged": "C:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\build\\intermediates\\res\\merged\\debug\\layout\\listitem_device.xml",
+        "source": "C:\\git\\PUREmodules\\Android\\Android-nRF-Puresoil_Polling\\Application\\src\\main\\res\\layout\\listitem_device.xml"
+    }
+]

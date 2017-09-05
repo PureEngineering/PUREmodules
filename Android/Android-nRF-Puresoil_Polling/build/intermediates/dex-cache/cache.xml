@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="C:\Users\Wuyuan\.android\build-cache\625f071009bb4d93664700abaddaffb2819af821\output\jars\libs\internal_impl-23.0.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="5d4bccb885c8a89d066ecb6c4addb553a99a79a2">
+        <dex dex="C:\Users\Wuyuan\Documents\BluetoothLeGatt\Application\build\intermediates\pre-dexed\debug\internal_impl-23.0.0_138f550dd81b3229086c779b3c07df2a7ca46490.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Wuyuan\.android\build-cache\3a46d4c21f1d6ce67a19cb9f3b29baab91d7cea8\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="1ccbc26be2c465c622a48310e8092241b01abe80">
+        <dex dex="C:\Users\Wuyuan\Documents\BluetoothLeGatt\Application\build\intermediates\pre-dexed\debug\classes_782ffc110f543807c101b88f6155c193911cd2ad.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Wuyuan\.android\build-cache\625f071009bb4d93664700abaddaffb2819af821\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="bb0ac3f3ee2d71854501cc28e52cc84a20209b41">
+        <dex dex="C:\Users\Wuyuan\Documents\BluetoothLeGatt\Application\build\intermediates\pre-dexed\debug\classes_fa3862b12fc7997f5c378f9975a56dfd6a38439d.jar" />
+    </item>
+
+</items>
