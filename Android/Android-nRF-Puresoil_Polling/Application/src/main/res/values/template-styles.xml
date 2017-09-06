@@ -39,4 +39,15 @@
         <item name="android:shadowRadius">2</item>
     </style>
 
+
+    <!-- change the action bar to a blue-ish color  -->
+    <style name="custom_actionbar_style" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+        <item name ="android:actionBarStyle">@style/custom_style</item>
+    </style>
+
+    <style name="custom_style" parent = "@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+
+        <item name="android:background">@android:color/holo_blue_dark</item>
+        <item name="android:windowBackground">@android:color/holo_blue_dark</item>
+    </style>
 </resources>

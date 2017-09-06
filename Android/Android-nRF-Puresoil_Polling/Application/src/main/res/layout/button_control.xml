@@ -1,37 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
+    android:background="#b8569fee"
     android:layout_height="match_parent">
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Write Char"
-        android:id="@+id/button2"
-        android:onClick="onClickWrite" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Read Char"
-        android:id="@+id/button"
-        android:onClick="onClickRead" />
-
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_data"
-        android:id="@+id/data_value" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/button2"
+        android:orientation="vertical"
+        android:id="@+id/linearLayout3">
 
-    <TextView
-        android:id="@+id/ch1_value"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/no_data" />
+        <TextView
+            android:id="@+id/data_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_data" />
 
-    <TextView
-        android:id="@+id/ch2_value"
-        android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/ch1_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_data" />
+
+        <TextView
+            android:id="@+id/ch2_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_data" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_data" />
-</LinearLayout>
+        android:orientation="vertical"
+        android:layout_marginTop="132dp"
+        android:layout_below="@+id/linearLayout3"
+        android:layout_toEndOf="@+id/linearLayout3"
+        android:layout_marginStart="39dp">
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="183dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClickWrite"
+            android:text="Write Char" />
+    </LinearLayout>
+
+</RelativeLayout>

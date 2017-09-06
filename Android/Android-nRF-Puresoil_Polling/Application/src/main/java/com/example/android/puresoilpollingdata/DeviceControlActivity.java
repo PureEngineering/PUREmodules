@@ -188,7 +188,7 @@ public class DeviceControlActivity extends Activity {
         mDataField = (TextView) findViewById(R.id.data_value);
         ch1DataField = (TextView) findViewById(R.id.ch1_value);
         ch2DataField = (TextView) findViewById(R.id.ch2_value);
-        btnRead = (Button) findViewById(R.id.button);
+       // btnRead = (Button) findViewById(R.id.button);
 
         getActionBar().setTitle(mDeviceName);
         getActionBar().setDisplayHomeAsUpEnabled(true);
