@@ -28,6 +28,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -57,6 +58,7 @@ public class DeviceControlActivity extends Activity {
     private TextView mConnectionState;
     private TextView mDataField;
     private TextView ch1DataField;
+    private TextView ch2DataField;
     private String mDeviceName;
     private String mDeviceAddress;
     private ExpandableListView mGattServicesList;
@@ -113,14 +115,15 @@ public class DeviceControlActivity extends Activity {
                // SystemClock.sleep(500);
               //  mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH1_CHARACTERISTIC);
              else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
+
+
                 displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
                 displayCh1Data(intent.getStringExtra(BluetoothLeService.CH1_DATA));
+                displayCh2Data(intent.getStringExtra(BluetoothLeService.CH2_DATA));
 
             }
              if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
-                mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH0_CHARACTERISTIC);
-                SystemClock.sleep(500);
-                mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH1_CHARACTERISTIC);
+
             }
         }
     };
@@ -163,6 +166,7 @@ public class DeviceControlActivity extends Activity {
         //mGattServicesList.setAdapter((SimpleExpandableListAdapter) null);
         mDataField.setText(R.string.no_data);
         ch1DataField.setText(R.string.no_data);
+        ch2DataField.setText(R.string.no_data);
     }
 
     @Override
@@ -183,25 +187,14 @@ public class DeviceControlActivity extends Activity {
     */
         mDataField = (TextView) findViewById(R.id.data_value);
         ch1DataField = (TextView) findViewById(R.id.ch1_value);
+        ch2DataField = (TextView) findViewById(R.id.ch2_value);
         btnRead = (Button) findViewById(R.id.button);
 
         getActionBar().setTitle(mDeviceName);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
-        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-//        btnRead.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                runOnUiThread(new Runnable() {
-//                public void run() {
-//                    mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH0_CHARACTERISTIC);
-//                    SystemClock.sleep(500);
-//                    mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH1_CHARACTERISTIC);
-//                }
-//                });
-//
-//            }
-//        });
+       // Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
+      //  bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        service_init();
     }
 
     @Override
@@ -278,6 +271,21 @@ public class DeviceControlActivity extends Activity {
         }
     }
 
+    private void displayCh2Data(String data) {
+        if (data != null) {
+            ch2DataField.setText(data);
+        }
+    }
+
+
+    private void service_init() {
+        Intent bindIntent = new Intent(this, BluetoothLeService.class);
+        bindService(bindIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+    }
+
+
     // Demonstrates how to iterate through the supported GATT Services/Characteristics.
     // In this sample, we populate the data structure that is bound to the ExpandableListView
     // on the UI.
@@ -347,9 +355,11 @@ public class DeviceControlActivity extends Activity {
     public void onClickWrite(View v){
         if(mBluetoothLeService != null) {
             mBluetoothLeService.writeCustomCharacteristic(0xAA);
+            readCharLocal();
+
         }
     }
-//
+
     public void onClickRead(View v){
         if(mBluetoothLeService != null) {
             int i = 0;
@@ -359,5 +369,14 @@ public class DeviceControlActivity extends Activity {
                 mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH1_CHARACTERISTIC);
 
         }
+    }
+
+    public void readCharLocal() {
+        SystemClock.sleep(500);
+        mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH0_CHARACTERISTIC);
+        SystemClock.sleep(500);
+        mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH1_CHARACTERISTIC);
+        SystemClock.sleep(500);
+        mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH2_CHARACTERISTIC);
     }
 }

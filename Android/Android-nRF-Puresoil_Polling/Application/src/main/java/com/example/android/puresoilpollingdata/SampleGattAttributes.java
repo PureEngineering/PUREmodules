@@ -27,6 +27,7 @@ public class SampleGattAttributes {
    // public static String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb";
 
     public static String HEART_RATE_MEASUREMENT = "0000abcd-1212-efde-1523-785fef13d123";
+    public static String CH2_CHARACTERISTIC = "0000fdc2-1212-efde-1523-785fef13d123";
     public static String CH1_CHARACTERISTIC = "0000fdc1-1212-efde-1523-785fef13d123";
     public static String CH0_CHARACTERISTIC = "0000fdc0-1212-efde-1523-785fef13d123";
     static {

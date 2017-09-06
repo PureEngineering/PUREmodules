@@ -157,30 +157,31 @@ void print_to_ble(void){
 		
 			uint8_t channel = 0;
 			uint32_t data = fdc2214_readchannel(m_twi_master, channel); 
-			NRF_LOG_RAW_INFO("CH0 === ,%d,", data); NRF_LOG_FLUSH();
+			NRF_LOG_RAW_INFO("CH0 === ,%x,", data); NRF_LOG_FLUSH();
 			fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch0_char_handles.value_handle);
 			
 			channel = 1;
 			//NRF_LOG_RAW_INFO("print to ble reach\n");
 			data = fdc2214_readchannel(m_twi_master, channel); 
-			NRF_LOG_RAW_INFO("CH1 === ,%d,", data); NRF_LOG_FLUSH();
+			NRF_LOG_RAW_INFO("CH1 === ,%x,", data); NRF_LOG_FLUSH();
 			fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch1_char_handles.value_handle);
 		
 	        /******COMMENT IT BACK WHEN YOU ARE CONNECTED TO CHANNEL 2 *******************************/	
 			channel = 2;
 			
 			data = fdc2214_readchannel(m_twi_master, channel); 
-			NRF_LOG_RAW_INFO("CH2 === ,%d,\n", data); NRF_LOG_FLUSH();
+			NRF_LOG_RAW_INFO("CH2 === ,%x,\n", data); NRF_LOG_FLUSH();
 			fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch2_char_handles.value_handle);
 			//startRead = 0x00;
+			//fdc2214_sleep_mode_local(FDC_SLEEP);
 		}
 		
 		//NRF_LOG_RAW_INFO("timer count -----------------------> %d\n", timer_count);
-		if(timer_count == 5) {
-			//fdc2214_sleep_mode_local(FDC_SLEEP);
-			//startRead = 0x00;
+		if(timer_count == 1) {
+			fdc2214_sleep_mode_local(FDC_SLEEP);
+			startRead = 0x00;
 			timer_count = 0;
-			//app_timer_stop(sensor_loop_timer_id);
+			app_timer_stop(sensor_loop_timer_id);
 		}
 		timer_count++;
 		
@@ -266,6 +267,7 @@ static void gap_params_init(void)
 /**@snippet [Handling the data received over BLE] */
 static void fdcs_data_handler(ble_fdcs_t * p_nus, uint8_t * p_data, uint16_t length)
 {
+	create_sensor_timer();
     timer_count = 0; //reset timer once receives data from the phone
 	
 	//create_sensor_timer(); //start timer;
@@ -814,14 +816,14 @@ int main(void)
 	fdc2214_sleep_mode_local(FDC_SLEEP);
 
 
-	//NRF_LOG_RAW_INFO("UART Start!------->\n\r");  NRF_LOG_FLUSH();
+	NRF_LOG_RAW_INFO("UART Start!------->\n\r");  NRF_LOG_FLUSH();
 	err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
   //  APP_ERROR_CHECK(err_code);
 	
 	//sleep_mode_enter();
   
 
-    create_sensor_timer();
+    
 
     // Enter main loop.
     for (;;)
