@@ -126,11 +126,9 @@
       <file leaf-file-name="DeviceScanActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceScanActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1407">
+            <state relative-caret-position="-432">
               <caret line="85" column="40" selection-start-line="85" selection-start-column="31" selection-end-line="85" selection-end-column="40" />
-              <folding>
-                <element signature="e#1913#1935#0" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -2781,11 +2779,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceScanActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1407">
+        <state relative-caret-position="-432">
           <caret line="85" column="40" selection-start-line="85" selection-start-column="31" selection-end-line="85" selection-end-column="40" />
-          <folding>
-            <element signature="e#1913#1935#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
