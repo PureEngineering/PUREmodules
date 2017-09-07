@@ -147,7 +147,9 @@ static void fdc2214_sleep_mode_local(uint8_t sleep_mode) {
 }
 
 void print_to_ble(void){
-			
+			uint32_t data_ch0;
+			uint32_t data_ch1;
+			uint32_t data_ch2;
 		//if we recevie 0xAA from the phone then we start reading data from fdc2214 chip
 		//NRF_LOG_RAW_INFO("start read *********************> %x\n", startRead);
 		if(startRead == 0xAA) {
@@ -156,28 +158,31 @@ void print_to_ble(void){
 		//	startRead = 0x00;
 		
 			uint8_t channel = 0;
-			uint32_t data = fdc2214_readchannel(m_twi_master, channel); 
-			NRF_LOG_RAW_INFO("CH0 === ,%x,", data); NRF_LOG_FLUSH();
-			fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch0_char_handles.value_handle);
+			data_ch0 = fdc2214_readchannel(m_twi_master, channel); 
+			NRF_LOG_RAW_INFO("CH0 === ,%x,(%d)", data_ch0,data_ch0); NRF_LOG_FLUSH();
+		//	fdc_chx_characteristic_update(&m_fdcs_service, &data_ch0, m_fdcs_service.ch0_char_handles.value_handle);
 			
 			channel = 1;
 			//NRF_LOG_RAW_INFO("print to ble reach\n");
-			data = fdc2214_readchannel(m_twi_master, channel); 
-			NRF_LOG_RAW_INFO("CH1 === ,%x,", data); NRF_LOG_FLUSH();
-			fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch1_char_handles.value_handle);
+			data_ch1 = fdc2214_readchannel(m_twi_master, channel); 
+			NRF_LOG_RAW_INFO("CH1 === ,%x,(%d)", data_ch1,data_ch1); NRF_LOG_FLUSH();
+		//	fdc_chx_characteristic_update(&m_fdcs_service, &data_ch1, m_fdcs_service.ch1_char_handles.value_handle);
 		
 	        /******COMMENT IT BACK WHEN YOU ARE CONNECTED TO CHANNEL 2 *******************************/	
 			channel = 2;
 			
-			data = fdc2214_readchannel(m_twi_master, channel); 
-			NRF_LOG_RAW_INFO("CH2 === ,%x,\n", data); NRF_LOG_FLUSH();
-			fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch2_char_handles.value_handle);
+			data_ch2 = fdc2214_readchannel(m_twi_master, channel); 
+			NRF_LOG_RAW_INFO("CH2 === ,%x,(%d)\n", data_ch2,data_ch2); NRF_LOG_FLUSH();
+			//fdc_chx_characteristic_update(&m_fdcs_service, &data_ch2, m_fdcs_service.ch2_char_handles.value_handle);
 			//startRead = 0x00;
 			//fdc2214_sleep_mode_local(FDC_SLEEP);
 		}
 		
-		//NRF_LOG_RAW_INFO("timer count -----------------------> %d\n", timer_count);
+		NRF_LOG_RAW_INFO("timer count -----------------------> %d\n", timer_count);
 		if(timer_count == 1) {
+			fdc_chx_characteristic_update(&m_fdcs_service, &data_ch0, m_fdcs_service.ch0_char_handles.value_handle);
+			fdc_chx_characteristic_update(&m_fdcs_service, &data_ch1, m_fdcs_service.ch1_char_handles.value_handle);
+			fdc_chx_characteristic_update(&m_fdcs_service, &data_ch2, m_fdcs_service.ch2_char_handles.value_handle);
 			fdc2214_sleep_mode_local(FDC_SLEEP);
 			startRead = 0x00;
 			timer_count = 0;
