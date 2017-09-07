@@ -38,6 +38,12 @@ import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.LegendRenderer;
+import com.jjoe64.graphview.Viewport;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,6 +77,9 @@ public class DeviceControlActivity extends Activity {
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
 
+    //graph variables
+    LineGraphSeries<DataPoint> series0;
+    private int X_axies = 0;
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -117,9 +126,9 @@ public class DeviceControlActivity extends Activity {
              else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
 
 
-                displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
-                displayCh1Data(intent.getStringExtra(BluetoothLeService.CH1_DATA));
-                displayCh2Data(intent.getStringExtra(BluetoothLeService.CH2_DATA));
+                displayData(mDataField, intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+                displayData(ch1DataField, intent.getStringExtra(BluetoothLeService.CH1_DATA));
+                displayData(ch2DataField, intent.getStringExtra(BluetoothLeService.CH2_DATA));
 
             }
              if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
@@ -173,6 +182,13 @@ public class DeviceControlActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.button_control);
+
+        double y, x;
+
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+        series0 = new LineGraphSeries<DataPoint>();
+        graph.addSeries(series0);
+        setGraphUI(graph);
 
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
@@ -260,9 +276,14 @@ public class DeviceControlActivity extends Activity {
         });
     }
 
-    private void displayData(String data) {
+    private void displayData(TextView dataField, String data) {
         if (data != null) {
-            mDataField.setText(data);
+            dataField.setText(data);
+            if(dataField == ch1DataField) {
+                String[] parts = data.split(" ");
+                int ch1data =  Integer.parseInt(parts[1]);
+                series0.appendData(new DataPoint(X_axies++, ch1data), true, 33);
+            } 
         }
     }
     private void displayCh1Data(String data) {
@@ -378,5 +399,25 @@ public class DeviceControlActivity extends Activity {
         mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH1_CHARACTERISTIC);
         SystemClock.sleep(500);
         mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH2_CHARACTERISTIC);
+    }
+
+
+    //set up the auto scroll and zoom when ploting in real time.
+    private void setGraphUI(GraphView graph) {
+        //data
+        graph.getLegendRenderer().setVisible(true);
+        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+        graph.getLegendRenderer().setTextSize(20);
+        Viewport viewport = graph.getViewport();
+        // activate horizontal zooming and scrolling
+        viewport.setScalable(true);
+        // activate horizontal scrolling
+        viewport.setScrollable(true);
+        // activate horizontal and vertical zooming and scrolling
+        viewport.setScalableY(true);
+        // activate vertical scrolling
+        viewport.setScrollableY(true);
+        graph.getGridLabelRenderer().setPadding(96);
+
     }
 }
