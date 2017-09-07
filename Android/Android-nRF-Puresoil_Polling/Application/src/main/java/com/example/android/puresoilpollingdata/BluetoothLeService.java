@@ -161,8 +161,9 @@ public class BluetoothLeService extends Service {
             if (data != null && data.length > 0) {
                 final StringBuilder stringBuilder = new StringBuilder(data.length);
                 for(byte byteChar : data)
-                    stringBuilder.append(String.format("%02X ", byteChar));
-                intent.putExtra(EXTRA_DATA, "ch0: " + stringBuilder.toString());
+                    stringBuilder.insert(0, String.format("%02X", byteChar));
+                int value_in_int = Integer.parseInt(stringBuilder.toString(), 16);
+                intent.putExtra(EXTRA_DATA, "ch0: " + value_in_int);
               //  LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             }
         }else if (UUID_CH1_MEASUREMENT.equals(characteristic.getUuid())) {
@@ -171,8 +172,9 @@ public class BluetoothLeService extends Service {
             if (data != null && data.length > 0) {
                 final StringBuilder stringBuilder = new StringBuilder(data.length);
                 for(byte byteChar : data)
-                    stringBuilder.append(String.format("%02X ", byteChar));
-                intent.putExtra(CH1_DATA, "ch1: " + stringBuilder.toString());
+                    stringBuilder.insert(0, String.format("%02X", byteChar));
+                int value_in_int = Integer.parseInt(stringBuilder.toString(), 16);
+                intent.putExtra(CH1_DATA, "ch1: " + value_in_int);
             //    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             }
         }else if (UUID_CH2_MEASUREMENT.equals(characteristic.getUuid())) {
@@ -181,8 +183,10 @@ public class BluetoothLeService extends Service {
             if (data != null && data.length > 0) {
                 final StringBuilder stringBuilder = new StringBuilder(data.length);
                 for(byte byteChar : data)
-                    stringBuilder.append(String.format("%02X ", byteChar));
-                intent.putExtra(CH2_DATA, "ch2: " + stringBuilder.toString());
+                    stringBuilder.insert(0, String.format("%02X", byteChar));
+               // Log.d("tmp", "stirng-----> " + Integer.parseInt(stringBuilder.toString(), 16));
+                int value_in_int = Integer.parseInt(stringBuilder.toString(), 16);
+                intent.putExtra(CH2_DATA, "ch2: " + value_in_int);
               //  LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             }
         }
