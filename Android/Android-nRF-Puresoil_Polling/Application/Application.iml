@@ -102,6 +102,7 @@
     <orderEntry type="library" exported="" name="graphview-4.2.1" level="project" />
     <orderEntry type="library" exported="" name="support-v4-23.0.0" level="project" />
     <orderEntry type="library" exported="" name="cardview-v7-23.0.0" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.7" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.0.0" level="project" />
     <orderEntry type="library" exported="" name="android-android-23" level="project" />
   </component>

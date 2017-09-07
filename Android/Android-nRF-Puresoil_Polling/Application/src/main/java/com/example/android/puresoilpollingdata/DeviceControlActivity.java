@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -37,7 +38,9 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.Viewport;
@@ -81,6 +84,12 @@ public class DeviceControlActivity extends Activity {
     LineGraphSeries<DataPoint> series0;
     private int X_axies = 0;
     // Code to manage Service lifecycle.
+
+    SharedPreferences pref;
+    List<String> save_plot_list = new ArrayList<String>();
+    SharedPreferences.Editor prefsEditor;
+    public static final String key = "store_array_key1";
+
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
@@ -183,6 +192,10 @@ public class DeviceControlActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.button_control);
 
+        pref = getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
+         prefsEditor = pref.edit();
+
+        get();
         double y, x;
 
         GraphView graph = (GraphView) findViewById(R.id.graph);
@@ -237,6 +250,14 @@ public class DeviceControlActivity extends Activity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();  // Always call the superclass method first
+
+        save();
+        Toast.makeText(getApplicationContext(), "onStop called", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.gatt_services, menu);
         if (mConnected) {
@@ -282,6 +303,7 @@ public class DeviceControlActivity extends Activity {
             if(dataField == ch1DataField) {
                 String[] parts = data.split(" ");
                 int ch1data =  Integer.parseInt(parts[1]);
+                save_plot_list.add(Integer.toString(X_axies));
                 series0.appendData(new DataPoint(X_axies++, ch1data), true, 33);
             } 
         }
@@ -419,5 +441,27 @@ public class DeviceControlActivity extends Activity {
         viewport.setScrollableY(true);
         graph.getGridLabelRenderer().setPadding(96);
 
+    }
+
+    public void save() {
+//        pref = getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
+//        SharedPreferences.Editor prefsEditor = pref.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(save_plot_list);
+        prefsEditor.putString(key, json);
+        Log.d("json", "array------> " + json);
+        prefsEditor.commit();
+    }
+
+    public void get() {
+        //List<String> save_plot_list = new ArrayList<String>();
+        Gson gson = new Gson();
+        if (pref.contains(key)) {
+            String json = pref.getString(key, "");
+            List<String> my_saved_plots = gson.fromJson(json, List.class);
+            for (String temp : my_saved_plots) {
+                Log.d("set", temp + " - ");
+            }
+        }
     }
 }
