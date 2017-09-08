@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.util.List;
@@ -64,14 +65,19 @@ public class BluetoothLeService extends Service {
             "com.example.bluetooth.le.EXTRA_DATA";
     public final static String CH1_DATA =
             "com.example.bluetooth.le.CH1_DATA";
+    public final static String CH2_DATA =
+            "com.example.bluetooth.le.CH2_DATA";
     public final static UUID UUID_HEART_RATE_MEASUREMENT =
             UUID.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT);
     public final static UUID UUID_CH0_MEASUREMENT =
             UUID.fromString(SampleGattAttributes.CH0_CHARACTERISTIC);
     public final static UUID UUID_CH1_MEASUREMENT =
             UUID.fromString(SampleGattAttributes.CH1_CHARACTERISTIC);
+    public final static UUID UUID_CH2_MEASUREMENT =
+            UUID.fromString(SampleGattAttributes.CH2_CHARACTERISTIC);
     public static final UUID CCCD = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
+   // public static final UUID CCCD = UUID.fromString("00002902-1212-efde-1523-785fef13d123");
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
@@ -126,6 +132,7 @@ public class BluetoothLeService extends Service {
     private void broadcastUpdate(final String action) {
         final Intent intent = new Intent(action);
         sendBroadcast(intent);
+       // LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     private void broadcastUpdate(final String action,
@@ -154,8 +161,10 @@ public class BluetoothLeService extends Service {
             if (data != null && data.length > 0) {
                 final StringBuilder stringBuilder = new StringBuilder(data.length);
                 for(byte byteChar : data)
-                    stringBuilder.append(String.format("%02X ", byteChar));
-                intent.putExtra(EXTRA_DATA, "ch0: " + stringBuilder.toString());
+                    stringBuilder.insert(0, String.format("%02X", byteChar));
+                int value_in_int = Integer.parseInt(stringBuilder.toString(), 16);
+                intent.putExtra(EXTRA_DATA, "ch0: " + value_in_int);
+              //  LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             }
         }else if (UUID_CH1_MEASUREMENT.equals(characteristic.getUuid())) {
             // For all other profiles, writes the data formatted in HEX.
@@ -163,8 +172,22 @@ public class BluetoothLeService extends Service {
             if (data != null && data.length > 0) {
                 final StringBuilder stringBuilder = new StringBuilder(data.length);
                 for(byte byteChar : data)
-                    stringBuilder.append(String.format("%02X ", byteChar));
-                intent.putExtra(CH1_DATA, "ch1: " + stringBuilder.toString());
+                    stringBuilder.insert(0, String.format("%02X", byteChar));
+                int value_in_int = Integer.parseInt(stringBuilder.toString(), 16);
+                intent.putExtra(CH1_DATA, "ch1: " + value_in_int);
+            //    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            }
+        }else if (UUID_CH2_MEASUREMENT.equals(characteristic.getUuid())) {
+            // For all other profiles, writes the data formatted in HEX.
+            final byte[] data = characteristic.getValue();
+            if (data != null && data.length > 0) {
+                final StringBuilder stringBuilder = new StringBuilder(data.length);
+                for(byte byteChar : data)
+                    stringBuilder.insert(0, String.format("%02X", byteChar));
+               // Log.d("tmp", "stirng-----> " + Integer.parseInt(stringBuilder.toString(), 16));
+                int value_in_int = Integer.parseInt(stringBuilder.toString(), 16);
+                intent.putExtra(CH2_DATA, "ch2: " + value_in_int);
+              //  LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             }
         }
         sendBroadcast(intent);
@@ -341,8 +364,6 @@ public class BluetoothLeService extends Service {
             return;
         }
         /*check if the service is available on the device*/
-        // {{0x23, 0xD1, 0x13, 0xEF, 0x5F, 0x78, 0x23, 0x15, 0xDE, 0xEF, 0x12, 0x12, 0x00, 0x00, 0x00, 0x00}}
-      //  BluetoothGattService mCustomService = mBluetoothGatt.getService(UUID.fromString("00001110-0000-1000-8000-00805f9b34fb"));
         BluetoothGattService mCustomService = mBluetoothGatt.getService(UUID.fromString("0000abcd-1212-efde-1523-785fef13d123"));
         if(mCustomService == null){
             Log.w("hello", "Custom BLE Service not found");
@@ -354,6 +375,13 @@ public class BluetoothLeService extends Service {
         if(mBluetoothGatt.readCharacteristic(mReadCharacteristic) == false){
             Log.w(TAG, "Failed to read characteristic");
         }
+
+        mBluetoothGatt.setCharacteristicNotification(mReadCharacteristic,true);
+
+        BluetoothGattDescriptor descriptor = mReadCharacteristic.getDescriptor(CCCD);
+        descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+        mBluetoothGatt.writeDescriptor(descriptor);
+
 
     }
 

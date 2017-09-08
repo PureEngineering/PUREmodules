@@ -25,9 +25,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,6 +38,14 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.LegendRenderer;
+import com.jjoe64.graphview.Viewport;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,6 +67,7 @@ public class DeviceControlActivity extends Activity {
     private TextView mConnectionState;
     private TextView mDataField;
     private TextView ch1DataField;
+    private TextView ch2DataField;
     private String mDeviceName;
     private String mDeviceAddress;
     private ExpandableListView mGattServicesList;
@@ -69,7 +80,22 @@ public class DeviceControlActivity extends Activity {
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
 
+    //graph variables
+    LineGraphSeries<DataPoint> series0;
+    private int X_axies = 0;
     // Code to manage Service lifecycle.
+
+    //save the application state varibales
+    public SharedPreferences pref;
+    List<String> save_plot_list = new ArrayList<String>();
+    int saved_x = 0;
+   // public SharedPreferences.Editor prefsEditor;
+    public static final String ARRAY_KEY = "store_array_key1";
+    public static final String INT_KEY = "store_x_axies_key";
+    GraphView graph;
+
+
+
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
@@ -113,14 +139,15 @@ public class DeviceControlActivity extends Activity {
                // SystemClock.sleep(500);
               //  mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH1_CHARACTERISTIC);
              else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
-                displayCh1Data(intent.getStringExtra(BluetoothLeService.CH1_DATA));
+
+
+                displayData(mDataField, intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+                displayData(ch1DataField, intent.getStringExtra(BluetoothLeService.CH1_DATA));
+                displayData(ch2DataField, intent.getStringExtra(BluetoothLeService.CH2_DATA));
 
             }
              if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
-                mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH0_CHARACTERISTIC);
-                SystemClock.sleep(500);
-                mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH1_CHARACTERISTIC);
+
             }
         }
     };
@@ -163,12 +190,29 @@ public class DeviceControlActivity extends Activity {
         //mGattServicesList.setAdapter((SimpleExpandableListAdapter) null);
         mDataField.setText(R.string.no_data);
         ch1DataField.setText(R.string.no_data);
+        ch2DataField.setText(R.string.no_data);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.button_control);
+
+
+        pref = getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
+
+        // prefsEditor = pref.edit();
+
+
+        double y, x;
+
+        graph = (GraphView) findViewById(R.id.graph);
+        series0 = new LineGraphSeries<DataPoint>();
+        graph.addSeries(series0);
+        setGraphUI(graph);
+
+        //retrieve data
+        get();
 
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
@@ -183,25 +227,14 @@ public class DeviceControlActivity extends Activity {
     */
         mDataField = (TextView) findViewById(R.id.data_value);
         ch1DataField = (TextView) findViewById(R.id.ch1_value);
-        btnRead = (Button) findViewById(R.id.button);
+        ch2DataField = (TextView) findViewById(R.id.ch2_value);
+       // btnRead = (Button) findViewById(R.id.button);
 
         getActionBar().setTitle(mDeviceName);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
-        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-//        btnRead.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                runOnUiThread(new Runnable() {
-//                public void run() {
-//                    mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH0_CHARACTERISTIC);
-//                    SystemClock.sleep(500);
-//                    mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH1_CHARACTERISTIC);
-//                }
-//                });
-//
-//            }
-//        });
+       // Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
+      //  bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        service_init();
     }
 
     @Override
@@ -225,6 +258,15 @@ public class DeviceControlActivity extends Activity {
         super.onDestroy();
         unbindService(mServiceConnection);
         mBluetoothLeService = null;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();  // Always call the superclass method first
+
+        save();
+
+        Toast.makeText(getApplicationContext(), "onStop called", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -267,16 +309,38 @@ public class DeviceControlActivity extends Activity {
         });
     }
 
-    private void displayData(String data) {
+    private void displayData(TextView dataField, String data) {
         if (data != null) {
-            mDataField.setText(data);
+            dataField.setText(data);
+            if(dataField == ch1DataField) {
+                String[] parts = data.split(" ");
+                int ch1data =  Integer.parseInt(parts[1]);
+                save_plot_list.add(parts[1]);
+                series0.appendData(new DataPoint(X_axies++, ch1data), true, 33);
+            } 
         }
     }
-    private void displayCh1Data(String data) {
-        if (data != null) {
-            ch1DataField.setText(data);
+    private void displaySavedData() {
+        for(int i=0; i < save_plot_list.size(); i++) {
+            series0.appendData(new DataPoint(i, Integer.parseInt(save_plot_list.get(i))), true, 33);
         }
     }
+
+
+    private void displayCh2Data(String data) {
+        if (data != null) {
+            ch2DataField.setText(data);
+        }
+    }
+
+
+    private void service_init() {
+        Intent bindIntent = new Intent(this, BluetoothLeService.class);
+        bindService(bindIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+    }
+
 
     // Demonstrates how to iterate through the supported GATT Services/Characteristics.
     // In this sample, we populate the data structure that is bound to the ExpandableListView
@@ -347,9 +411,17 @@ public class DeviceControlActivity extends Activity {
     public void onClickWrite(View v){
         if(mBluetoothLeService != null) {
             mBluetoothLeService.writeCustomCharacteristic(0xAA);
+            readCharLocal();
+
         }
     }
-//
+
+    public void onClickClear(View v){
+        if(mBluetoothLeService != null) {
+            clearPrefKeys();
+        }
+    }
+
     public void onClickRead(View v){
         if(mBluetoothLeService != null) {
             int i = 0;
@@ -359,5 +431,82 @@ public class DeviceControlActivity extends Activity {
                 mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH1_CHARACTERISTIC);
 
         }
+    }
+
+    public void readCharLocal() {
+        SystemClock.sleep(500);
+        mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH0_CHARACTERISTIC);
+        SystemClock.sleep(500);
+        mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH1_CHARACTERISTIC);
+        SystemClock.sleep(500);
+        mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH2_CHARACTERISTIC);
+    }
+
+
+    //set up the auto scroll and zoom when ploting in real time.
+    private void setGraphUI(GraphView graph) {
+        //data
+        graph.getLegendRenderer().setVisible(true);
+        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+        graph.getLegendRenderer().setTextSize(20);
+        Viewport viewport = graph.getViewport();
+        // activate horizontal zooming and scrolling
+        viewport.setScalable(true);
+        // activate horizontal scrolling
+        viewport.setScrollable(true);
+        // activate horizontal and vertical zooming and scrolling
+        viewport.setScalableY(true);
+        // activate vertical scrolling
+        viewport.setScrollableY(true);
+        graph.getGridLabelRenderer().setPadding(96);
+
+    }
+
+    public void save() {
+        Gson gson = new Gson();
+        String json = gson.toJson(save_plot_list);
+        //saves the array
+        SharedPreferences.Editor prefsEditor = pref.edit();
+        prefsEditor.putString(ARRAY_KEY, json);
+        //saves the x axeies
+        prefsEditor.putInt(INT_KEY, X_axies);
+        Log.d("close", "array------> " + json);
+        prefsEditor.commit();
+    }
+
+    public void get() {
+//        prefsEditor.clear();
+//        prefsEditor.commit();
+        //List<String> save_plot_list = new ArrayList<String>();
+        Gson gson = new Gson();
+        if (pref.contains(ARRAY_KEY)) {
+            X_axies = pref.getInt(INT_KEY, 0);
+            String json = pref.getString(ARRAY_KEY, "");
+            List<String> my_saved_plots = gson.fromJson(json, List.class);
+            save_plot_list = gson.fromJson(json, List.class);
+            for (String temp : save_plot_list) {
+                Log.d("open", temp + " - " + "x=" + X_axies);
+            }
+            displaySavedData();
+        }
+    }
+    public void clearPrefKeys() {
+
+        SharedPreferences.Editor editor_clear = pref.edit();
+        if (pref.contains(ARRAY_KEY)) {
+            editor_clear.clear();
+            editor_clear.commit();
+
+        }
+        //reset the array list
+        save_plot_list = new ArrayList<String>();
+        //reset the x axis value
+        X_axies = 0;
+
+        //reset the graph
+        graph.removeAllSeries();
+        series0.resetData(new DataPoint[] {});
+        graph.addSeries(series0);
+        setGraphUI(graph);
     }
 }
