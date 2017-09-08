@@ -85,10 +85,16 @@ public class DeviceControlActivity extends Activity {
     private int X_axies = 0;
     // Code to manage Service lifecycle.
 
-    SharedPreferences pref;
+    //save the application state varibales
+    public SharedPreferences pref;
     List<String> save_plot_list = new ArrayList<String>();
-    SharedPreferences.Editor prefsEditor;
-    public static final String key = "store_array_key1";
+    int saved_x = 0;
+    public SharedPreferences.Editor prefsEditor;
+    public static final String ARRAY_KEY = "store_array_key1";
+    public static final String INT_KEY = "store_x_axies_key";
+
+
+
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -195,13 +201,16 @@ public class DeviceControlActivity extends Activity {
         pref = getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
          prefsEditor = pref.edit();
 
-        get();
+
         double y, x;
 
         GraphView graph = (GraphView) findViewById(R.id.graph);
         series0 = new LineGraphSeries<DataPoint>();
         graph.addSeries(series0);
         setGraphUI(graph);
+
+        //retrieve data
+        get();
 
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
@@ -303,16 +312,17 @@ public class DeviceControlActivity extends Activity {
             if(dataField == ch1DataField) {
                 String[] parts = data.split(" ");
                 int ch1data =  Integer.parseInt(parts[1]);
-                save_plot_list.add(Integer.toString(X_axies));
+                save_plot_list.add(parts[1]);
                 series0.appendData(new DataPoint(X_axies++, ch1data), true, 33);
             } 
         }
     }
-    private void displayCh1Data(String data) {
-        if (data != null) {
-            ch1DataField.setText(data);
+    private void displaySavedData() {
+        for(int i=0; i < save_plot_list.size(); i++) {
+            series0.appendData(new DataPoint(i, Integer.parseInt(save_plot_list.get(i))), true, 33);
         }
     }
+
 
     private void displayCh2Data(String data) {
         if (data != null) {
@@ -403,6 +413,22 @@ public class DeviceControlActivity extends Activity {
         }
     }
 
+    public void onClickClear(View v){
+        if(mBluetoothLeService != null) {
+           // mBluetoothLeService.writeCustomCharacteristic(0xAA);
+           // readCharLocal();
+            //SystemClock.sleep(500);
+            if (pref.contains(ARRAY_KEY)) {
+                prefsEditor.clear();
+                // SystemClock.sleep(500);
+                boolean test = prefsEditor.commit();
+                Log.d("onclick","bool---> "+ test);
+
+
+            }
+        }
+    }
+
     public void onClickRead(View v){
         if(mBluetoothLeService != null) {
             int i = 0;
@@ -444,24 +470,30 @@ public class DeviceControlActivity extends Activity {
     }
 
     public void save() {
-//        pref = getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
-//        SharedPreferences.Editor prefsEditor = pref.edit();
         Gson gson = new Gson();
         String json = gson.toJson(save_plot_list);
-        prefsEditor.putString(key, json);
-        Log.d("json", "array------> " + json);
+        //saves the array
+        prefsEditor.putString(ARRAY_KEY, json);
+        //saves the x axeies
+        prefsEditor.putInt(INT_KEY, X_axies);
+        Log.d("close", "array------> " + json);
         prefsEditor.commit();
     }
 
     public void get() {
+        prefsEditor.clear();
+        prefsEditor.commit();
         //List<String> save_plot_list = new ArrayList<String>();
         Gson gson = new Gson();
-        if (pref.contains(key)) {
-            String json = pref.getString(key, "");
+        if (pref.contains(ARRAY_KEY)) {
+            X_axies = pref.getInt(INT_KEY, 0);
+            String json = pref.getString(ARRAY_KEY, "");
             List<String> my_saved_plots = gson.fromJson(json, List.class);
-            for (String temp : my_saved_plots) {
-                Log.d("set", temp + " - ");
+            save_plot_list = gson.fromJson(json, List.class);
+            for (String temp : save_plot_list) {
+                Log.d("open", temp + " - " + "x=" + X_axies);
             }
+            displaySavedData();
         }
     }
 }
