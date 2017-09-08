@@ -48,6 +48,7 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -93,6 +94,7 @@ public class DeviceControlActivity extends Activity {
     public static final String ARRAY_KEY = "store_array_key1";
     public static final String INT_KEY = "store_x_axies_key";
     GraphView graph;
+    boolean flag = true;
 
 
 
@@ -218,13 +220,6 @@ public class DeviceControlActivity extends Activity {
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
 
-        // Sets up UI references.
-        /*
-        ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
-        mGattServicesList = (ExpandableListView) findViewById(R.id.gatt_services_list);
-        mGattServicesList.setOnChildClickListener(servicesListClickListner);
-    mConnectionState = (TextView) findViewById(R.id.connection_state);
-    */
         mDataField = (TextView) findViewById(R.id.data_value);
         ch1DataField = (TextView) findViewById(R.id.ch1_value);
         ch2DataField = (TextView) findViewById(R.id.ch2_value);
@@ -232,8 +227,7 @@ public class DeviceControlActivity extends Activity {
 
         getActionBar().setTitle(mDeviceName);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-       // Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
-      //  bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+
         service_init();
     }
 
@@ -310,29 +304,26 @@ public class DeviceControlActivity extends Activity {
     }
 
     private void displayData(TextView dataField, String data) {
+        int min_y_value = 0;
+        int current_y = 0;
         if (data != null) {
             dataField.setText(data);
             if(dataField == ch1DataField) {
                 String[] parts = data.split(" ");
                 int ch1data =  Integer.parseInt(parts[1]);
                 save_plot_list.add(parts[1]);
-                series0.appendData(new DataPoint(X_axies++, ch1data), true, 33);
+                autoZoom(graph, save_plot_list, X_axies);
+                series0.appendData(new DataPoint(X_axies++, ch1data), false, 100);
             } 
         }
     }
     private void displaySavedData() {
-        for(int i=0; i < save_plot_list.size(); i++) {
-            series0.appendData(new DataPoint(i, Integer.parseInt(save_plot_list.get(i))), true, 33);
+        int i;
+        for(i=0; i < save_plot_list.size(); i++) {
+            series0.appendData(new DataPoint(i, Integer.parseInt(save_plot_list.get(i))), false, 100);
         }
+        autoZoom(graph, save_plot_list, i);
     }
-
-
-    private void displayCh2Data(String data) {
-        if (data != null) {
-            ch2DataField.setText(data);
-        }
-    }
-
 
     private void service_init() {
         Intent bindIntent = new Intent(this, BluetoothLeService.class);
@@ -450,6 +441,10 @@ public class DeviceControlActivity extends Activity {
         graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
         graph.getLegendRenderer().setTextSize(20);
         Viewport viewport = graph.getViewport();
+//        viewport.setMinX(0);
+//        viewport.setMaxX(10);
+//        viewport.setMinY(0);
+//        viewport.setMaxY(10);
         // activate horizontal zooming and scrolling
         viewport.setScalable(true);
         // activate horizontal scrolling
@@ -458,8 +453,30 @@ public class DeviceControlActivity extends Activity {
         viewport.setScalableY(true);
         // activate vertical scrolling
         viewport.setScrollableY(true);
-        graph.getGridLabelRenderer().setPadding(96);
+        graph.getGridLabelRenderer().setHorizontalAxisTitle("Click Count");
+        graph.getGridLabelRenderer().setVerticalAxisTitle("Moisture");
+        graph.getGridLabelRenderer().setPadding(56);
 
+
+    }
+
+    private void autoZoom(GraphView graph, List<String> arrayOfY, int max_x) {
+
+        //getting the min value of y
+        int index_of_min_y = arrayOfY.indexOf(Collections.min(arrayOfY));
+        String min_y_str = arrayOfY.get(index_of_min_y);
+        int min_y_int = Integer.parseInt(min_y_str);
+
+        //getting the max value of y
+        int index_of_max_y = arrayOfY.indexOf(Collections.max(arrayOfY));
+        String max_y_str = arrayOfY.get(index_of_max_y);
+        int max_y_int = Integer.parseInt(max_y_str);
+
+        //min value of x is zero, max vlaue of y is X_series counter
+        graph.getViewport().setMinX(0);
+        graph.getViewport().setMaxX(max_x+3);
+        graph.getViewport().setMinY(min_y_int);
+        graph.getViewport().setMaxY(max_y_int);
     }
 
     public void save() {
@@ -487,7 +504,9 @@ public class DeviceControlActivity extends Activity {
             for (String temp : save_plot_list) {
                 Log.d("open", temp + " - " + "x=" + X_axies);
             }
-            displaySavedData();
+            if (   !(save_plot_list.isEmpty())  ) {
+                displaySavedData();
+            }
         }
     }
     public void clearPrefKeys() {
