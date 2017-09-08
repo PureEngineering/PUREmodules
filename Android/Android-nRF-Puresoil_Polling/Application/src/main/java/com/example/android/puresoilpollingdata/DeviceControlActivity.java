@@ -89,10 +89,10 @@ public class DeviceControlActivity extends Activity {
     public SharedPreferences pref;
     List<String> save_plot_list = new ArrayList<String>();
     int saved_x = 0;
-    public SharedPreferences.Editor prefsEditor;
+   // public SharedPreferences.Editor prefsEditor;
     public static final String ARRAY_KEY = "store_array_key1";
     public static final String INT_KEY = "store_x_axies_key";
-
+    GraphView graph;
 
 
 
@@ -198,13 +198,15 @@ public class DeviceControlActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.button_control);
 
+
         pref = getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
-         prefsEditor = pref.edit();
+
+        // prefsEditor = pref.edit();
 
 
         double y, x;
 
-        GraphView graph = (GraphView) findViewById(R.id.graph);
+        graph = (GraphView) findViewById(R.id.graph);
         series0 = new LineGraphSeries<DataPoint>();
         graph.addSeries(series0);
         setGraphUI(graph);
@@ -263,6 +265,7 @@ public class DeviceControlActivity extends Activity {
         super.onStop();  // Always call the superclass method first
 
         save();
+
         Toast.makeText(getApplicationContext(), "onStop called", Toast.LENGTH_LONG).show();
     }
 
@@ -415,17 +418,7 @@ public class DeviceControlActivity extends Activity {
 
     public void onClickClear(View v){
         if(mBluetoothLeService != null) {
-           // mBluetoothLeService.writeCustomCharacteristic(0xAA);
-           // readCharLocal();
-            //SystemClock.sleep(500);
-            if (pref.contains(ARRAY_KEY)) {
-                prefsEditor.clear();
-                // SystemClock.sleep(500);
-                boolean test = prefsEditor.commit();
-                Log.d("onclick","bool---> "+ test);
-
-
-            }
+            clearPrefKeys();
         }
     }
 
@@ -473,6 +466,7 @@ public class DeviceControlActivity extends Activity {
         Gson gson = new Gson();
         String json = gson.toJson(save_plot_list);
         //saves the array
+        SharedPreferences.Editor prefsEditor = pref.edit();
         prefsEditor.putString(ARRAY_KEY, json);
         //saves the x axeies
         prefsEditor.putInt(INT_KEY, X_axies);
@@ -481,8 +475,8 @@ public class DeviceControlActivity extends Activity {
     }
 
     public void get() {
-        prefsEditor.clear();
-        prefsEditor.commit();
+//        prefsEditor.clear();
+//        prefsEditor.commit();
         //List<String> save_plot_list = new ArrayList<String>();
         Gson gson = new Gson();
         if (pref.contains(ARRAY_KEY)) {
@@ -495,5 +489,24 @@ public class DeviceControlActivity extends Activity {
             }
             displaySavedData();
         }
+    }
+    public void clearPrefKeys() {
+
+        SharedPreferences.Editor editor_clear = pref.edit();
+        if (pref.contains(ARRAY_KEY)) {
+            editor_clear.clear();
+            editor_clear.commit();
+
+        }
+        //reset the array list
+        save_plot_list = new ArrayList<String>();
+        //reset the x axis value
+        X_axies = 0;
+
+        //reset the graph
+        graph.removeAllSeries();
+        series0.resetData(new DataPoint[] {});
+        graph.addSeries(series0);
+        setGraphUI(graph);
     }
 }

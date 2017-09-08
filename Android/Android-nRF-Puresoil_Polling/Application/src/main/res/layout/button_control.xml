@@ -14,10 +14,11 @@
 
         <Button
             android:id="@+id/bt_clear"
+            android:onClick="onClickClear"
             android:layout_width="65dp"
             android:layout_height="65dp"
             android:background="@drawable/custom_button1"
-            android:onClick="onClickClear"
+
             android:text="clear"
             android:textSize="10sp" />
     </LinearLayout>
