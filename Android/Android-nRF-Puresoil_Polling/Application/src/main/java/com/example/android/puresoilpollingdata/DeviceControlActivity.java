@@ -307,9 +307,9 @@ public class DeviceControlActivity extends Activity {
         int min_y_value = 0;
         int current_y = 0;
         if (data != null) {
-            dataField.setText(data);
+            String[] parts = data.split(" ");
+            dataField.setText(parts[1]);
             if(dataField == ch1DataField) {
-                String[] parts = data.split(" ");
                 int ch1data =  Integer.parseInt(parts[1]);
                 save_plot_list.add(parts[1]);
                 autoZoom(graph, save_plot_list, X_axies);
