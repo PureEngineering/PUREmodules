@@ -151,12 +151,14 @@ void print_to_ble(void){
 			uint32_t data_ch1;
 			uint32_t data_ch2;
 		//if we recevie 0xAA from the phone then we start reading data from fdc2214 chip
-		//NRF_LOG_RAW_INFO("start read *********************> %x\n", startRead);
+		NRF_LOG_RAW_INFO("start read *********************> %x\n", startRead);NRF_LOG_FLUSH();
 		if(startRead == 0xAA) {
 			startRead = 0xAA;
-			fdc2214_sleep_mode_local(FDC_WAKE);
+			//fdc2214_sleep_mode_local(FDC_WAKE);
+			fdc2214_init(m_twi_master);
 		//	startRead = 0x00;
 		
+		NRF_LOG_RAW_INFO("++++++++++++++++++++\n");NRF_LOG_FLUSH();
 			uint8_t channel = 0;
 			data_ch0 = fdc2214_readchannel(m_twi_master, channel); 
 			NRF_LOG_RAW_INFO("CH0 === ,%x,(%d)", data_ch0,data_ch0); NRF_LOG_FLUSH();

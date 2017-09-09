@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -307,9 +308,9 @@ public class DeviceControlActivity extends Activity {
         int min_y_value = 0;
         int current_y = 0;
         if (data != null) {
-            dataField.setText(data);
+            String[] parts = data.split(" ");
+            dataField.setText(parts[1]);
             if(dataField == ch1DataField) {
-                String[] parts = data.split(" ");
                 int ch1data =  Integer.parseInt(parts[1]);
                 save_plot_list.add(parts[1]);
                 autoZoom(graph, save_plot_list, X_axies);
@@ -456,7 +457,11 @@ public class DeviceControlActivity extends Activity {
         graph.getGridLabelRenderer().setHorizontalAxisTitle("Click Count");
         graph.getGridLabelRenderer().setVerticalAxisTitle("Moisture");
         graph.getGridLabelRenderer().setPadding(56);
+       // series0.setDrawBackground(true);
+        //viewport.setBackgroundColor(android.R.color.holo_green_light);
+        //series0.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
 
+        graph.setBackgroundColor(Color.argb(50, 50, 0, 200));
 
     }
 
