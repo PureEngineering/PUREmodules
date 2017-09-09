@@ -55,28 +55,28 @@
       <file leaf-file-name="DeviceControlActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="354">
-              <caret line="314" column="29" selection-start-line="314" selection-start-column="29" selection-end-line="314" selection-end-column="29" />
+            <state relative-caret-position="499">
+              <caret line="463" column="35" selection-start-line="463" selection-start-column="35" selection-end-line="463" selection-end-column="35" />
               <folding>
-                <element signature="e#2877#2917#0" expanded="true" />
-                <element signature="e#3374#3382#0" expanded="true" />
-                <element signature="e#4826#6294#0" expanded="true" />
-                <element signature="e#5136#5154#0" expanded="true" />
-                <element signature="e#5357#5378#0" expanded="true" />
-                <element signature="e#6293#6294#0" expanded="true" />
-                <element signature="e#8570#8586#0" expanded="true" />
-                <element signature="e#8618#8634#0" expanded="true" />
-                <element signature="e#8666#8682#0" expanded="true" />
-                <element signature="e#11694#11844#0" expanded="true" />
-                <element signature="e#11843#11844#0" expanded="true" />
-                <element signature="e#13377#13427#0" expanded="true" />
-                <element signature="e#13465#13522#0" expanded="true" />
-                <element signature="e#13598#13623#0" expanded="true" />
-                <element signature="e#13735#13771#0" expanded="true" />
-                <element signature="e#14046#14062#0" expanded="true" />
-                <element signature="e#14461#14486#0" expanded="true" />
-                <element signature="e#14705#14734#0" expanded="true" />
-                <element signature="e#15002#15018#0" expanded="true" />
+                <element signature="e#2908#2948#0" expanded="true" />
+                <element signature="e#3405#3413#0" expanded="true" />
+                <element signature="e#4857#6325#0" expanded="true" />
+                <element signature="e#5167#5185#0" expanded="true" />
+                <element signature="e#5388#5409#0" expanded="true" />
+                <element signature="e#6324#6325#0" expanded="true" />
+                <element signature="e#8601#8617#0" expanded="true" />
+                <element signature="e#8649#8665#0" expanded="true" />
+                <element signature="e#8697#8713#0" expanded="true" />
+                <element signature="e#11725#11875#0" expanded="true" />
+                <element signature="e#11874#11875#0" expanded="true" />
+                <element signature="e#13408#13458#0" expanded="true" />
+                <element signature="e#13496#13553#0" expanded="true" />
+                <element signature="e#13629#13654#0" expanded="true" />
+                <element signature="e#13766#13802#0" expanded="true" />
+                <element signature="e#14077#14093#0" expanded="true" />
+                <element signature="e#14492#14517#0" expanded="true" />
+                <element signature="e#14736#14765#0" expanded="true" />
+                <element signature="e#15033#15049#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -88,12 +88,12 @@
             <state />
           </provider>
           <provider editor-type-id="text-editor">
-            <state relative-caret-position="470">
-              <caret line="70" column="0" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
+            <state relative-caret-position="245">
+              <caret line="25" column="16" selection-start-line="25" selection-start-column="16" selection-end-line="25" selection-end-column="16" />
               <folding>
-                <element signature="e#1555#1572#0" expanded="true" />
-                <element signature="e#3314#3331#0" expanded="true" />
-                <element signature="e#3733#3750#0" expanded="true" />
+                <element signature="e#3705#3722#0" expanded="true" />
+                <element signature="e#5214#5231#0" expanded="true" />
+                <element signature="e#6680#6697#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -2243,13 +2243,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
-          <line>324</line>
+          <line>325</line>
           <properties />
           <option name="timeStamp" value="75" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
-          <line>506</line>
+          <line>511</line>
           <properties />
           <option name="timeStamp" value="76" />
         </line-breakpoint>
@@ -2332,25 +2332,25 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#2877#2917#0" expanded="true" />
-            <element signature="e#3374#3382#0" expanded="true" />
-            <element signature="e#4826#6294#0" expanded="true" />
-            <element signature="e#5136#5154#0" expanded="true" />
-            <element signature="e#5357#5378#0" expanded="true" />
-            <element signature="e#6293#6294#0" expanded="true" />
-            <element signature="e#8570#8586#0" expanded="true" />
-            <element signature="e#8618#8634#0" expanded="true" />
-            <element signature="e#8666#8682#0" expanded="true" />
-            <element signature="e#11694#11844#0" expanded="true" />
-            <element signature="e#11843#11844#0" expanded="true" />
-            <element signature="e#13377#13427#0" expanded="true" />
-            <element signature="e#13465#13522#0" expanded="true" />
-            <element signature="e#13598#13623#0" expanded="true" />
-            <element signature="e#13735#13771#0" expanded="true" />
-            <element signature="e#14046#14062#0" expanded="true" />
-            <element signature="e#14461#14486#0" expanded="true" />
-            <element signature="e#14705#14734#0" expanded="true" />
-            <element signature="e#15002#15018#0" expanded="true" />
+            <element signature="e#2908#2948#0" expanded="true" />
+            <element signature="e#3405#3413#0" expanded="true" />
+            <element signature="e#4857#6325#0" expanded="true" />
+            <element signature="e#5167#5185#0" expanded="true" />
+            <element signature="e#5388#5409#0" expanded="true" />
+            <element signature="e#6324#6325#0" expanded="true" />
+            <element signature="e#8601#8617#0" expanded="true" />
+            <element signature="e#8649#8665#0" expanded="true" />
+            <element signature="e#8697#8713#0" expanded="true" />
+            <element signature="e#11725#11875#0" expanded="true" />
+            <element signature="e#11874#11875#0" expanded="true" />
+            <element signature="e#13408#13458#0" expanded="true" />
+            <element signature="e#13496#13553#0" expanded="true" />
+            <element signature="e#13629#13654#0" expanded="true" />
+            <element signature="e#13766#13802#0" expanded="true" />
+            <element signature="e#14077#14093#0" expanded="true" />
+            <element signature="e#14492#14517#0" expanded="true" />
+            <element signature="e#14736#14765#0" expanded="true" />
+            <element signature="e#15033#15049#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2446,25 +2446,25 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#2877#2917#0" expanded="true" />
-            <element signature="e#3374#3382#0" expanded="true" />
-            <element signature="e#4826#6294#0" expanded="true" />
-            <element signature="e#5136#5154#0" expanded="true" />
-            <element signature="e#5357#5378#0" expanded="true" />
-            <element signature="e#6293#6294#0" expanded="true" />
-            <element signature="e#8570#8586#0" expanded="true" />
-            <element signature="e#8618#8634#0" expanded="true" />
-            <element signature="e#8666#8682#0" expanded="true" />
-            <element signature="e#11694#11844#0" expanded="true" />
-            <element signature="e#11843#11844#0" expanded="true" />
-            <element signature="e#13377#13427#0" expanded="true" />
-            <element signature="e#13465#13522#0" expanded="true" />
-            <element signature="e#13598#13623#0" expanded="true" />
-            <element signature="e#13735#13771#0" expanded="true" />
-            <element signature="e#14046#14062#0" expanded="true" />
-            <element signature="e#14461#14486#0" expanded="true" />
-            <element signature="e#14705#14734#0" expanded="true" />
-            <element signature="e#15002#15018#0" expanded="true" />
+            <element signature="e#2908#2948#0" expanded="true" />
+            <element signature="e#3405#3413#0" expanded="true" />
+            <element signature="e#4857#6325#0" expanded="true" />
+            <element signature="e#5167#5185#0" expanded="true" />
+            <element signature="e#5388#5409#0" expanded="true" />
+            <element signature="e#6324#6325#0" expanded="true" />
+            <element signature="e#8601#8617#0" expanded="true" />
+            <element signature="e#8649#8665#0" expanded="true" />
+            <element signature="e#8697#8713#0" expanded="true" />
+            <element signature="e#11725#11875#0" expanded="true" />
+            <element signature="e#11874#11875#0" expanded="true" />
+            <element signature="e#13408#13458#0" expanded="true" />
+            <element signature="e#13496#13553#0" expanded="true" />
+            <element signature="e#13629#13654#0" expanded="true" />
+            <element signature="e#13766#13802#0" expanded="true" />
+            <element signature="e#14077#14093#0" expanded="true" />
+            <element signature="e#14492#14517#0" expanded="true" />
+            <element signature="e#14736#14765#0" expanded="true" />
+            <element signature="e#15033#15049#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2700,34 +2700,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="354">
-          <caret line="314" column="29" selection-start-line="314" selection-start-column="29" selection-end-line="314" selection-end-column="29" />
-          <folding>
-            <element signature="e#2877#2917#0" expanded="true" />
-            <element signature="e#3374#3382#0" expanded="true" />
-            <element signature="e#4826#6294#0" expanded="true" />
-            <element signature="e#5136#5154#0" expanded="true" />
-            <element signature="e#5357#5378#0" expanded="true" />
-            <element signature="e#6293#6294#0" expanded="true" />
-            <element signature="e#8570#8586#0" expanded="true" />
-            <element signature="e#8618#8634#0" expanded="true" />
-            <element signature="e#8666#8682#0" expanded="true" />
-            <element signature="e#11694#11844#0" expanded="true" />
-            <element signature="e#11843#11844#0" expanded="true" />
-            <element signature="e#13377#13427#0" expanded="true" />
-            <element signature="e#13465#13522#0" expanded="true" />
-            <element signature="e#13598#13623#0" expanded="true" />
-            <element signature="e#13735#13771#0" expanded="true" />
-            <element signature="e#14046#14062#0" expanded="true" />
-            <element signature="e#14461#14486#0" expanded="true" />
-            <element signature="e#14705#14734#0" expanded="true" />
-            <element signature="e#15002#15018#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Application/src/main/res/drawable/custom_button1.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
@@ -2736,17 +2708,45 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="499">
+          <caret line="463" column="35" selection-start-line="463" selection-start-column="35" selection-end-line="463" selection-end-column="35" />
+          <folding>
+            <element signature="e#2908#2948#0" expanded="true" />
+            <element signature="e#3405#3413#0" expanded="true" />
+            <element signature="e#4857#6325#0" expanded="true" />
+            <element signature="e#5167#5185#0" expanded="true" />
+            <element signature="e#5388#5409#0" expanded="true" />
+            <element signature="e#6324#6325#0" expanded="true" />
+            <element signature="e#8601#8617#0" expanded="true" />
+            <element signature="e#8649#8665#0" expanded="true" />
+            <element signature="e#8697#8713#0" expanded="true" />
+            <element signature="e#11725#11875#0" expanded="true" />
+            <element signature="e#11874#11875#0" expanded="true" />
+            <element signature="e#13408#13458#0" expanded="true" />
+            <element signature="e#13496#13553#0" expanded="true" />
+            <element signature="e#13629#13654#0" expanded="true" />
+            <element signature="e#13766#13802#0" expanded="true" />
+            <element signature="e#14077#14093#0" expanded="true" />
+            <element signature="e#14492#14517#0" expanded="true" />
+            <element signature="e#14736#14765#0" expanded="true" />
+            <element signature="e#15033#15049#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Application/src/main/res/layout/button_control.xml">
       <provider selected="true" editor-type-id="android-designer2">
         <state />
       </provider>
       <provider editor-type-id="text-editor">
-        <state relative-caret-position="470">
-          <caret line="70" column="0" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
+        <state relative-caret-position="245">
+          <caret line="25" column="16" selection-start-line="25" selection-start-column="16" selection-end-line="25" selection-end-column="16" />
           <folding>
-            <element signature="e#1555#1572#0" expanded="true" />
-            <element signature="e#3314#3331#0" expanded="true" />
-            <element signature="e#3733#3750#0" expanded="true" />
+            <element signature="e#3705#3722#0" expanded="true" />
+            <element signature="e#5214#5231#0" expanded="true" />
+            <element signature="e#6680#6697#0" expanded="true" />
           </folding>
         </state>
       </provider>

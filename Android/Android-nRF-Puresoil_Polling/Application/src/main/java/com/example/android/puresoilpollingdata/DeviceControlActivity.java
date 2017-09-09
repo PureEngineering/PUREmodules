@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -456,7 +457,11 @@ public class DeviceControlActivity extends Activity {
         graph.getGridLabelRenderer().setHorizontalAxisTitle("Click Count");
         graph.getGridLabelRenderer().setVerticalAxisTitle("Moisture");
         graph.getGridLabelRenderer().setPadding(56);
+       // series0.setDrawBackground(true);
+        //viewport.setBackgroundColor(android.R.color.holo_green_light);
+        //series0.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
 
+        graph.setBackgroundColor(Color.argb(50, 50, 0, 200));
 
     }
 

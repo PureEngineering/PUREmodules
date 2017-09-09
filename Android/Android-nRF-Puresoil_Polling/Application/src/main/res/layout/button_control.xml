@@ -1,112 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:background="#b8569fee"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/ch0_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Air:"
-        android:textColor="#FFFFFF"
-        android:layout_alignTop="@+id/data_value"
-        android:layout_alignStart="@+id/data_value"
-        android:layout_marginStart="10dp" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/ch1_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Mid soil:"
-        android:textColor="#FFFFFF"
-        android:layout_alignTop="@+id/ch1_value"
-        android:layout_alignStart="@+id/ch0_textView" />
-
-    <TextView
-        android:id="@+id/ch2_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Deep soil:"
-        android:textColor="#FFFFFF"
-        android:layout_alignTop="@+id/ch2_value"
-        android:layout_alignEnd="@+id/ch2_value"
-        android:layout_marginEnd="12dp" />
-
-    <TextView
-        android:id="@+id/data_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/custom_button1"
-        android:text="@string/no_data"
-        android:textColor="#FFFFFF"
-        android:layout_above="@+id/ch1_value"
-        android:layout_alignStart="@+id/ch1_value"
-        android:layout_marginBottom="29dp" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/linearLayout12">
-
-        <com.jjoe64.graphview.GraphView
-            android:id="@+id/graph"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="259dp" />
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <Button
-        android:id="@+id/bt_clear"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
+            <LinearLayout
+                android:id="@+id/linearLayout12"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.69"
+                android:orientation="vertical"
+                android:layout_below="@+id/linearLayout3"
+                android:layout_alignParentStart="true">
 
-        android:background="@drawable/custom_button1"
-        android:onClick="onClickClear"
-        android:text="clear"
-        android:textSize="10sp"
+                <com.jjoe64.graphview.GraphView
+                    android:id="@+id/graph"
+                    android:layout_width="match_parent"
+                    android:layout_height="259dp" />
+            </LinearLayout>
 
-        android:layout_marginEnd="15dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/button2" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="1"
+                android:id="@+id/linearLayout3">
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:background="@drawable/custom_button1"
-        android:onClick="onClickWrite"
-        android:text="Read"
-        android:textSize="10sp"
-        android:layout_toStartOf="@+id/bt_clear"
-        android:layout_marginEnd="24dp"
-        android:layout_above="@+id/data_value" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/ch2_value"
+                    <Button
+                        android:id="@+id/bt_clear"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/custom_button1"
-        android:text="@string/no_data"
-        android:layout_above="@+id/linearLayout12"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="23dp"
-        android:layout_marginBottom="11dp" />
+                        android:layout_alignBottom="@+id/button2"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginEnd="15dp"
 
-    <TextView
-        android:id="@+id/ch1_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/custom_button1"
-        android:text="@string/no_data"
-        android:textColor="#1874cd"
-        android:layout_above="@+id/ch2_textView"
-        android:layout_alignStart="@+id/ch2_value"
-        android:layout_marginBottom="25dp" />
+                        android:background="@drawable/custom_button1"
+                        android:onClick="onClickClear"
+                        android:text="clear"
+                        android:textSize="10sp" />
 
-</RelativeLayout>
+                    <Button
+                        android:id="@+id/button2"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_above="@+id/data_value"
+                        android:layout_marginEnd="24dp"
+                        android:layout_toStartOf="@+id/bt_clear"
+                        android:background="@drawable/custom_button1"
+                        android:onClick="onClickWrite"
+                        android:text="Read"
+                        android:textSize="10sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="212dp">
+
+                    <RelativeLayout
+                        android:id="@+id/Air_Box"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/data_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:background="@drawable/custom_button1"
+                            android:text="@string/no_data"
+                            android:textColor="#FFFFFF" />
+
+                        <TextView
+                            android:id="@+id/ch0_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignStart="@+id/data_value"
+                            android:layout_alignTop="@+id/data_value"
+                            android:layout_marginStart="10dp"
+                            android:text="Air:"
+                            android:textColor="#FFFFFF" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/mid_soil_box"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/Air_Box"
+                        android:layout_marginTop="23dp">
+
+                        <TextView
+                            android:id="@+id/ch1_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/custom_button1"
+                            android:text="@string/no_data"
+                            android:textColor="#1874cd" />
+
+                        <TextView
+                            android:id="@+id/ch1_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignStart="@+id/ch0_textView"
+                            android:layout_alignTop="@+id/ch1_value"
+                            android:text="Mid soil:"
+                            android:textColor="#FFFFFF" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/deep_soil_box"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginBottom="24dp">
+
+                        <TextView
+                            android:id="@+id/ch2_value"
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentStart="true"
+                            android:background="@drawable/custom_button1"
+                            android:text="@string/no_data" />
+
+                        <TextView
+                            android:id="@+id/ch2_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignTop="@+id/ch2_value"
+                            android:text="Deep soil:"
+                            android:textColor="#FFFFFF" />
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+
+</LinearLayout>
