@@ -61,8 +61,8 @@
       <file leaf-file-name="DeviceControlActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="468">
-              <caret line="456" column="41" selection-start-line="456" selection-start-column="41" selection-end-line="456" selection-end-column="41" />
+            <state relative-caret-position="197">
+              <caret line="477" column="44" selection-start-line="477" selection-start-column="44" selection-end-line="477" selection-end-column="44" />
               <folding />
             </state>
           </provider>
@@ -74,8 +74,8 @@
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="366">
-              <caret line="144" column="63" selection-start-line="144" selection-start-column="49" selection-end-line="144" selection-end-column="63" />
+            <state relative-caret-position="291">
+              <caret line="117" column="60" selection-start-line="117" selection-start-column="45" selection-end-line="117" selection-end-column="60" />
               <folding>
                 <element signature="e#6690#6707#0" expanded="true" />
               </folding>
@@ -2153,7 +2153,7 @@
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.37853774" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5330189" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32855362" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900944" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -2222,39 +2222,9 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
-          <line>568</line>
+          <line>592</line>
           <properties />
           <option name="timeStamp" value="76" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
-          <line>534</line>
-          <properties />
-          <option name="timeStamp" value="77" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
-          <line>320</line>
-          <properties />
-          <option name="timeStamp" value="80" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
-          <line>559</line>
-          <properties />
-          <option name="timeStamp" value="82" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
-          <line>541</line>
-          <properties />
-          <option name="timeStamp" value="83" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
-          <line>557</line>
-          <properties />
-          <option name="timeStamp" value="84" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
@@ -2262,8 +2232,26 @@
           <properties />
           <option name="timeStamp" value="85" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
+          <line>460</line>
+          <properties />
+          <option name="timeStamp" value="86" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
+          <line>551</line>
+          <properties />
+          <option name="timeStamp" value="87" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
+          <line>319</line>
+          <properties />
+          <option name="timeStamp" value="90" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="86" />
+      <option name="time" value="94" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -2701,8 +2689,8 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="366">
-          <caret line="144" column="63" selection-start-line="144" selection-start-column="49" selection-end-line="144" selection-end-column="63" />
+        <state relative-caret-position="291">
+          <caret line="117" column="60" selection-start-line="117" selection-start-column="45" selection-end-line="117" selection-end-column="60" />
           <folding>
             <element signature="e#6690#6707#0" expanded="true" />
           </folding>
@@ -2711,8 +2699,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="468">
-          <caret line="456" column="41" selection-start-line="456" selection-start-column="41" selection-end-line="456" selection-end-column="41" />
+        <state relative-caret-position="197">
+          <caret line="477" column="44" selection-start-line="477" selection-start-column="44" selection-end-line="477" selection-end-column="44" />
           <folding />
         </state>
       </provider>
