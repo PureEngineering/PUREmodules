@@ -61,8 +61,8 @@
       <file leaf-file-name="DeviceControlActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="418">
-              <caret line="458" column="34" selection-start-line="458" selection-start-column="34" selection-end-line="458" selection-end-column="34" />
+            <state relative-caret-position="468">
+              <caret line="456" column="41" selection-start-line="456" selection-start-column="41" selection-end-line="456" selection-end-column="41" />
               <folding />
             </state>
           </provider>
@@ -2222,13 +2222,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
-          <line>562</line>
+          <line>568</line>
           <properties />
           <option name="timeStamp" value="76" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
-          <line>528</line>
+          <line>534</line>
           <properties />
           <option name="timeStamp" value="77" />
         </line-breakpoint>
@@ -2240,25 +2240,25 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
-          <line>553</line>
+          <line>559</line>
           <properties />
           <option name="timeStamp" value="82" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
-          <line>535</line>
+          <line>541</line>
           <properties />
           <option name="timeStamp" value="83" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
-          <line>551</line>
+          <line>557</line>
           <properties />
           <option name="timeStamp" value="84" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
-          <line>438</line>
+          <line>439</line>
           <properties />
           <option name="timeStamp" value="85" />
         </line-breakpoint>
@@ -2711,8 +2711,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="458" column="34" selection-start-line="458" selection-start-column="34" selection-end-line="458" selection-end-column="34" />
+        <state relative-caret-position="468">
+          <caret line="456" column="41" selection-start-line="456" selection-start-column="41" selection-end-line="456" selection-end-column="41" />
           <folding />
         </state>
       </provider>

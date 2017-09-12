@@ -423,6 +423,7 @@ public class DeviceControlActivity extends Activity {
 
     public void onClickWrite(View v){
         if(mBluetoothLeService != null) {
+
             mBluetoothLeService.writeCustomCharacteristic(0xAA);
             readCharLocal();
 
@@ -437,6 +438,8 @@ public class DeviceControlActivity extends Activity {
 
     public void onClickAir(View v){
         if(mBluetoothLeService != null) {
+            series0.setColor(Color.WHITE);
+            autoZoom(graph, saved_air_plot_list, X_axies);
             //ShowAirPlotFlag = true;
             chx_plot_conti = CH0_PLOT_CONTI;
             if (   !(saved_air_plot_list.isEmpty())  ) {
@@ -448,8 +451,11 @@ public class DeviceControlActivity extends Activity {
         }
     }
 
+    //click here to show the mid soil graph on the UI.
     public void onClickMidSoil(View v){
         if(mBluetoothLeService != null) {
+            series0.setColor(Color.BLUE);
+            autoZoom(graph, save_plot_list, X_axies);
            // ShowAirPlotFlag = false;
             chx_plot_conti = CH1_PLOT_CONTI;
             ShowMidSoilPlotFlag = true;
