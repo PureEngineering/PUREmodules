@@ -3,6 +3,24 @@
 
     <item
         is-multidex="false"
+        jar="C:\Users\Wuyuan\.gradle\caches\modules-2\files-2.1\org.eclipse.paho\org.eclipse.paho.android.service\1.0.2\2d956522c556caeb35148445ecd059ebe67331f6\org.eclipse.paho.android.service-1.0.2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="2d956522c556caeb35148445ecd059ebe67331f6">
+        <dex dex="C:\git\PUREmodules\Android\Android-nRF-Puresoil_Polling\Application\build\intermediates\pre-dexed\debug\org.eclipse.paho.android.service-1.0.2_0afaea23e911dc118d148ddc523fe848516e28c7.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Wuyuan\.gradle\caches\modules-2\files-2.1\org.eclipse.paho\org.eclipse.paho.client.mqttv3\1.0.2\11752d3f24d1a9deda4533a7ca18d8496417ceeb\org.eclipse.paho.client.mqttv3-1.0.2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="11752d3f24d1a9deda4533a7ca18d8496417ceeb">
+        <dex dex="C:\git\PUREmodules\Android\Android-nRF-Puresoil_Polling\Application\build\intermediates\pre-dexed\debug\org.eclipse.paho.client.mqttv3-1.0.2_b5c067f80d369b1d4b448b6122f66a44425af6ca.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="C:\Users\Wuyuan\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\2.7\751f548c85fa49f330cecbb1875893f971b33c4e\gson-2.7.jar"
         jumboMode="false"
         optimize="true"

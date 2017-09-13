@@ -66,6 +66,18 @@
                         android:onClick="onClickWrite"
                         android:text="Read"
                         android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/btn_publish"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_marginEnd="31dp"
+                        android:background="@drawable/custom_button1"
+                        android:onClick="onClickPublish"
+                        android:text="Publish"
+                        android:textSize="10sp"
+                        android:layout_alignParentTop="true"
+                        android:layout_toStartOf="@+id/button2" />
                 </RelativeLayout>
 
                 <RelativeLayout

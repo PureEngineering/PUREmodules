@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,6 +50,15 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.PointsGraphSeries;
 
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -109,6 +119,12 @@ public class DeviceControlActivity extends Activity {
     private final int CH2_PLOT_CONTI = 2;
     private int current_x_axis = 0;
 
+    //MQTT variables
+    static String MQTTHOST = "tcp://broker.hivemq.com:1883";
+    static String USERNAME = "pure";
+    static String PASSWORD = "123";
+    static String topicStr = "puresoil/fdc2214";
+    MqttAndroidClient client;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -212,13 +228,45 @@ public class DeviceControlActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.button_control);
 
+        /**************************************************************************************
+         * MQTT set up
+         */
+        String clientId = MqttClient.generateClientId();
+         client = new MqttAndroidClient(this.getApplicationContext(), MQTTHOST,
+                        clientId);
 
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setUserName(USERNAME);
+        options.setPassword(PASSWORD.toCharArray());
+
+
+        try {
+            IMqttToken token = client.connect(options);
+            token.setActionCallback(new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    // We are connected
+                    Toast.makeText(getApplicationContext(), "MQTT connected!", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    // Something went wrong e.g. connection timeout or firewall problems
+                    Toast.makeText(getApplicationContext(), "MQTT connection failed!", Toast.LENGTH_LONG).show();
+
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+
+        /****
+         * MQTT set up end
+         ************************************************************************************************/
+
+
+        //for saveing data when the app is closed
         pref = getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
-
-        // prefsEditor = pref.edit();
-
-
-        double y, x;
 
         graph = (GraphView) findViewById(R.id.graph);
         series0 = new LineGraphSeries<DataPoint>();
@@ -629,5 +677,37 @@ public class DeviceControlActivity extends Activity {
         series0.resetData(new DataPoint[] {});
         graph.addSeries(series0);
         //setGraphUI(graph);
+    }
+
+
+    /***
+     * MQTT functions
+     */
+
+    public void onClickPublish(View v) {
+        String topic = topicStr;
+        String payload = "i got the message";
+        String airStr = TextUtils.join(", ", saved_air_plot_list);
+        String midSoilStr = TextUtils.join(", ", save_plot_list);
+        String deepSoilStr = TextUtils.join(", ", saved_deep_plot_list);
+
+        String airStr_pub = "Air Moisture: " + airStr;
+        String midSoilStr_pub = "Mid Soil Moisture: " + midSoilStr;
+        String deepSoilStr_pub = "Deep Soil Moisture: " + deepSoilStr;
+
+        if(save_plot_list.isEmpty() && saved_deep_plot_list.isEmpty() && saved_air_plot_list.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Cannot publish, all array are empty!", Toast.LENGTH_LONG).show();
+        } else {
+            try {
+                //    encodedPayload = payload.getBytes("UTF-8");
+              //    MqttMessage message = new MqttMessage(encodedPayload);
+               // message.setRetained(true);
+                client.publish(topic, airStr_pub.getBytes(), 1, false);
+                client.publish(topic, midSoilStr_pub.getBytes(), 1, false);
+                client.publish(topic, deepSoilStr_pub.getBytes(), 1, false);
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
