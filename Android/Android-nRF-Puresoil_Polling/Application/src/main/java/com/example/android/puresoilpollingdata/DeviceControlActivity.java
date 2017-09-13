@@ -47,6 +47,7 @@ import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.PointsGraphSeries;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -521,7 +522,8 @@ public class DeviceControlActivity extends Activity {
        // series0.setDrawBackground(true);
         //viewport.setBackgroundColor(android.R.color.holo_green_light);
         //series0.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-
+        series0.setDrawDataPoints(true);
+        series0.setDataPointsRadius(12);
         graph.setBackgroundColor(Color.argb(50, 50, 0, 200));
 
     }

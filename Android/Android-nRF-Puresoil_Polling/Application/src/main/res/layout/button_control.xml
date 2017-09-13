@@ -79,7 +79,7 @@
 
                         <Button
                             android:id="@+id/data_value"
-                            android:layout_width="wrap_content"
+                            android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentTop="true"
@@ -109,7 +109,7 @@
 
                         <Button
                             android:id="@+id/ch2_value"
-                            android:layout_width="wrap_content"
+                            android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:layout_alignParentBottom="true"
                             android:layout_alignParentStart="true"
@@ -135,7 +135,7 @@
 
                             <Button
                                 android:id="@+id/ch1_value"
-                                android:layout_width="wrap_content"
+                                android:layout_width="100dp"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
                                 android:layout_centerVertical="true"
