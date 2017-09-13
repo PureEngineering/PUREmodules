@@ -47,6 +47,7 @@ import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.PointsGraphSeries;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -90,13 +91,23 @@ public class DeviceControlActivity extends Activity {
     //save the application state varibales
     public SharedPreferences pref;
     List<String> save_plot_list = new ArrayList<String>();
+    List<String> saved_air_plot_list = new ArrayList<String>();
+    List<String> saved_deep_plot_list = new ArrayList<String>();
     int saved_x = 0;
    // public SharedPreferences.Editor prefsEditor;
     public static final String ARRAY_KEY = "store_array_key1";
+    public static final String ARRAY_KEY_AIR = "store_array_key_air1";
+    public static final String ARRAY_KEY_DEEP = "store_array_key_deep";
     public static final String INT_KEY = "store_x_axies_key";
     GraphView graph;
     boolean flag = true;
 
+    //DIFFERENT PLOTS, AIR, MID, DEEP
+    private int chx_plot_conti = 1;
+    private final int CH0_PLOT_CONTI = 0;
+    private final int CH1_PLOT_CONTI = 1;
+    private final int CH2_PLOT_CONTI = 2;
+    private int current_x_axis = 0;
 
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -310,20 +321,31 @@ public class DeviceControlActivity extends Activity {
         if (data != null) {
             String[] parts = data.split(" ");
             dataField.setText(parts[1]);
-            if(dataField == ch1DataField) {
-                int ch1data =  Integer.parseInt(parts[1]);
+            if (dataField == mDataField) {
+                saved_air_plot_list.add(parts[1]);
+                if (chx_plot_conti == CH0_PLOT_CONTI) {
+                    plot(saved_air_plot_list, parts);
+                }
+            } else if (dataField == ch1DataField) {
                 save_plot_list.add(parts[1]);
-                autoZoom(graph, save_plot_list, X_axies);
-                series0.appendData(new DataPoint(X_axies++, ch1data), false, 100);
-            } 
+                if (chx_plot_conti == CH1_PLOT_CONTI) {
+                    plot(save_plot_list, parts);
+                }
+            } else if (dataField == ch2DataField) {
+                saved_deep_plot_list.add(parts[1]);
+                if (chx_plot_conti == CH2_PLOT_CONTI) {
+                    plot(saved_deep_plot_list, parts);
+                }
+            }
         }
     }
-    private void displaySavedData() {
+    private void displaySavedData(List<String> savedList) {
         int i;
-        for(i=0; i < save_plot_list.size(); i++) {
-            series0.appendData(new DataPoint(i, Integer.parseInt(save_plot_list.get(i))), false, 100);
+        for(i=0; i < savedList.size(); i++) {
+            series0.appendData(new DataPoint(i, Integer.parseInt(savedList.get(i))), false, 100);
         }
-        autoZoom(graph, save_plot_list, i);
+        current_x_axis = i;
+        autoZoom(graph, savedList, i);
     }
 
     private void service_init() {
@@ -402,6 +424,7 @@ public class DeviceControlActivity extends Activity {
 
     public void onClickWrite(View v){
         if(mBluetoothLeService != null) {
+
             mBluetoothLeService.writeCustomCharacteristic(0xAA);
             readCharLocal();
 
@@ -414,16 +437,55 @@ public class DeviceControlActivity extends Activity {
         }
     }
 
-    public void onClickRead(View v){
+    public void onClickAir(View v){
         if(mBluetoothLeService != null) {
-            int i = 0;
 
-                mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH0_CHARACTERISTIC);
-                SystemClock.sleep(500);
-                mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH1_CHARACTERISTIC);
+            //ShowAirPlotFlag = true;
+            chx_plot_conti = CH0_PLOT_CONTI;
+            if (   !(saved_air_plot_list.isEmpty())  ) {
+                series0.setColor(Color.WHITE);
+                autoZoom(graph, saved_air_plot_list, X_axies);
+                resetPlot();
+                displaySavedData(saved_air_plot_list);
+                X_axies = current_x_axis;
+            }
 
         }
     }
+
+    //click here to show the mid soil graph on the UI.
+    public void onClickMidSoil(View v){
+        if(mBluetoothLeService != null) {
+           // ShowAirPlotFlag = false;
+            chx_plot_conti = CH1_PLOT_CONTI;
+
+            if (   !(save_plot_list.isEmpty())  ) {
+                series0.setColor(Color.BLUE);
+                autoZoom(graph, save_plot_list, X_axies);
+                resetPlot();
+                displaySavedData(save_plot_list);
+                X_axies = current_x_axis;
+            }
+
+        }
+    }
+
+    public void onClickDeepSoil(View v){
+        if(mBluetoothLeService != null) {
+            // ShowAirPlotFlag = false;
+            chx_plot_conti = CH2_PLOT_CONTI;
+
+            if (   !(saved_deep_plot_list.isEmpty())  ) {
+                series0.setColor(Color.BLACK);
+                autoZoom(graph, saved_deep_plot_list, X_axies);
+                resetPlot();
+                displaySavedData(saved_deep_plot_list);
+                X_axies = current_x_axis;
+            }
+
+        }
+    }
+
 
     public void readCharLocal() {
         SystemClock.sleep(500);
@@ -460,7 +522,8 @@ public class DeviceControlActivity extends Activity {
        // series0.setDrawBackground(true);
         //viewport.setBackgroundColor(android.R.color.holo_green_light);
         //series0.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-
+        series0.setDrawDataPoints(true);
+        series0.setDataPointsRadius(12);
         graph.setBackgroundColor(Color.argb(50, 50, 0, 200));
 
     }
@@ -484,12 +547,27 @@ public class DeviceControlActivity extends Activity {
         graph.getViewport().setMaxY(max_y_int);
     }
 
+    public void plot(List<String> lists, String[] parts) {
+        int ch1data =  Integer.parseInt(parts[1]);
+      //  lists.add(parts[1]);
+        autoZoom(graph, lists, X_axies);
+        series0.appendData(new DataPoint(X_axies++, ch1data), false, 100);
+    }
+
     public void save() {
         Gson gson = new Gson();
+        Gson gson_air = new Gson();
+        Gson gson_deep = new Gson();
+
         String json = gson.toJson(save_plot_list);
+        String json_air = gson_air.toJson(saved_air_plot_list);
+        String json_deep = gson_deep.toJson(saved_deep_plot_list);
+
         //saves the array
         SharedPreferences.Editor prefsEditor = pref.edit();
         prefsEditor.putString(ARRAY_KEY, json);
+        prefsEditor.putString(ARRAY_KEY_AIR, json_air);
+        prefsEditor.putString(ARRAY_KEY_DEEP, json_deep);
         //saves the x axeies
         prefsEditor.putInt(INT_KEY, X_axies);
         Log.d("close", "array------> " + json);
@@ -501,29 +579,36 @@ public class DeviceControlActivity extends Activity {
 //        prefsEditor.commit();
         //List<String> save_plot_list = new ArrayList<String>();
         Gson gson = new Gson();
-        if (pref.contains(ARRAY_KEY)) {
+        if (pref.contains(ARRAY_KEY) && pref.contains(ARRAY_KEY_AIR)) {
             X_axies = pref.getInt(INT_KEY, 0);
             String json = pref.getString(ARRAY_KEY, "");
-            List<String> my_saved_plots = gson.fromJson(json, List.class);
+            String json_air = pref.getString(ARRAY_KEY_AIR, "");
+            String json_deep = pref.getString(ARRAY_KEY_DEEP, "");
+           // List<String> my_saved_plots = gson.fromJson(json, List.class);
+           // List<String> my_saved__air_plots = gson.fromJson(json_air, List.class);
             save_plot_list = gson.fromJson(json, List.class);
+            saved_air_plot_list = gson.fromJson(json_air, List.class);
+            saved_deep_plot_list = gson.fromJson(json_deep, List.class);
             for (String temp : save_plot_list) {
                 Log.d("open", temp + " - " + "x=" + X_axies);
             }
             if (   !(save_plot_list.isEmpty())  ) {
-                displaySavedData();
+                displaySavedData(save_plot_list);
             }
         }
     }
     public void clearPrefKeys() {
 
         SharedPreferences.Editor editor_clear = pref.edit();
-        if (pref.contains(ARRAY_KEY)) {
+        if (pref.contains(ARRAY_KEY) || pref.contains(ARRAY_KEY)) {
             editor_clear.clear();
             editor_clear.commit();
 
         }
         //reset the array list
         save_plot_list = new ArrayList<String>();
+        saved_air_plot_list = new ArrayList<String>();
+        saved_deep_plot_list = new ArrayList<String>();
         //reset the x axis value
         X_axies = 0;
 
@@ -532,5 +617,17 @@ public class DeviceControlActivity extends Activity {
         series0.resetData(new DataPoint[] {});
         graph.addSeries(series0);
         setGraphUI(graph);
+    }
+
+    public void resetPlot() {
+      //  lists = new ArrayList<String>();
+        //reset the x axis value
+        X_axies = 0;
+
+        //reset the graph
+        graph.removeAllSeries();
+        series0.resetData(new DataPoint[] {});
+        graph.addSeries(series0);
+        //setGraphUI(graph);
     }
 }

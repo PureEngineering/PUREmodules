@@ -77,15 +77,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
-                        <TextView
+                        <Button
                             android:id="@+id/data_value"
-                            android:layout_width="wrap_content"
+                            android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentTop="true"
                             android:background="@drawable/custom_button1"
                             android:text="@string/no_data"
-                            android:textColor="#FFFFFF" />
+                            android:textColor="#FFFFFF"
+                            android:onClick="onClickAir"/>
 
                         <TextView
                             android:id="@+id/ch0_textView"
@@ -99,35 +100,6 @@
                     </RelativeLayout>
 
                     <RelativeLayout
-                        android:id="@+id/mid_soil_box"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@+id/Air_Box"
-                        android:layout_marginTop="23dp">
-
-                        <TextView
-                            android:id="@+id/ch1_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true"
-                            android:background="@drawable/custom_button1"
-                            android:text="@string/no_data"
-                            android:textColor="#1874cd" />
-
-                        <TextView
-                            android:id="@+id/ch1_textView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignStart="@+id/ch0_textView"
-                            android:layout_alignTop="@+id/ch1_value"
-                            android:text="Mid soil:"
-                            android:textColor="#FFFFFF" />
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
                         android:id="@+id/deep_soil_box"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -135,15 +107,15 @@
                         android:layout_alignParentStart="true"
                         android:layout_marginBottom="24dp">
 
-                        <TextView
+                        <Button
                             android:id="@+id/ch2_value"
-
-                            android:layout_width="wrap_content"
+                            android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:layout_alignParentBottom="true"
                             android:layout_alignParentStart="true"
                             android:background="@drawable/custom_button1"
-                            android:text="@string/no_data" />
+                            android:text="@string/no_data"
+                            android:onClick="onClickDeepSoil"/>
 
                         <TextView
                             android:id="@+id/ch2_textView"
@@ -153,6 +125,35 @@
                             android:layout_alignTop="@+id/ch2_value"
                             android:text="Deep soil:"
                             android:textColor="#FFFFFF" />
+
+                        <RelativeLayout
+                            android:id="@+id/mid_soil_box"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true">
+
+                            <Button
+                                android:id="@+id/ch1_value"
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/custom_button1"
+                                android:text="@string/no_data"
+                                android:textColor="#1874cd"
+                                android:onClick="onClickMidSoil"/>
+
+                            <TextView
+                                android:id="@+id/ch1_textView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignStart="@+id/ch0_textView"
+                                android:layout_alignTop="@+id/ch1_value"
+                                android:text="Mid soil:"
+                                android:textColor="#FFFFFF" />
+
+                        </RelativeLayout>
                     </RelativeLayout>
 
                 </RelativeLayout>
