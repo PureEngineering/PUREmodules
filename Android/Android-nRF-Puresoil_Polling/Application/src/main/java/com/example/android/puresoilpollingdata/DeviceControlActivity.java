@@ -41,6 +41,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
@@ -61,12 +62,16 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.w3c.dom.Text;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
@@ -79,7 +84,9 @@ public class DeviceControlActivity extends Activity {
 
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
-
+    public static final int AIR_DRY_THRESHOLD = 3000;
+    public static final int MID_DRY_THRESHOLD = 8000;
+    public static final int DEEP_DRY_THRESHOLD = 5000;
     private Button btnRead;
     private TextView mConnectionState;
     private TextView ch0DataField;
@@ -148,6 +155,9 @@ public class DeviceControlActivity extends Activity {
     private SeekBar air_seekbar;
     private SeekBar mid_soil_seekbar;
     private SeekBar deep_soil_seekbar;
+    public ImageView air_dry_progress_hint;
+    public ImageView mid_dry_progress_hint;
+    public ImageView deep_dry_progress_hint;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -258,7 +268,9 @@ public class DeviceControlActivity extends Activity {
         mid_soil_seekbar.setMax(18000);
         deep_soil_seekbar.setMax(18000);
 
-
+        air_dry_progress_hint = (ImageView)findViewById(R.id.air_dry_ex_mark_img);
+        mid_dry_progress_hint = (ImageView)findViewById(R.id.mid_dry_ex_mark_img);
+        deep_dry_progress_hint = (ImageView)findViewById(R.id.deep__dry_ex_mark_img);
         //graph values
         series0 = new LineGraphSeries<DataPoint>();
         graph.addSeries(series0);
@@ -301,6 +313,9 @@ public class DeviceControlActivity extends Activity {
                 return true;
             }
         });
+
+
+
         /**************************************************************************************
          * MQTT set up
          */
@@ -419,7 +434,9 @@ public class DeviceControlActivity extends Activity {
             if (dataField == ch0DataField) {
                 //change the progrss bar of the air mositure
                 int progress_data = Integer.parseInt(parts[1]);
+                showExMark(progress_data, AIR_DRY_THRESHOLD, air_dry_progress_hint);
                 air_seekbar.setProgress(progress_data);
+
                 //new MultiplyTask().execute(progress_data);
                 saved_air_plot_list.add(parts[1]);
                 if (chx_plot_conti == CH0_PLOT_CONTI) {
@@ -427,6 +444,7 @@ public class DeviceControlActivity extends Activity {
                 }
             } else if (dataField == ch1DataField) {
                 int progress_data = Integer.parseInt(parts[1]);
+                showExMark(progress_data, MID_DRY_THRESHOLD, mid_dry_progress_hint);
                 mid_soil_seekbar.setProgress(progress_data);
                 saved_mid_plot_list.add(parts[1]);
                 if (chx_plot_conti == CH1_PLOT_CONTI) {
@@ -434,6 +452,7 @@ public class DeviceControlActivity extends Activity {
                 }
             } else if (dataField == ch2DataField) {
                 int progress_data = Integer.parseInt(parts[1]);
+                showExMark(progress_data, DEEP_DRY_THRESHOLD, deep_dry_progress_hint);
                 deep_soil_seekbar.setProgress(progress_data);
                 saved_deep_plot_list.add(parts[1]);
                 if (chx_plot_conti == CH2_PLOT_CONTI) {
@@ -763,6 +782,16 @@ public class DeviceControlActivity extends Activity {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void showExMark(int moist, int threshold, ImageView img_hint) {
+        if (moist > threshold) {
+            img_hint.setVisibility(VISIBLE);
+        }else {
+            img_hint.setVisibility(INVISIBLE);
+        }
+
+
     }
 
     //Async task once click the read button

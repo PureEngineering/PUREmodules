@@ -223,7 +223,7 @@
 
                     </RelativeLayout>
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/progress_air_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -241,9 +241,19 @@
                             android:layout_marginEnd="15dp"
                             android:layout_marginTop="16dp"
                             android:progressDrawable="@drawable/progressbar" />
-                    </LinearLayout>
 
-                    <LinearLayout
+                        <ImageView
+                            android:id="@+id/air_dry_ex_mark_img"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:src="@mipmap/ex_mark"
+                            android:visibility="invisible" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
                         android:id="@+id/progress_mid_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -262,9 +272,20 @@
                             android:layout_marginEnd="15dp"
                             android:layout_marginTop="16dp"
                             android:progressDrawable="@drawable/progressbar" />
-                    </LinearLayout>
 
-                    <LinearLayout
+                        <ImageView
+                            android:id="@+id/mid_dry_ex_mark_img"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_weight="1"
+                            android:src="@mipmap/ex_mark"
+                            android:visibility="invisible" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
                         android:id="@+id/progress_deep_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -283,7 +304,18 @@
                             android:layout_marginEnd="15dp"
                             android:layout_marginTop="16dp"
                             android:progressDrawable="@drawable/progressbar" />
-                    </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/deep__dry_ex_mark_img"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_weight="1"
+                            android:src="@mipmap/ex_mark"
+                            android:visibility="invisible" />
+
+                    </RelativeLayout>
 
                 </RelativeLayout>
 
