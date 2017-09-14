@@ -38,6 +38,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.SeekBar;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -135,6 +136,10 @@ public class DeviceControlActivity extends Activity {
     static String topicStr__adafruit = "wchen123∕f∕FDC2214";
     MqttAndroidClient client;
 
+    //seekbar variables
+    private SeekBar air_seekbar;
+    private SeekBar mid_soil_seekbar;
+    private SeekBar deep_soil_seekbar;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -279,11 +284,18 @@ public class DeviceControlActivity extends Activity {
         pref = getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
 
         graph = (GraphView) findViewById(R.id.graph);
+        air_seekbar = (SeekBar)findViewById(R.id.air_progress_bar);
+        mid_soil_seekbar = (SeekBar)findViewById(R.id.mid_progress_bar);
+        deep_soil_seekbar = (SeekBar)findViewById(R.id.deep_progress_bar);
+        air_seekbar.setMax(18000);
+        mid_soil_seekbar.setMax(18000);
+        deep_soil_seekbar.setMax(18000);
+        //air_seekbar.setProgress(100000);
         series0 = new LineGraphSeries<DataPoint>();
         graph.addSeries(series0);
         setGraphUI(graph);
 
-        //retrieve data
+        //retrieve data when app just opened
         get();
 
         final Intent intent = getIntent();
@@ -380,16 +392,23 @@ public class DeviceControlActivity extends Activity {
             String[] parts = data.split(" ");
             dataField.setText(parts[1]);
             if (dataField == mDataField) {
+                //change the progrss bar of the air mositure
+                int progress_data = Integer.parseInt(parts[1]);
+                air_seekbar.setProgress(progress_data);
                 saved_air_plot_list.add(parts[1]);
                 if (chx_plot_conti == CH0_PLOT_CONTI) {
                     plot(saved_air_plot_list, parts);
                 }
             } else if (dataField == ch1DataField) {
+                int progress_data = Integer.parseInt(parts[1]);
+                mid_soil_seekbar.setProgress(progress_data);
                 save_plot_list.add(parts[1]);
                 if (chx_plot_conti == CH1_PLOT_CONTI) {
                     plot(save_plot_list, parts);
                 }
             } else if (dataField == ch2DataField) {
+                int progress_data = Integer.parseInt(parts[1]);
+                deep_soil_seekbar.setProgress(progress_data);
                 saved_deep_plot_list.add(parts[1]);
                 if (chx_plot_conti == CH2_PLOT_CONTI) {
                     plot(saved_deep_plot_list, parts);
@@ -492,6 +511,9 @@ public class DeviceControlActivity extends Activity {
     public void onClickClear(View v){
         if(mBluetoothLeService != null) {
             clearPrefKeys();
+            air_seekbar.setProgress(0);
+            mid_soil_seekbar.setProgress(0);
+            deep_soil_seekbar.setProgress(0);
         }
     }
 
@@ -607,6 +629,7 @@ public class DeviceControlActivity extends Activity {
 
     public void plot(List<String> lists, String[] parts) {
         int ch1data =  Integer.parseInt(parts[1]);
+
       //  lists.add(parts[1]);
         autoZoom(graph, lists, X_axies);
         series0.appendData(new DataPoint(X_axies++, ch1data), false, 100);

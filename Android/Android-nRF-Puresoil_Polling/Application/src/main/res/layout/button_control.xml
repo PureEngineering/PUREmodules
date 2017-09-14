@@ -231,7 +231,7 @@
                         android:orientation="horizontal">
 
                         <SeekBar
-                            android:id="@+id/progressBar2"
+                            android:id="@+id/air_progress_bar"
                             style="?android:attr/progressBarStyleHorizontal"
                             android:layout_width="240dp"
                             android:layout_height="wrap_content"
@@ -239,7 +239,7 @@
                             android:layout_alignParentTop="true"
                             android:layout_marginEnd="15dp"
                             android:layout_marginTop="16dp"
-                            android:progressDrawable="@drawable/progressbar"/>
+                            android:progressDrawable="@drawable/progressbar" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -252,7 +252,7 @@
                         android:orientation="horizontal">
 
                         <SeekBar
-                            android:id="@+id/progressBar2"
+                            android:id="@+id/mid_progress_bar"
                             style="?android:attr/progressBarStyleHorizontal"
                             android:layout_width="240dp"
                             android:layout_height="wrap_content"
@@ -273,7 +273,7 @@
                         android:orientation="horizontal">
 
                         <SeekBar
-                            android:id="@+id/progressBar2"
+                            android:id="@+id/deep_progress_bar"
                             style="?android:attr/progressBarStyleHorizontal"
                             android:layout_width="240dp"
                             android:layout_height="wrap_content"
