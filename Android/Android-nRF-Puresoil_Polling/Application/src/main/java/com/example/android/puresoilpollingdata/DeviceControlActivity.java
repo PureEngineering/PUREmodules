@@ -27,9 +27,11 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -185,8 +187,8 @@ public class DeviceControlActivity extends Activity {
               //  mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH1_CHARACTERISTIC);
              else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
 
-
-                displayData(mDataField, intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+             //  new MultiplyTask(context).execute();
+                displayData(mDataField,   intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
                 displayData(ch1DataField, intent.getStringExtra(BluetoothLeService.CH1_DATA));
                 displayData(ch2DataField, intent.getStringExtra(BluetoothLeService.CH2_DATA));
 
@@ -342,7 +344,7 @@ public class DeviceControlActivity extends Activity {
 
         save();
 
-        Toast.makeText(getApplicationContext(), "onStop called", Toast.LENGTH_LONG).show();
+     //   Toast.makeText(getApplicationContext(), "onStop called", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -395,6 +397,7 @@ public class DeviceControlActivity extends Activity {
                 //change the progrss bar of the air mositure
                 int progress_data = Integer.parseInt(parts[1]);
                 air_seekbar.setProgress(progress_data);
+                //new MultiplyTask().execute(progress_data);
                 saved_air_plot_list.add(parts[1]);
                 if (chx_plot_conti == CH0_PLOT_CONTI) {
                     plot(saved_air_plot_list, parts);
@@ -418,11 +421,13 @@ public class DeviceControlActivity extends Activity {
     }
     private void displaySavedData(List<String> savedList) {
         int i;
+
         for(i=0; i < savedList.size(); i++) {
             series0.appendData(new DataPoint(i, Integer.parseInt(savedList.get(i))), false, 100);
         }
-        current_x_axis = i;
         autoZoom(graph, savedList, i);
+        current_x_axis = i;
+
     }
 
     private void service_init() {
@@ -503,8 +508,8 @@ public class DeviceControlActivity extends Activity {
         if(mBluetoothLeService != null) {
 
             mBluetoothLeService.writeCustomCharacteristic(0xAA);
-            readCharLocal();
-
+           // readCharLocal();
+            new MultiplyTask().execute();
         }
     }
 
@@ -524,9 +529,10 @@ public class DeviceControlActivity extends Activity {
             chx_plot_conti = CH0_PLOT_CONTI;
             if (   !(saved_air_plot_list.isEmpty())  ) {
                 series0.setColor(Color.WHITE);
-                autoZoom(graph, saved_air_plot_list, X_axies);
+
                 resetPlot();
                 displaySavedData(saved_air_plot_list);
+               // autoZoom(graph, saved_air_plot_list, X_axies);
                 X_axies = current_x_axis;
             }
 
@@ -541,9 +547,10 @@ public class DeviceControlActivity extends Activity {
 
             if (   !(save_plot_list.isEmpty())  ) {
                 series0.setColor(Color.BLUE);
-                autoZoom(graph, save_plot_list, X_axies);
+
                 resetPlot();
                 displaySavedData(save_plot_list);
+               // autoZoom(graph, save_plot_list, X_axies);
                 X_axies = current_x_axis;
             }
 
@@ -557,10 +564,13 @@ public class DeviceControlActivity extends Activity {
 
             if (   !(saved_deep_plot_list.isEmpty())  ) {
                 series0.setColor(Color.BLACK);
-                autoZoom(graph, saved_deep_plot_list, X_axies);
                 resetPlot();
                 displaySavedData(saved_deep_plot_list);
+              //  autoZoom(graph, saved_deep_plot_list, X_axies);
                 X_axies = current_x_axis;
+            }else {
+                series0.setColor(Color.BLACK);
+                setGraphUI(graph);
             }
 
         }
@@ -569,6 +579,7 @@ public class DeviceControlActivity extends Activity {
 
     public void readCharLocal() {
         SystemClock.sleep(500);
+       // new MultiplyTask().execute();
         mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH0_CHARACTERISTIC);
         SystemClock.sleep(500);
         mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH1_CHARACTERISTIC);
@@ -622,9 +633,9 @@ public class DeviceControlActivity extends Activity {
 
         //min value of x is zero, max vlaue of y is X_series counter
         graph.getViewport().setMinX(0);
-        graph.getViewport().setMaxX(max_x+3);
-        graph.getViewport().setMinY(min_y_int);
-        graph.getViewport().setMaxY(max_y_int);
+        graph.getViewport().setMaxX(max_x+3); //avoid having the X min and X max value to be the same
+        graph.getViewport().setMinY(min_y_int); //avoid having the Y min and Y max value to be the same
+        graph.getViewport().setMaxY(max_y_int+100);
     }
 
     public void plot(List<String> lists, String[] parts) {
@@ -692,7 +703,7 @@ public class DeviceControlActivity extends Activity {
         saved_deep_plot_list = new ArrayList<String>();
         //reset the x axis value
         X_axies = 0;
-
+        chx_plot_conti = 1;
         //reset the graph
         graph.removeAllSeries();
         series0.resetData(new DataPoint[] {});
@@ -706,10 +717,15 @@ public class DeviceControlActivity extends Activity {
         X_axies = 0;
 
         //reset the graph
-        graph.removeAllSeries();
+       // graph = (GraphView) findViewById(R.id.graph);
+       // graph.removeAllSeries();
         series0.resetData(new DataPoint[] {});
-        graph.addSeries(series0);
+       // series0 = new LineGraphSeries<DataPoint>();
+        //graph.addSeries(series0);
         //setGraphUI(graph);
+
+
+
     }
 
 
@@ -741,6 +757,33 @@ public class DeviceControlActivity extends Activity {
             } catch (MqttException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    //Async task
+    public class MultiplyTask extends AsyncTask<Void, Void, Void> {
+      //  private Context context;
+//        public MultiplyTask(Context context) {
+//            this.context = context;
+//        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Void s) {
+            super.onPostExecute(s);
+           // Toast.makeText(DeviceControlActivity.this, "seekbar air: " +s, Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... progress_data) {
+            //Intent intent = new Intent(context, DeviceControlActivity.class);
+           // displayData(mDataField,   intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+            //mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH0_CHARACTERISTIC);
+            readCharLocal();
+            return null;
         }
     }
 }

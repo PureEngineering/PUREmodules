@@ -21,12 +21,13 @@
                 android:layout_weight="0.69"
                 android:orientation="vertical"
                 android:layout_below="@+id/linearLayout3"
-                android:layout_alignParentStart="true">
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="12dp">
 
                 <com.jjoe64.graphview.GraphView
                     android:id="@+id/graph"
                     android:layout_width="match_parent"
-                    android:layout_height="259dp" />
+                    android:layout_height="231dp" />
             </LinearLayout>
 
             <LinearLayout
