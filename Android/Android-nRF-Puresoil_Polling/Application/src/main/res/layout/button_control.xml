@@ -84,6 +84,59 @@
                     android:layout_width="match_parent"
                     android:layout_height="212dp">
 
+                    <LinearLayout
+                        android:id="@+id/air_dry_text_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginEnd="31dp"
+                        android:layout_alignBottom="@+id/deep_soil_box"
+                        android:layout_alignParentEnd="true">
+
+                        <TextView
+                            android:id="@+id/air_dry_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="dry" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/air_moist_text_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_alignTop="@+id/air_dry_text_layout"
+                        android:layout_toStartOf="@+id/air_dry_text_layout"
+                        android:layout_marginEnd="65dp">
+
+                        <TextView
+                            android:id="@+id/air_moist_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignStart="@+id/air_moist_text_layout"
+                            android:layout_below="@+id/progress_air_layout"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:text="moist" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/air_wet_text_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_alignBottom="@+id/deep_soil_box"
+                        android:layout_alignStart="@+id/progress_deep_layout">
+
+                        <TextView
+                            android:id="@+id/air_wet_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="wet" />
+                    </LinearLayout>
+
                     <RelativeLayout
                         android:id="@+id/Air_Box"
                         android:layout_width="wrap_content"
@@ -96,19 +149,10 @@
                             android:layout_alignParentStart="true"
                             android:layout_alignParentTop="true"
                             android:background="@drawable/custom_button1"
+                            android:onClick="onClickAir"
                             android:text="@string/no_data"
-                            android:textColor="#FFFFFF"
-                            android:onClick="onClickAir"/>
-
-                        <TextView
-                            android:id="@+id/ch0_textView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignStart="@+id/data_value"
-                            android:layout_alignTop="@+id/data_value"
-                            android:layout_marginStart="10dp"
-                            android:text="Air:"
                             android:textColor="#FFFFFF" />
+
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -126,8 +170,8 @@
                             android:layout_alignParentBottom="true"
                             android:layout_alignParentStart="true"
                             android:background="@drawable/custom_button1"
-                            android:text="@string/no_data"
-                            android:onClick="onClickDeepSoil"/>
+                            android:onClick="onClickDeepSoil"
+                            android:text="@string/no_data" />
 
                         <TextView
                             android:id="@+id/ch2_textView"
@@ -142,8 +186,8 @@
                             android:id="@+id/mid_soil_box"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_alignParentStart="true">
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true">
 
                             <Button
                                 android:id="@+id/ch1_value"
@@ -152,9 +196,9 @@
                                 android:layout_alignParentStart="true"
                                 android:layout_centerVertical="true"
                                 android:background="@drawable/custom_button1"
+                                android:onClick="onClickMidSoil"
                                 android:text="@string/no_data"
-                                android:textColor="#1874cd"
-                                android:onClick="onClickMidSoil"/>
+                                android:textColor="#1874cd" />
 
                             <TextView
                                 android:id="@+id/ch1_textView"
@@ -166,7 +210,79 @@
                                 android:textColor="#FFFFFF" />
 
                         </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/ch0_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:text="Air:"
+                            android:textColor="#FFFFFF" />
+
                     </RelativeLayout>
+
+                    <LinearLayout
+                        android:id="@+id/progress_air_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        android:orientation="horizontal">
+
+                        <SeekBar
+                            android:id="@+id/progressBar2"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="240dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginEnd="15dp"
+                            android:layout_marginTop="16dp"
+                            android:progressDrawable="@drawable/progressbar"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/progress_mid_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@+id/Air_Box"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <SeekBar
+                            android:id="@+id/progressBar2"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="240dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginEnd="15dp"
+                            android:layout_marginTop="16dp"
+                            android:progressDrawable="@drawable/progressbar" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/progress_deep_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/deep_soil_box"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginBottom="11dp"
+                        android:orientation="horizontal">
+
+                        <SeekBar
+                            android:id="@+id/progressBar2"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="240dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginEnd="15dp"
+                            android:layout_marginTop="16dp"
+                            android:progressDrawable="@drawable/progressbar" />
+                    </LinearLayout>
 
                 </RelativeLayout>
 

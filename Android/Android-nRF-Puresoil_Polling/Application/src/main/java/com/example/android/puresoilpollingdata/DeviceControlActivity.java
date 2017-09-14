@@ -120,11 +120,21 @@ public class DeviceControlActivity extends Activity {
     private int current_x_axis = 0;
 
     //MQTT variables
+
+    /****hivmq broker info*****/
     static String MQTTHOST = "tcp://broker.hivemq.com:1883";
     static String USERNAME = "pure";
     static String PASSWORD = "123";
     static String topicStr = "puresoil/fdc2214";
+
+
+    /****adafruit broker info*****/
+    static String MQTTHOST_adafruit = "tcp://io.adafruit.com";
+    static String USERNAME_adafruit = "wchen123";
+    static String AIO_KEY_adafruit = "c1ac978c2feb47e69e8c53c4ec3d0b1a";
+    static String topicStr__adafruit = "wchen123∕f∕FDC2214";
     MqttAndroidClient client;
+
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -702,9 +712,9 @@ public class DeviceControlActivity extends Activity {
                 //    encodedPayload = payload.getBytes("UTF-8");
               //    MqttMessage message = new MqttMessage(encodedPayload);
                // message.setRetained(true);
-                client.publish(topic, airStr_pub.getBytes(), 1, false);
-                client.publish(topic, midSoilStr_pub.getBytes(), 1, false);
-                client.publish(topic, deepSoilStr_pub.getBytes(), 1, false);
+                client.publish(topic, airStr.getBytes(), 0, false);
+                client.publish(topic, midSoilStr_pub.getBytes(), 2, false);
+                client.publish(topic, deepSoilStr_pub.getBytes(), 2, false);
             } catch (MqttException e) {
                 e.printStackTrace();
             }
