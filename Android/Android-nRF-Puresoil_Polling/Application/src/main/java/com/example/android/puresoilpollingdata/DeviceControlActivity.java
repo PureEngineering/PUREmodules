@@ -37,6 +37,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -81,7 +82,7 @@ public class DeviceControlActivity extends Activity {
 
     private Button btnRead;
     private TextView mConnectionState;
-    private TextView mDataField;
+    private TextView ch0DataField;
     private TextView ch1DataField;
     private TextView ch2DataField;
     private String mDeviceName;
@@ -99,16 +100,15 @@ public class DeviceControlActivity extends Activity {
     //graph variables
     LineGraphSeries<DataPoint> series0;
     private int X_axies = 0;
-    // Code to manage Service lifecycle.
 
     //save the application state varibales
     public SharedPreferences pref;
-    List<String> save_plot_list = new ArrayList<String>();
+    List<String> saved_mid_plot_list = new ArrayList<String>();
     List<String> saved_air_plot_list = new ArrayList<String>();
     List<String> saved_deep_plot_list = new ArrayList<String>();
-    int saved_x = 0;
-   // public SharedPreferences.Editor prefsEditor;
-    public static final String ARRAY_KEY = "store_array_key1";
+
+   //keys for the stored application state
+    public static final String ARRAY_KEY_MID = "store_array_key1";
     public static final String ARRAY_KEY_AIR = "store_array_key_air1";
     public static final String ARRAY_KEY_DEEP = "store_array_key_deep";
     public static final String INT_KEY = "store_x_axies_key";
@@ -116,6 +116,7 @@ public class DeviceControlActivity extends Activity {
     boolean flag = true;
 
     //DIFFERENT PLOTS, AIR, MID, DEEP
+    //chx_plot_conti is used to determine whether to continue plot on Air, Mid soil or Deep soil graph
     private int chx_plot_conti = 1;
     private final int CH0_PLOT_CONTI = 0;
     private final int CH1_PLOT_CONTI = 1;
@@ -125,17 +126,22 @@ public class DeviceControlActivity extends Activity {
     //MQTT variables
 
     /****hivmq broker info*****/
-    static String MQTTHOST = "tcp://broker.hivemq.com:1883";
-    static String USERNAME = "pure";
-    static String PASSWORD = "123";
+//    static String MQTTHOST = "tcp://broker.hivemq.com:1883";
+//    static String USERNAME = "pure";
+//    static String PASSWORD = "123";
+//    static String topicStr = "puresoil/fdc2214";
+
+    /****cloudMQTT broker info*****/
+    static String MQTTHOST = "tcp://m11.cloudmqtt.com:14557";
+    static String USERNAME = "bcklytag";
+    static String PASSWORD = "SV2vVSyRNo2y";
     static String topicStr = "puresoil/fdc2214";
 
-
     /****adafruit broker info*****/
-    static String MQTTHOST_adafruit = "tcp://io.adafruit.com";
-    static String USERNAME_adafruit = "wchen123";
-    static String AIO_KEY_adafruit = "c1ac978c2feb47e69e8c53c4ec3d0b1a";
-    static String topicStr__adafruit = "wchen123∕f∕FDC2214";
+   // static String MQTTHOST = "tcp://io.adafruit.com";
+   // static String USERNAME = "wchen123";
+   // static String PASSWORD = "c1ac978c2feb47e69e8c53c4ec3d0b1a";
+   // static String topicStr = "wchen123∕f∕FDC2214";
     MqttAndroidClient client;
 
     //seekbar variables
@@ -181,14 +187,10 @@ public class DeviceControlActivity extends Activity {
                 updateConnectionState(R.string.disconnected);
                 invalidateOptionsMenu();
                 clearUI();
-            } //else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
-               // mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH0_CHARACTERISTIC);
-               // SystemClock.sleep(500);
-              //  mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH1_CHARACTERISTIC);
-             else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
+            } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
 
-             //  new MultiplyTask(context).execute();
-                displayData(mDataField,   intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+                //display the values from each channel to the textView
+                displayData(ch0DataField,   intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
                 displayData(ch1DataField, intent.getStringExtra(BluetoothLeService.CH1_DATA));
                 displayData(ch2DataField, intent.getStringExtra(BluetoothLeService.CH2_DATA));
 
@@ -234,8 +236,8 @@ public class DeviceControlActivity extends Activity {
 //    };
 
     private void clearUI() {
-        //mGattServicesList.setAdapter((SimpleExpandableListAdapter) null);
-        mDataField.setText(R.string.no_data);
+
+        ch0DataField.setText(R.string.no_data);
         ch1DataField.setText(R.string.no_data);
         ch2DataField.setText(R.string.no_data);
     }
@@ -245,12 +247,66 @@ public class DeviceControlActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.button_control);
 
+        //for saveing data when the app is closed
+        pref = getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
+
+        graph = (GraphView) findViewById(R.id.graph);
+        air_seekbar = (SeekBar)findViewById(R.id.air_progress_bar);
+        mid_soil_seekbar = (SeekBar)findViewById(R.id.mid_progress_bar);
+        deep_soil_seekbar = (SeekBar)findViewById(R.id.deep_progress_bar);
+        air_seekbar.setMax(18000);
+        mid_soil_seekbar.setMax(18000);
+        deep_soil_seekbar.setMax(18000);
+
+
+        //graph values
+        series0 = new LineGraphSeries<DataPoint>();
+        graph.addSeries(series0);
+        setGraphUI(graph);
+
+        //retrieve data when app just opened
+        get();
+
+        final Intent intent = getIntent();
+        mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
+        mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+
+        ch0DataField = (TextView) findViewById(R.id.data_value);
+        ch1DataField = (TextView) findViewById(R.id.ch1_value);
+        ch2DataField = (TextView) findViewById(R.id.ch2_value);
+       // btnRead = (Button) findViewById(R.id.button);
+
+        getActionBar().setTitle(mDeviceName);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        service_init();
+
+        //prevent the thumb on the seek bar from moving while touching it
+        air_seekbar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
+
+        mid_soil_seekbar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
+        deep_soil_seekbar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
         /**************************************************************************************
          * MQTT set up
          */
         String clientId = MqttClient.generateClientId();
-         client = new MqttAndroidClient(this.getApplicationContext(), MQTTHOST,
-                        clientId);
+        client = new MqttAndroidClient(this.getApplicationContext(), MQTTHOST,
+                clientId);
 
         MqttConnectOptions options = new MqttConnectOptions();
         options.setUserName(USERNAME);
@@ -280,39 +336,6 @@ public class DeviceControlActivity extends Activity {
         /****
          * MQTT set up end
          ************************************************************************************************/
-
-
-        //for saveing data when the app is closed
-        pref = getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
-
-        graph = (GraphView) findViewById(R.id.graph);
-        air_seekbar = (SeekBar)findViewById(R.id.air_progress_bar);
-        mid_soil_seekbar = (SeekBar)findViewById(R.id.mid_progress_bar);
-        deep_soil_seekbar = (SeekBar)findViewById(R.id.deep_progress_bar);
-        air_seekbar.setMax(18000);
-        mid_soil_seekbar.setMax(18000);
-        deep_soil_seekbar.setMax(18000);
-        //air_seekbar.setProgress(100000);
-        series0 = new LineGraphSeries<DataPoint>();
-        graph.addSeries(series0);
-        setGraphUI(graph);
-
-        //retrieve data when app just opened
-        get();
-
-        final Intent intent = getIntent();
-        mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
-        mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
-
-        mDataField = (TextView) findViewById(R.id.data_value);
-        ch1DataField = (TextView) findViewById(R.id.ch1_value);
-        ch2DataField = (TextView) findViewById(R.id.ch2_value);
-       // btnRead = (Button) findViewById(R.id.button);
-
-        getActionBar().setTitle(mDeviceName);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        service_init();
     }
 
     @Override
@@ -342,9 +365,9 @@ public class DeviceControlActivity extends Activity {
     protected void onStop() {
         super.onStop();  // Always call the superclass method first
 
+        //store all the data when the app closes
         save();
 
-     //   Toast.makeText(getApplicationContext(), "onStop called", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -387,13 +410,13 @@ public class DeviceControlActivity extends Activity {
         });
     }
 
+    //parse the data received from BLE, store it in a list then plot it when it is being called
     private void displayData(TextView dataField, String data) {
-        int min_y_value = 0;
-        int current_y = 0;
+
         if (data != null) {
             String[] parts = data.split(" ");
             dataField.setText(parts[1]);
-            if (dataField == mDataField) {
+            if (dataField == ch0DataField) {
                 //change the progrss bar of the air mositure
                 int progress_data = Integer.parseInt(parts[1]);
                 air_seekbar.setProgress(progress_data);
@@ -405,9 +428,9 @@ public class DeviceControlActivity extends Activity {
             } else if (dataField == ch1DataField) {
                 int progress_data = Integer.parseInt(parts[1]);
                 mid_soil_seekbar.setProgress(progress_data);
-                save_plot_list.add(parts[1]);
+                saved_mid_plot_list.add(parts[1]);
                 if (chx_plot_conti == CH1_PLOT_CONTI) {
-                    plot(save_plot_list, parts);
+                    plot(saved_mid_plot_list, parts);
                 }
             } else if (dataField == ch2DataField) {
                 int progress_data = Integer.parseInt(parts[1]);
@@ -419,6 +442,8 @@ public class DeviceControlActivity extends Activity {
             }
         }
     }
+
+    //display the data when you click on the buttons (Air, Mid soil, Deep soil)
     private void displaySavedData(List<String> savedList) {
         int i;
 
@@ -504,7 +529,7 @@ public class DeviceControlActivity extends Activity {
         return intentFilter;
     }
 
-    public void onClickWrite(View v){
+    public void onClickRead(View v){
         if(mBluetoothLeService != null) {
 
             mBluetoothLeService.writeCustomCharacteristic(0xAA);
@@ -525,14 +550,11 @@ public class DeviceControlActivity extends Activity {
     public void onClickAir(View v){
         if(mBluetoothLeService != null) {
 
-            //ShowAirPlotFlag = true;
             chx_plot_conti = CH0_PLOT_CONTI;
             if (   !(saved_air_plot_list.isEmpty())  ) {
                 series0.setColor(Color.WHITE);
-
                 resetPlot();
                 displaySavedData(saved_air_plot_list);
-               // autoZoom(graph, saved_air_plot_list, X_axies);
                 X_axies = current_x_axis;
             }
 
@@ -542,15 +564,11 @@ public class DeviceControlActivity extends Activity {
     //click here to show the mid soil graph on the UI.
     public void onClickMidSoil(View v){
         if(mBluetoothLeService != null) {
-           // ShowAirPlotFlag = false;
             chx_plot_conti = CH1_PLOT_CONTI;
-
-            if (   !(save_plot_list.isEmpty())  ) {
+            if (   !(saved_mid_plot_list.isEmpty())  ) {
                 series0.setColor(Color.BLUE);
-
                 resetPlot();
-                displaySavedData(save_plot_list);
-               // autoZoom(graph, save_plot_list, X_axies);
+                displaySavedData(saved_mid_plot_list);
                 X_axies = current_x_axis;
             }
 
@@ -559,14 +577,11 @@ public class DeviceControlActivity extends Activity {
 
     public void onClickDeepSoil(View v){
         if(mBluetoothLeService != null) {
-            // ShowAirPlotFlag = false;
             chx_plot_conti = CH2_PLOT_CONTI;
-
             if (   !(saved_deep_plot_list.isEmpty())  ) {
                 series0.setColor(Color.BLACK);
                 resetPlot();
                 displaySavedData(saved_deep_plot_list);
-              //  autoZoom(graph, saved_deep_plot_list, X_axies);
                 X_axies = current_x_axis;
             }else {
                 series0.setColor(Color.BLACK);
@@ -579,7 +594,6 @@ public class DeviceControlActivity extends Activity {
 
     public void readCharLocal() {
         SystemClock.sleep(500);
-       // new MultiplyTask().execute();
         mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH0_CHARACTERISTIC);
         SystemClock.sleep(500);
         mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH1_CHARACTERISTIC);
@@ -595,10 +609,7 @@ public class DeviceControlActivity extends Activity {
         graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
         graph.getLegendRenderer().setTextSize(20);
         Viewport viewport = graph.getViewport();
-//        viewport.setMinX(0);
-//        viewport.setMaxX(10);
-//        viewport.setMinY(0);
-//        viewport.setMaxY(10);
+
         // activate horizontal zooming and scrolling
         viewport.setScalable(true);
         // activate horizontal scrolling
@@ -610,9 +621,7 @@ public class DeviceControlActivity extends Activity {
         graph.getGridLabelRenderer().setHorizontalAxisTitle("Click Count");
         graph.getGridLabelRenderer().setVerticalAxisTitle("Moisture");
         graph.getGridLabelRenderer().setPadding(56);
-       // series0.setDrawBackground(true);
-        //viewport.setBackgroundColor(android.R.color.holo_green_light);
-        //series0.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+
         series0.setDrawDataPoints(true);
         series0.setDataPointsRadius(12);
         graph.setBackgroundColor(Color.argb(50, 50, 0, 200));
@@ -651,13 +660,14 @@ public class DeviceControlActivity extends Activity {
         Gson gson_air = new Gson();
         Gson gson_deep = new Gson();
 
-        String json = gson.toJson(save_plot_list);
+        //convert all the arrays into a string
+        String json = gson.toJson(saved_mid_plot_list);
         String json_air = gson_air.toJson(saved_air_plot_list);
         String json_deep = gson_deep.toJson(saved_deep_plot_list);
 
-        //saves the array
+        //saves the array using shared preference key, value pairs
         SharedPreferences.Editor prefsEditor = pref.edit();
-        prefsEditor.putString(ARRAY_KEY, json);
+        prefsEditor.putString(ARRAY_KEY_MID, json);
         prefsEditor.putString(ARRAY_KEY_AIR, json_air);
         prefsEditor.putString(ARRAY_KEY_DEEP, json_deep);
         //saves the x axeies
@@ -667,38 +677,39 @@ public class DeviceControlActivity extends Activity {
     }
 
     public void get() {
-//        prefsEditor.clear();
-//        prefsEditor.commit();
-        //List<String> save_plot_list = new ArrayList<String>();
+
         Gson gson = new Gson();
-        if (pref.contains(ARRAY_KEY) && pref.contains(ARRAY_KEY_AIR)) {
+        if (pref.contains(ARRAY_KEY_MID) && pref.contains(ARRAY_KEY_AIR)) {
+            //retrive all the values using the keys
             X_axies = pref.getInt(INT_KEY, 0);
-            String json = pref.getString(ARRAY_KEY, "");
+            String json = pref.getString(ARRAY_KEY_MID, "");
             String json_air = pref.getString(ARRAY_KEY_AIR, "");
             String json_deep = pref.getString(ARRAY_KEY_DEEP, "");
-           // List<String> my_saved_plots = gson.fromJson(json, List.class);
-           // List<String> my_saved__air_plots = gson.fromJson(json_air, List.class);
-            save_plot_list = gson.fromJson(json, List.class);
+
+            //convert all the Strings back into arrays again
+            saved_mid_plot_list = gson.fromJson(json, List.class);
             saved_air_plot_list = gson.fromJson(json_air, List.class);
             saved_deep_plot_list = gson.fromJson(json_deep, List.class);
-            for (String temp : save_plot_list) {
+            for (String temp : saved_mid_plot_list) {
                 Log.d("open", temp + " - " + "x=" + X_axies);
             }
-            if (   !(save_plot_list.isEmpty())  ) {
-                displaySavedData(save_plot_list);
+            if (   !(saved_mid_plot_list.isEmpty())  ) {
+                displaySavedData(saved_mid_plot_list);
             }
         }
     }
+
+    //reset the plot, shared preference and all the values
     public void clearPrefKeys() {
 
         SharedPreferences.Editor editor_clear = pref.edit();
-        if (pref.contains(ARRAY_KEY) || pref.contains(ARRAY_KEY)) {
+        if (pref.contains(ARRAY_KEY_MID) || pref.contains(ARRAY_KEY_DEEP) || pref.contains(ARRAY_KEY_AIR)) {
             editor_clear.clear();
             editor_clear.commit();
 
         }
         //reset the array list
-        save_plot_list = new ArrayList<String>();
+        saved_mid_plot_list = new ArrayList<String>();
         saved_air_plot_list = new ArrayList<String>();
         saved_deep_plot_list = new ArrayList<String>();
         //reset the x axis value
@@ -712,17 +723,11 @@ public class DeviceControlActivity extends Activity {
     }
 
     public void resetPlot() {
-      //  lists = new ArrayList<String>();
-        //reset the x axis value
         X_axies = 0;
-
-        //reset the graph
-       // graph = (GraphView) findViewById(R.id.graph);
-       // graph.removeAllSeries();
+        graph.removeAllSeries();
         series0.resetData(new DataPoint[] {});
-       // series0 = new LineGraphSeries<DataPoint>();
-        //graph.addSeries(series0);
-        //setGraphUI(graph);
+        graph.addSeries(series0);
+
 
 
 
@@ -737,21 +742,21 @@ public class DeviceControlActivity extends Activity {
         String topic = topicStr;
         String payload = "i got the message";
         String airStr = TextUtils.join(", ", saved_air_plot_list);
-        String midSoilStr = TextUtils.join(", ", save_plot_list);
+        String midSoilStr = TextUtils.join(", ", saved_mid_plot_list);
         String deepSoilStr = TextUtils.join(", ", saved_deep_plot_list);
 
         String airStr_pub = "Air Moisture: " + airStr;
         String midSoilStr_pub = "Mid Soil Moisture: " + midSoilStr;
         String deepSoilStr_pub = "Deep Soil Moisture: " + deepSoilStr;
 
-        if(save_plot_list.isEmpty() && saved_deep_plot_list.isEmpty() && saved_air_plot_list.isEmpty()) {
+        if(saved_mid_plot_list.isEmpty() && saved_deep_plot_list.isEmpty() && saved_air_plot_list.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Cannot publish, all array are empty!", Toast.LENGTH_LONG).show();
         } else {
             try {
                 //    encodedPayload = payload.getBytes("UTF-8");
               //    MqttMessage message = new MqttMessage(encodedPayload);
                // message.setRetained(true);
-                client.publish(topic, airStr.getBytes(), 0, false);
+                client.publish(topic, airStr_pub.getBytes(), 0, false);
                 client.publish(topic, midSoilStr_pub.getBytes(), 2, false);
                 client.publish(topic, deepSoilStr_pub.getBytes(), 2, false);
             } catch (MqttException e) {
@@ -760,12 +765,9 @@ public class DeviceControlActivity extends Activity {
         }
     }
 
-    //Async task
+    //Async task once click the read button
     public class MultiplyTask extends AsyncTask<Void, Void, Void> {
-      //  private Context context;
-//        public MultiplyTask(Context context) {
-//            this.context = context;
-//        }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -774,14 +776,11 @@ public class DeviceControlActivity extends Activity {
         @Override
         protected void onPostExecute(Void s) {
             super.onPostExecute(s);
-           // Toast.makeText(DeviceControlActivity.this, "seekbar air: " +s, Toast.LENGTH_LONG).show();
         }
 
         @Override
         protected Void doInBackground(Void... progress_data) {
-            //Intent intent = new Intent(context, DeviceControlActivity.class);
-           // displayData(mDataField,   intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
-            //mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH0_CHARACTERISTIC);
+            //read gatt characteristics
             readCharLocal();
             return null;
         }

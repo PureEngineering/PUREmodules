@@ -64,7 +64,7 @@
                         android:layout_marginEnd="24dp"
                         android:layout_toStartOf="@+id/bt_clear"
                         android:background="@drawable/custom_button1"
-                        android:onClick="onClickWrite"
+                        android:onClick="onClickRead"
                         android:text="Read"
                         android:textSize="10sp" />
 
