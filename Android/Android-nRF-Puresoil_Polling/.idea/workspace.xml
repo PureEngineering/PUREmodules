@@ -44,11 +44,11 @@
       <file leaf-file-name="DeviceControlActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="400">
-              <caret line="274" column="27" selection-start-line="274" selection-start-column="27" selection-end-line="274" selection-end-column="27" />
+            <state relative-caret-position="468">
+              <caret line="808" column="9" selection-start-line="808" selection-start-column="9" selection-end-line="808" selection-end-column="9" />
               <folding>
-                <element signature="e#12717#12893#0" expanded="true" />
-                <element signature="e#12892#12893#0" expanded="true" />
+                <element signature="e#13266#13442#0" expanded="true" />
+                <element signature="e#13441#13442#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -58,8 +58,12 @@
         <entry file="file://$PROJECT_DIR$/Application/src/main/res/layout/button_control.xml">
           <provider editor-type-id="text-editor">
             <state relative-caret-position="1736">
-              <caret line="288" column="0" selection-start-line="288" selection-start-column="0" selection-end-line="288" selection-end-column="0" />
-              <folding />
+              <caret line="300" column="0" selection-start-line="300" selection-start-column="0" selection-end-line="300" selection-end-column="0" />
+              <folding>
+                <element signature="e#6295#6312#0" expanded="false" />
+                <element signature="e#7335#7352#0" expanded="false" />
+                <element signature="e#8745#8762#0" expanded="false" />
+              </folding>
             </state>
           </provider>
           <provider selected="true" editor-type-id="android-designer2">
@@ -1734,6 +1738,28 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="mipmap" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ex_mark.png" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResGroupNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Android-nRF-Puresoil_Polling" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Application" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="drawable" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
             </PATH_ELEMENT>
@@ -2269,13 +2295,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
-          <line>584</line>
+          <line>597</line>
           <properties />
           <option name="timeStamp" value="101" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java</url>
-          <line>471</line>
+          <line>483</line>
           <properties />
           <option name="timeStamp" value="115" />
         </line-breakpoint>
@@ -2298,8 +2324,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#12717#12893#0" expanded="true" />
-            <element signature="e#12892#12893#0" expanded="true" />
+            <element signature="e#13266#13442#0" expanded="true" />
+            <element signature="e#13441#13442#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2392,8 +2418,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#12717#12893#0" expanded="true" />
-            <element signature="e#12892#12893#0" expanded="true" />
+            <element signature="e#13266#13442#0" expanded="true" />
+            <element signature="e#13441#13442#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2664,8 +2690,12 @@
     <entry file="file://$PROJECT_DIR$/Application/src/main/res/layout/button_control.xml">
       <provider editor-type-id="text-editor">
         <state relative-caret-position="1736">
-          <caret line="288" column="0" selection-start-line="288" selection-start-column="0" selection-end-line="288" selection-end-column="0" />
-          <folding />
+          <caret line="300" column="0" selection-start-line="300" selection-start-column="0" selection-end-line="300" selection-end-column="0" />
+          <folding>
+            <element signature="e#6295#6312#0" expanded="false" />
+            <element signature="e#7335#7352#0" expanded="false" />
+            <element signature="e#8745#8762#0" expanded="false" />
+          </folding>
         </state>
       </provider>
       <provider selected="true" editor-type-id="android-designer2">
@@ -2674,11 +2704,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/puresoilpollingdata/DeviceControlActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="274" column="27" selection-start-line="274" selection-start-column="27" selection-end-line="274" selection-end-column="27" />
+        <state relative-caret-position="468">
+          <caret line="808" column="9" selection-start-line="808" selection-start-column="9" selection-end-line="808" selection-end-column="9" />
           <folding>
-            <element signature="e#12717#12893#0" expanded="true" />
-            <element signature="e#12892#12893#0" expanded="true" />
+            <element signature="e#13266#13442#0" expanded="true" />
+            <element signature="e#13441#13442#0" expanded="true" />
           </folding>
         </state>
       </provider>

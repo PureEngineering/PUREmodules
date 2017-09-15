@@ -122,22 +122,6 @@
                             android:text="moist" />
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/air_wet_text_layout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_alignBottom="@+id/deep_soil_box"
-                        android:layout_alignStart="@+id/progress_deep_layout">
-
-                        <TextView
-                            android:id="@+id/air_wet_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="wet" />
-                    </LinearLayout>
-
                     <RelativeLayout
                         android:id="@+id/Air_Box"
                         android:layout_width="wrap_content"
@@ -242,14 +226,28 @@
                             android:layout_marginTop="16dp"
                             android:progressDrawable="@drawable/progressbar" />
 
-                        <ImageView
-                            android:id="@+id/air_dry_ex_mark_img"
+                        <FrameLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:src="@mipmap/ex_mark"
-                            android:visibility="invisible" />
+                            android:layout_alignTop="@+id/air_progress_bar"
+                            android:layout_alignParentEnd="true">
+
+                            <ImageView
+                                android:id="@+id/air_wet_ex_mark_img"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@mipmap/wet_warning"
+                                android:visibility="invisible" />
+
+                            <ImageView
+                                android:id="@+id/air_dry_ex_mark_img"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:src="@mipmap/ex_mark"
+                                android:visibility="invisible" />
+                        </FrameLayout>
 
                     </RelativeLayout>
 
@@ -273,15 +271,29 @@
                             android:layout_marginTop="16dp"
                             android:progressDrawable="@drawable/progressbar" />
 
-                        <ImageView
-                            android:id="@+id/mid_dry_ex_mark_img"
+                        <FrameLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:layout_weight="1"
-                            android:src="@mipmap/ex_mark"
-                            android:visibility="invisible" />
+                            android:layout_alignTop="@+id/mid_progress_bar"
+                            android:layout_alignParentEnd="true">
+
+                            <ImageView
+                                android:id="@+id/mid_wet_ex_mark_img"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@mipmap/wet_warning"
+                                android:visibility="invisible" />
+
+                            <ImageView
+                                android:id="@+id/mid_dry_ex_mark_img"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:layout_weight="1"
+                                android:src="@mipmap/ex_mark"
+                                android:visibility="invisible" />
+                        </FrameLayout>
 
                     </RelativeLayout>
 
@@ -305,6 +317,21 @@
                             android:layout_marginTop="16dp"
                             android:progressDrawable="@drawable/progressbar" />
 
+                    </RelativeLayout>
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/air_dry_text_layout"
+                        android:layout_alignParentEnd="true">
+
+                        <ImageView
+                            android:id="@+id/deep_wet_ex_mark_img"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@mipmap/wet_warning"
+                            android:visibility="invisible" />
+
                         <ImageView
                             android:id="@+id/deep__dry_ex_mark_img"
                             android:layout_width="wrap_content"
@@ -314,10 +341,30 @@
                             android:layout_weight="1"
                             android:src="@mipmap/ex_mark"
                             android:visibility="invisible" />
+                    </FrameLayout>
 
-                    </RelativeLayout>
+                    <TextView
+                        android:id="@+id/air_wet_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/deep_soil_box"
+                        android:layout_marginStart="36dp"
+                        android:layout_toEndOf="@+id/deep_soil_box"
+                        android:layout_weight="1"
+                        android:text="wet" />
 
                 </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/air_wet_text_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="142dp"
+                android:orientation="horizontal">
 
             </LinearLayout>
 

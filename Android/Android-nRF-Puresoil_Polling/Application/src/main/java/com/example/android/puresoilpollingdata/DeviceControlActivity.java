@@ -87,6 +87,9 @@ public class DeviceControlActivity extends Activity {
     public static final int AIR_DRY_THRESHOLD = 3000;
     public static final int MID_DRY_THRESHOLD = 8000;
     public static final int DEEP_DRY_THRESHOLD = 5000;
+    public static final int AIR_WET_THRESHOLD = 500;
+    public static final int MID_WET_THRESHOLD = 3000;
+    public static final int DEEP_WET_THRESHOLD = 2000;
     private Button btnRead;
     private TextView mConnectionState;
     private TextView ch0DataField;
@@ -155,9 +158,14 @@ public class DeviceControlActivity extends Activity {
     private SeekBar air_seekbar;
     private SeekBar mid_soil_seekbar;
     private SeekBar deep_soil_seekbar;
+
     public ImageView air_dry_progress_hint;
     public ImageView mid_dry_progress_hint;
     public ImageView deep_dry_progress_hint;
+
+    public ImageView air_wet_progress_hint;
+    public ImageView mid_wet_progress_hint;
+    public ImageView deep_wet_progress_hint;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -271,6 +279,10 @@ public class DeviceControlActivity extends Activity {
         air_dry_progress_hint = (ImageView)findViewById(R.id.air_dry_ex_mark_img);
         mid_dry_progress_hint = (ImageView)findViewById(R.id.mid_dry_ex_mark_img);
         deep_dry_progress_hint = (ImageView)findViewById(R.id.deep__dry_ex_mark_img);
+
+        air_wet_progress_hint = (ImageView)findViewById(R.id.air_wet_ex_mark_img);
+        mid_wet_progress_hint = (ImageView)findViewById(R.id.mid_wet_ex_mark_img);
+        deep_wet_progress_hint = (ImageView)findViewById(R.id.deep_wet_ex_mark_img);
         //graph values
         series0 = new LineGraphSeries<DataPoint>();
         graph.addSeries(series0);
@@ -434,7 +446,7 @@ public class DeviceControlActivity extends Activity {
             if (dataField == ch0DataField) {
                 //change the progrss bar of the air mositure
                 int progress_data = Integer.parseInt(parts[1]);
-                showExMark(progress_data, AIR_DRY_THRESHOLD, air_dry_progress_hint);
+                showExMark(progress_data, AIR_DRY_THRESHOLD, AIR_WET_THRESHOLD, air_dry_progress_hint, air_wet_progress_hint);
                 air_seekbar.setProgress(progress_data);
 
                 //new MultiplyTask().execute(progress_data);
@@ -444,7 +456,7 @@ public class DeviceControlActivity extends Activity {
                 }
             } else if (dataField == ch1DataField) {
                 int progress_data = Integer.parseInt(parts[1]);
-                showExMark(progress_data, MID_DRY_THRESHOLD, mid_dry_progress_hint);
+                showExMark(progress_data, MID_DRY_THRESHOLD,MID_WET_THRESHOLD, mid_dry_progress_hint, mid_wet_progress_hint);
                 mid_soil_seekbar.setProgress(progress_data);
                 saved_mid_plot_list.add(parts[1]);
                 if (chx_plot_conti == CH1_PLOT_CONTI) {
@@ -452,7 +464,7 @@ public class DeviceControlActivity extends Activity {
                 }
             } else if (dataField == ch2DataField) {
                 int progress_data = Integer.parseInt(parts[1]);
-                showExMark(progress_data, DEEP_DRY_THRESHOLD, deep_dry_progress_hint);
+                showExMark(progress_data, DEEP_DRY_THRESHOLD,DEEP_WET_THRESHOLD, deep_dry_progress_hint, deep_wet_progress_hint);
                 deep_soil_seekbar.setProgress(progress_data);
                 saved_deep_plot_list.add(parts[1]);
                 if (chx_plot_conti == CH2_PLOT_CONTI) {
@@ -554,6 +566,7 @@ public class DeviceControlActivity extends Activity {
             mBluetoothLeService.writeCustomCharacteristic(0xAA);
            // readCharLocal();
             new MultiplyTask().execute();
+
         }
     }
 
@@ -784,11 +797,15 @@ public class DeviceControlActivity extends Activity {
         }
     }
 
-    public void showExMark(int moist, int threshold, ImageView img_hint) {
-        if (moist > threshold) {
-            img_hint.setVisibility(VISIBLE);
-        }else {
-            img_hint.setVisibility(INVISIBLE);
+    public void showExMark(int moist, int dry_threshold,int wet_threshold, ImageView img_dry_hint, ImageView img_wet_hint) {
+        if (moist > dry_threshold) {
+            img_dry_hint.setVisibility(VISIBLE);
+        }else if (moist < wet_threshold) {
+            img_wet_hint.setVisibility(VISIBLE);
+        }else
+         {
+            img_dry_hint.setVisibility(INVISIBLE);
+             img_wet_hint.setVisibility(INVISIBLE);
         }
 
 
