@@ -84,12 +84,12 @@ public class DeviceControlActivity extends Activity {
 
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
-    public static final int AIR_DRY_THRESHOLD = 3000;
-    public static final int MID_DRY_THRESHOLD = 8000;
-    public static final int DEEP_DRY_THRESHOLD = 5000;
-    public static final int AIR_WET_THRESHOLD = 500;
+    public static final int AIR_DRY_THRESHOLD = 10983;
+    public static final int MID_DRY_THRESHOLD = 5000;
+    public static final int DEEP_DRY_THRESHOLD = 15000;
+    public static final int AIR_WET_THRESHOLD = 5000;
     public static final int MID_WET_THRESHOLD = 3000;
-    public static final int DEEP_WET_THRESHOLD = 2000;
+    public static final int DEEP_WET_THRESHOLD = 10000;
     private Button btnRead;
     private TextView mConnectionState;
     private TextView ch0DataField;
@@ -566,7 +566,8 @@ public class DeviceControlActivity extends Activity {
             mBluetoothLeService.writeCustomCharacteristic(0xAA);
            // readCharLocal();
             new MultiplyTask().execute();
-
+            new MultiplyTask1().execute();
+            new MultiplyTask2().execute();
         }
     }
 
@@ -580,6 +581,7 @@ public class DeviceControlActivity extends Activity {
     }
 
     public void onClickAir(View v){
+        graph.getGridLabelRenderer().setVerticalAxisTitle("Air Moisture");
         if(mBluetoothLeService != null) {
 
             chx_plot_conti = CH0_PLOT_CONTI;
@@ -595,6 +597,7 @@ public class DeviceControlActivity extends Activity {
 
     //click here to show the mid soil graph on the UI.
     public void onClickMidSoil(View v){
+        graph.getGridLabelRenderer().setVerticalAxisTitle("Mid Soil Moisture");
         if(mBluetoothLeService != null) {
             chx_plot_conti = CH1_PLOT_CONTI;
             if (   !(saved_mid_plot_list.isEmpty())  ) {
@@ -608,6 +611,7 @@ public class DeviceControlActivity extends Activity {
     }
 
     public void onClickDeepSoil(View v){
+        graph.getGridLabelRenderer().setVerticalAxisTitle("Deep Soil Moisture");
         if(mBluetoothLeService != null) {
             chx_plot_conti = CH2_PLOT_CONTI;
             if (   !(saved_deep_plot_list.isEmpty())  ) {
@@ -651,7 +655,7 @@ public class DeviceControlActivity extends Activity {
         // activate vertical scrolling
         viewport.setScrollableY(true);
         graph.getGridLabelRenderer().setHorizontalAxisTitle("Click Count");
-        graph.getGridLabelRenderer().setVerticalAxisTitle("Moisture");
+        graph.getGridLabelRenderer().setVerticalAxisTitle("Mid Soil Moisture");
         graph.getGridLabelRenderer().setPadding(56);
 
         series0.setDrawDataPoints(true);
@@ -752,6 +756,15 @@ public class DeviceControlActivity extends Activity {
         series0.resetData(new DataPoint[] {});
         graph.addSeries(series0);
         setGraphUI(graph);
+
+        //clear the ex marks
+        air_dry_progress_hint.setVisibility(INVISIBLE);
+        mid_dry_progress_hint.setVisibility(INVISIBLE);
+        deep_dry_progress_hint.setVisibility(INVISIBLE);
+
+        air_wet_progress_hint.setVisibility(INVISIBLE);
+        mid_wet_progress_hint.setVisibility(INVISIBLE);
+        deep_wet_progress_hint.setVisibility(INVISIBLE);
     }
 
     public void resetPlot() {
@@ -827,7 +840,58 @@ public class DeviceControlActivity extends Activity {
         @Override
         protected Void doInBackground(Void... progress_data) {
             //read gatt characteristics
-            readCharLocal();
+           // readCharLocal();
+            SystemClock.sleep(500);
+            mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH0_CHARACTERISTIC);
+            SystemClock.sleep(500);
+            return null;
+        }
+    }
+
+    //Async task once click the read button
+    public class MultiplyTask1 extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Void s) {
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected Void doInBackground(Void... progress_data) {
+            //read gatt characteristics
+           // readCharLocal();
+            SystemClock.sleep(500);
+            mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH1_CHARACTERISTIC);
+            SystemClock.sleep(500);
+            return null;
+        }
+    }
+
+    //Async task once click the read button
+    public class MultiplyTask2 extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Void s) {
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected Void doInBackground(Void... progress_data) {
+            //read gatt characteristics
+             //   readCharLocal();
+            SystemClock.sleep(500);
+            mBluetoothLeService.readCustomCharacteristic(SampleGattAttributes.CH2_CHARACTERISTIC);
+            SystemClock.sleep(500);
             return null;
         }
     }
