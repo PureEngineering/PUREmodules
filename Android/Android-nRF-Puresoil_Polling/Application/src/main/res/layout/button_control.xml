@@ -60,7 +60,6 @@
                         android:id="@+id/button2"
                         android:layout_width="65dp"
                         android:layout_height="65dp"
-                        android:layout_above="@+id/data_value"
                         android:layout_marginEnd="24dp"
                         android:layout_toStartOf="@+id/bt_clear"
                         android:background="@drawable/custom_button1"
@@ -189,7 +188,6 @@
                                 android:id="@+id/ch1_textView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignStart="@+id/ch0_textView"
                                 android:layout_alignTop="@+id/ch1_value"
                                 android:text="Mid soil:"
                                 android:textColor="#FFFFFF" />
