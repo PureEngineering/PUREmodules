@@ -134,23 +134,23 @@ static const nrf_drv_twi_t m_twi_master = NRF_DRV_TWI_INSTANCE(MASTER_TWI_INST);
 void print_to_ble(void){
 			
 		uint8_t channel = 0;
-		NRF_LOG_RAW_INFO("print to ble reach\n");
+		//NRF_LOG_RAW_INFO("print to ble reach\n");
 		//uint32_t data1 = 0x12345678;
 		uint32_t data = fdc2214_readchannel(m_twi_master, channel); 
-		NRF_LOG_RAW_INFO("CH0 === %x\n", data); NRF_LOG_FLUSH();
+		NRF_LOG_RAW_INFO("CH0 ch1 ch 2=== ,%d, ", data); NRF_LOG_FLUSH();
 		fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch0_char_handles.value_handle);
 		
 		channel = 1;
-		NRF_LOG_RAW_INFO("print to ble reach\n");
+		//NRF_LOG_RAW_INFO("print to ble reach\n");
 		data = fdc2214_readchannel(m_twi_master, channel); 
-		NRF_LOG_RAW_INFO("CH1 === %x\n", data); NRF_LOG_FLUSH();
+		NRF_LOG_RAW_INFO("%d,", data); NRF_LOG_FLUSH();
 		fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch1_char_handles.value_handle);
 	
 /******COMMENT IT BACK WHEN YOU ARE CONNECTED TO CHANNEL 2 *******************************/	
 		channel = 2;
-		NRF_LOG_RAW_INFO("print to ble reach\n");
+		//NRF_LOG_RAW_INFO("print to ble reach\n");
 		data = fdc2214_readchannel(m_twi_master, channel); 
-		NRF_LOG_RAW_INFO("CH2 === %x\n", data); NRF_LOG_FLUSH();
+		NRF_LOG_RAW_INFO("%d,\n", data); NRF_LOG_FLUSH();
 		fdc_chx_characteristic_update(&m_fdcs_service, &data, m_fdcs_service.ch2_char_handles.value_handle);
 		
 }
@@ -170,7 +170,7 @@ static void create_sensor_timer()
 	NRF_LOG_RAW_INFO("REACH TIMER\n");
 	err_code = app_timer_create(&sensor_loop_timer_id, APP_TIMER_MODE_REPEATED, sensor_loop_handler);
 	APP_ERROR_CHECK(err_code);
-		err_code = app_timer_start(sensor_loop_timer_id, APP_TIMER_TICKS(1000, APP_TIMER_PRESCALER), NULL);
+		err_code = app_timer_start(sensor_loop_timer_id, APP_TIMER_TICKS(100, APP_TIMER_PRESCALER), NULL);
 		APP_ERROR_CHECK(err_code);
 
 }

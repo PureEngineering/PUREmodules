@@ -204,7 +204,7 @@ void fdc_chx_characteristic_update(ble_fdcs_t *p_our_service, uint32_t *channel_
 	data_array[2] = (data>>16) & 0xff;
 	data_array[3] = (data>>24) & 0xff;
 	
-	NRF_LOG_RAW_INFO("channel_value----> %x, %x, %x, %x, %x\n", data, data_array[0], data_array[1], data_array[2], data_array[3]);
+	//NRF_LOG_RAW_INFO("channel_value----> %x, %x, %x, %x, %x\n", data, data_array[0], data_array[1], data_array[2], data_array[3]);
 	
 	
 	//*channel_value = 0x12345678;
