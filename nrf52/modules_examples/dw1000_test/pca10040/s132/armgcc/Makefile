@@ -49,9 +49,10 @@ SRC_FILES += \
   $(SDK_ROOT)/components/ble/ble_services/ble_nus/ble_nus.c \
   $(SDK_ROOT)/components/softdevice/common/softdevice_handler/softdevice_handler.c \
   $(LIB_DIR)/i2c_driver.c \
-  $(LIB_DIR)/lis2de.c \
   $(LIB_DIR)/ble_driver.c \
   $(SDK_ROOT)/components/drivers_nrf/spi_master/nrf_drv_spi.c \
+  $(LIB_DIR)/DW1000Time.c \
+
 
 
 
