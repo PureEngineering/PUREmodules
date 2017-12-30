@@ -1,16 +1,8 @@
-#ifndef DW1000TIME_H
-#define DW1000TIME_H
+#ifndef _DW1000Time_H_INCLUDED
+#define _DW1000Time_H_INCLUDED
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include "nrf_drv_twi.h"
-#define NRF_LOG_MODULE_NAME "APP"
-#include "nrf_log.h"
-#include "nrf_log_ctrl.h"
-#include "ble_nus.h"
+#include <stdint.h>
 
 // Time resolution in micro-seconds of time based registers/values.
 // Each bit in a timestamp counts for a period of approx. 15.65ps
@@ -20,16 +12,47 @@ extern "C" {
 // Speed of radio waves [m/s] * timestamp resolution [~15.65ps] of DW1000
 #define DISTANCE_OF_RADIO 0.0046917639786159f
 
-// time stamp byte length
+// time stamp uint8_t length
 #define LEN_STAMP 5
 
 
+class DW1000Time {
+public:
+	DW1000Time();
+	DW1000Time(long long int time);
+	DW1000Time(float timeUs);
+	DW1000Time(uint8_t data[]);
+	DW1000Time(long value, float factorUs);
+	DW1000Time(const DW1000Time& copy);
+	~DW1000Time();
 
-struct DW1000Time_Value
-	{
-		long long int timestamp;
-	} DW1000Time_value;
+	void setTime(float timeUs);
+	void setTime(long value, float factorUs);
 
+	float getAsFloat() const;
+	void getAsBytes(uint8_t data[]) const;
+	float getAsMeters() const;
+
+	void getTimestamp(uint8_t data[]) const;
+	long long int getTimestamp() const;
+	void setTimestamp(uint8_t data[]);
+	void setTimestamp(const DW1000Time& copy);
+
+	DW1000Time& operator=(const DW1000Time &assign);
+	DW1000Time& operator+=(const DW1000Time &add);
+	const DW1000Time operator+(const DW1000Time &add) const;
+	DW1000Time& operator-=(const DW1000Time &sub);
+	const DW1000Time operator-(const DW1000Time &sub) const;
+	DW1000Time& operator*=(float factor);
+	const DW1000Time operator*(const DW1000Time &factor) const;
+	DW1000Time& operator*=(const DW1000Time &factor);
+	const DW1000Time operator*(float factor) const;
+	DW1000Time& operator/=(float factor);
+	const DW1000Time operator/(float factor) const;
+	DW1000Time& operator/=(const DW1000Time &factor);
+	const DW1000Time operator/(const DW1000Time &factor) const;
+	bool  operator==(const DW1000Time &cmp) const;
+	bool  operator!=(const DW1000Time &cmp) const;
 
 	// time factors (relative to [us]) for setting delayed transceive
 	static const float SECONDS = 1e6;
@@ -40,27 +63,9 @@ struct DW1000Time_Value
 	// timer/counter overflow (40 bits)
 	static const long long unsigned int TIME_OVERFLOW = 1099511627776;
 
-	void DW1000Time_init();
-	void DW1000Time_setTime(float timeUs);
+private:
+	long long int _timestamp;
+};
 
-	long long int DW1000Time_getTimestamp();
-	void DW1000Time_setTimestamp(uint8_t data[]);
-
-	float DW1000Time_getAsFloat();
-	void DW1000Time_getAsBytes(uint8_t data[]);
-	float DW1000Time_getAsMeters();
-
-	
-	void DW1000Time_assign(long long int assign);
-	void DW1000Time_add(long long int add);
-	void DW1000Time_sub(long long int sub); 
-	void DW1000Time_mult(float mult);
-	void DW1000Time_div(float factor);
-	bool DW1000Time_cmp(long long int cmp);
-
-
-#ifdef __cplusplus
-}
 #endif
 
-#endif // DW1000Time

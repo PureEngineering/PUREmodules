@@ -51,8 +51,8 @@ SRC_FILES += \
   $(LIB_DIR)/i2c_driver.c \
   $(LIB_DIR)/ble_driver.c \
   $(SDK_ROOT)/components/drivers_nrf/spi_master/nrf_drv_spi.c \
-  $(LIB_DIR)/DW1000Time.c \
-
+  $(LIB_DIR)/DW1000Time.cpp \
+  $(LIB_DIR)/DW1000.cpp \
 
 
 
