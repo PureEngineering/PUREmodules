@@ -14,8 +14,11 @@
 #include "nrf_gpio.h"
 #include "app_util_platform.h"
 #include "bsp.h"
+
+
 #include "bsp_btn_ble.h"
 #include "nrf_drv_spi.h"
+
 
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT 0                                           /**< Include the service_changed characteristic. If not enabled, the server's database cannot be changed for the lifetime of the device. */
