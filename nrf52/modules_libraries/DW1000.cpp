@@ -173,7 +173,7 @@ void DW1000Class::enableClock(uint8_t  clock) {
 		// TODO deliver proper warning
 	}
 	writeBytes(nrf_drv_spi_t spi, PMSC, PMSC_CTRL0_SUB, pmscctrl0, 1);
-    	writeBytes(nrf_drv_spi_t spi, PMSC, PMSC_CTRL0_SUB, pmscctrl0, LEN_PMSC_CTRL0);
+    writeBytes(nrf_drv_spi_t spi, PMSC, PMSC_CTRL0_SUB, pmscctrl0, LEN_PMSC_CTRL0);
 }
 /*
 void DW1000Class::reset() {
@@ -739,23 +739,6 @@ void DW1000Class::writeTransmitFrameControlRegister() {
  * #### DW1000 operation functions ###########################################
  * ######################################################################### */
 
-void DW1000Class::setNetworkId(unsigned int val) {
-	_networkAndAddress[2] = (uint8_t )(val & 0xFF);
-	_networkAndAddress[3] = (uint8_t )((val >> 8) & 0xFF);
-}
-
-void DW1000Class::setDeviceAddress(unsigned int val) {
-	_networkAndAddress[0] = (uint8_t )(val & 0xFF);
-	_networkAndAddress[1] = (uint8_t )((val >> 8) & 0xFF);
-}
-
-void DW1000Class::setFrameFilter(bool val) {
-	setBit(_syscfg, LEN_SYS_CFG, FFEN_BIT, val);
-}
-
-void DW1000Class::setDoubleBuffering(bool val) {
-	setBit(_syscfg, LEN_SYS_CFG, DIS_DRXB_BIT, !val);
-}
 
 void DW1000Class::setInterruptPolarity(bool val) {
 	setBit(_syscfg, LEN_SYS_CFG, HIRQ_POL_BIT, val);
@@ -773,6 +756,26 @@ void DW1000Class::interruptOnReceived(bool val) {
 	setBit(_sysmask, LEN_SYS_MASK, RXDFR_BIT, val);
 	setBit(_sysmask, LEN_SYS_MASK, RXFCG_BIT, val);
 }
+
+void DW1000Class::setNetworkId(unsigned int val) {
+	_networkAndAddress[2] = (uint8_t )(val & 0xFF);
+	_networkAndAddress[3] = (uint8_t )((val >> 8) & 0xFF);
+}
+
+void DW1000Class::setDeviceAddress(unsigned int val) {
+	_networkAndAddress[0] = (uint8_t )(val & 0xFF);
+	_networkAndAddress[1] = (uint8_t )((val >> 8) & 0xFF);
+}
+
+void DW1000Class::setDoubleBuffering(bool val) {
+	setBit(_syscfg, LEN_SYS_CFG, DIS_DRXB_BIT, !val);
+}
+
+void DW1000Class::setFrameFilter(bool val) {
+	setBit(_syscfg, LEN_SYS_CFG, FFEN_BIT, val);
+}
+
+
 
 void DW1000Class::interruptOnReceiveFailed(bool val) {
 	setBit(_sysmask, LEN_SYS_STATUS, LDEERR_BIT, val);
@@ -1251,6 +1254,33 @@ float DW1000Class::getReceivePower() {
 	return estRxPwr;
 }
 
+
+/*
+ * Check the value of a bit in an array of bytes that are considered
+ * consecutive and stored from MSB to LSB.
+ * @param data
+ * 		The number as byte array.
+ * @param n
+ * 		The number of bytes in the array.
+ * @param bit
+ * 		The position of the bit to be checked.
+ */
+bool DW1000Class::getBit(uint8_t data[], unsigned int n, unsigned int bit) {
+	int idx;
+	int shift;
+
+	idx = bit / 8;
+	if(idx >= n) {
+		return false; // TODO proper error handling: out of bounds
+	}
+	uint8_t targetByte = data[idx];
+	shift = bit % 8;
+	
+	return bitRead(targetByte, shift);
+}
+
+
+
 /* ###########################################################################
  * #### Helper functions #####################################################
  * ######################################################################### */
@@ -1284,29 +1314,6 @@ void DW1000Class::setBit(uint8_t data[], unsigned int n, unsigned int bit, bool 
 	}
 }
 
-/*
- * Check the value of a bit in an array of bytes that are considered
- * consecutive and stored from MSB to LSB.
- * @param data
- * 		The number as byte array.
- * @param n
- * 		The number of bytes in the array.
- * @param bit
- * 		The position of the bit to be checked.
- */
-bool DW1000Class::getBit(uint8_t data[], unsigned int n, unsigned int bit) {
-	int idx;
-	int shift;
-
-	idx = bit / 8;
-	if(idx >= n) {
-		return false; // TODO proper error handling: out of bounds
-	}
-	uint8_t targetByte = data[idx];
-	shift = bit % 8;
-	
-	return bitRead(targetByte, shift);
-}
 
 void DW1000Class::writeValueToBytes(uint8_t data[], long val, unsigned int n) {
 	int i;	
