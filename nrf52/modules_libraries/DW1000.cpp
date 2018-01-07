@@ -1255,30 +1255,13 @@ float DW1000Class::getReceivePower() {
 }
 
 
-/*
- * Check the value of a bit in an array of bytes that are considered
- * consecutive and stored from MSB to LSB.
- * @param data
- * 		The number as byte array.
- * @param n
- * 		The number of bytes in the array.
- * @param bit
- * 		The position of the bit to be checked.
- */
-bool DW1000Class::getBit(uint8_t data[], unsigned int n, unsigned int bit) {
-	int idx;
-	int shift;
 
-	idx = bit / 8;
-	if(idx >= n) {
-		return false; // TODO proper error handling: out of bounds
+void DW1000Class::writeValueToBytes(uint8_t data[], long val, unsigned int n) {
+	int i;	
+	for(i = 0; i < n; i++) {
+		data[i] = ((val >> (i * 8)) & 0xFF);
 	}
-	uint8_t targetByte = data[idx];
-	shift = bit % 8;
-	
-	return bitRead(targetByte, shift);
 }
-
 
 
 /* ###########################################################################
@@ -1307,7 +1290,9 @@ void DW1000Class::setBit(uint8_t data[], unsigned int n, unsigned int bit, bool 
 	}
 	uint8_t* targetByte = &data[idx];
 	shift = bit % 8;
+
 	if(val) {
+		
 		bitSet(*targetByte, shift);
 	} else {
 		bitClear(*targetByte, shift);
@@ -1315,12 +1300,30 @@ void DW1000Class::setBit(uint8_t data[], unsigned int n, unsigned int bit, bool 
 }
 
 
-void DW1000Class::writeValueToBytes(uint8_t data[], long val, unsigned int n) {
-	int i;	
-	for(i = 0; i < n; i++) {
-		data[i] = ((val >> (i * 8)) & 0xFF);
+/*
+ * Check the value of a bit in an array of bytes that are considered
+ * consecutive and stored from MSB to LSB.
+ * @param data
+ * 		The number as byte array.
+ * @param n
+ * 		The number of bytes in the array.
+ * @param bit
+ * 		The position of the bit to be checked.
+ */
+bool DW1000Class::getBit(uint8_t data[], unsigned int n, unsigned int bit) {
+	int idx;
+	int shift;
+
+	idx = bit / 8;
+	if(idx >= n) {
+		return false; // TODO proper error handling: out of bounds
 	}
+	uint8_t targetByte = data[idx];
+	shift = bit % 8;
+	
+	return bitRead(targetByte, shift);
 }
+
 
 /*
  * Read bytes from the DW1000. Number of bytes depend on register length.
