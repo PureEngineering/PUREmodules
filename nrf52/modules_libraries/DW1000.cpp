@@ -1289,13 +1289,14 @@ void DW1000Class::setBit(uint8_t data[], unsigned int n, unsigned int bit, bool 
 		return; // TODO proper error handling: out of bounds
 	}
 	uint8_t* targetByte = &data[idx];
+	uint8_t target = data[idx];
 	shift = bit % 8;
+	uint8_t mask;
 
 	if(val) {
-		
-		bitSet(*targetByte, shift);
+		data[idx] |= 0x01 << shift;
 	} else {
-		bitClear(*targetByte, shift);
+		data[idx] &= ~(0x01 << shift);
 	}
 }
 
@@ -1320,8 +1321,11 @@ bool DW1000Class::getBit(uint8_t data[], unsigned int n, unsigned int bit) {
 	}
 	uint8_t targetByte = data[idx];
 	shift = bit % 8;
+	uint8_t returnbit = 0;
+
+	returnbit = (targetByte >> shift) & 0x01;
 	
-	return bitRead(targetByte, shift);
+	return returnbit;
 }
 
 
