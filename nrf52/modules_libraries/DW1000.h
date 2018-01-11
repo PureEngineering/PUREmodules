@@ -676,7 +676,7 @@ private:
 
 	/* reading and writing bytes from and to DW1000 module. */
 	static void readBytes(nrf_drv_spi_t spi, uint8_t cmd, uint16_t offset, uint8_t data[], unsigned int n);
-	static void readBytesOTP(uint16_t address, uint8_t data[]);
+	static void readBytesOTP(nrf_drv_spi_t spi, uint16_t address, uint8_t data[]);
 	static void writeBytes(nrf_drv_spi_t spi, uint8_t cmd, uint16_t offset, uint8_t data[], unsigned int n);
 
 	/* writing numeric values to bytes. */
