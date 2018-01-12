@@ -18,6 +18,8 @@
 
 #include "bsp_btn_ble.h"
 #include "nrf_drv_spi.h"
+#include "DW1000Time.h"
+//#include "DW1000.h"
 
 
 
@@ -797,12 +799,15 @@ int main(void)
 
 	APP_ERROR_CHECK(nrf_drv_spi_init(&spi, &spi_config, spi_event_handler));
 	
+	//Set output on pin 14
 	nrf_gpio_pin_dir_set(14,NRF_GPIO_PIN_DIR_OUTPUT);
 	nrf_gpio_pin_set(14);  
 	DEBUG_PRINTF("DW1000 Reset\n\r");
 	nrf_gpio_pin_dir_set(14,NRF_GPIO_PIN_DIR_INPUT);
 	
-	DEBUG_PRINTF("SW1000 Init\n\r");
+	DEBUG_PRINTF("DW1000 Init\n\r");
+
+
 
 
 	DEBUG_PRINTF("BLE Start\n\r");
