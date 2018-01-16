@@ -79,39 +79,39 @@ static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_NUS_SERVICE, 
 
  //static const nrf_drv_twi_t m_twi_master = NRF_DRV_TWI_INSTANCE(MASTER_TWI_INST);
 
-// ////////////////////////////
-// typedef struct
-// {
-// 	//volatile char q[QUEUESIZE+1];		/* body of queue */
-// 	volatile char *q;		/* pointer to queue buffer*/
-// 	volatile int read_index;                 /* index used for reading */
-// 	volatile int write_index;                /* index used for writing */
-// 	volatile int size;			/* size of queue */
-// } queue;
+////////////////////////////
+typedef struct
+{
+	//volatile char q[QUEUESIZE+1];		/* body of queue */
+	volatile char *q;		/* pointer to queue buffer*/
+	volatile int read_index;                 /* index used for reading */
+	volatile int write_index;                /* index used for writing */
+	volatile int size;			/* size of queue */
+} queue;
 
-// void init_queue(queue *q,char* buffer, int size)
-// {
-// 	q->read_index = 0;
-// 	q->write_index = 0;
-// 	q->size = size-1;
-// 	q->q = buffer;
-// }
+void init_queue(queue *q,char* buffer, int size)
+{
+	q->read_index = 0;
+	q->write_index = 0;
+	q->size = size-1;
+	q->q = buffer;
+}
 
-// int put_queue(queue *q, char x)
-// {
-// 	int nextindex = (q->write_index + 1) % q->size;
-// 	if(nextindex != q->read_index)
-// 	{
-// 		q->q[q->write_index] = x;
-// 		q->write_index = nextindex;
+int put_queue(queue *q, char x)
+{
+	int nextindex = (q->write_index + 1) % q->size;
+	if(nextindex != q->read_index)
+	{
+		q->q[q->write_index] = x;
+		q->write_index = nextindex;
 
-// 		return 1;
-// 	}
-// 	else
-// 	{
-// 		return 0; //queue is full
-// 	}
-// }
+		return 1;
+	}
+	else
+	{
+		return 0; //queue is full
+	}
+}
 
 // int get_queue(queue *q,char *x)
 // {
@@ -128,14 +128,14 @@ static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_NUS_SERVICE, 
 // }
 
 
-// queue uart_rx_queue;
+queue uart_rx_queue;
 // queue ble_rx_queue;
 // queue ble_tx_queue;
 // //queue lora_rx_queue;
 // //queue lora_tx_queue;
 
-// #define MAX_QUEUE_SIZE (22)
-// char uart_rx_buffer[MAX_QUEUE_SIZE];
+#define MAX_QUEUE_SIZE (22)
+char uart_rx_buffer[MAX_QUEUE_SIZE];
 // char ble_rx_buffer[MAX_QUEUE_SIZE];
 // char ble_tx_buffer[MAX_QUEUE_SIZE];
 // //char lora_rx_buffer[MAX_QUEUE_SIZE];
@@ -162,58 +162,60 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 }
 
 
-// /**@brief Function for the GAP initialization.
-//  *
-//  * @details This function will set up all the necessary GAP (Generic Access Profile) parameters of
-//  *          the device. It also sets the permissions and appearance.
-//  */
-// static void gap_params_init(void)
-// {
-// 	uint32_t                err_code;
-// 	ble_gap_conn_params_t   gap_conn_params;
-// 	ble_gap_conn_sec_mode_t sec_mode;
+/**@brief Function for the GAP initialization.
+ *
+ * @details This function will set up all the necessary GAP (Generic Access Profile) parameters of
+ *          the device. It also sets the permissions and appearance.
+ */
+static void gap_params_init(void)
+{
+	uint32_t                err_code;
+	ble_gap_conn_params_t   gap_conn_params;
+	ble_gap_conn_sec_mode_t sec_mode;
 
-// 	BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
+	BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
 
-// 	err_code = sd_ble_gap_device_name_set(&sec_mode,
-// 			(const uint8_t *) DEVICE_NAME,
-// 			strlen(DEVICE_NAME));
-// 	APP_ERROR_CHECK(err_code);
+	err_code = sd_ble_gap_device_name_set(&sec_mode,
+			(const uint8_t *) DEVICE_NAME,
+			strlen(DEVICE_NAME));
+	APP_ERROR_CHECK(err_code);
 
-// 	memset(&gap_conn_params, 0, sizeof(gap_conn_params));
+	memset(&gap_conn_params, 0, sizeof(gap_conn_params));
 
-// 	gap_conn_params.min_conn_interval = MIN_CONN_INTERVAL;
-// 	gap_conn_params.max_conn_interval = MAX_CONN_INTERVAL;
-// 	gap_conn_params.slave_latency     = SLAVE_LATENCY;
-// 	gap_conn_params.conn_sup_timeout  = CONN_SUP_TIMEOUT;
+	gap_conn_params.min_conn_interval = MIN_CONN_INTERVAL;
+	gap_conn_params.max_conn_interval = MAX_CONN_INTERVAL;
+	gap_conn_params.slave_latency     = SLAVE_LATENCY;
+	gap_conn_params.conn_sup_timeout  = CONN_SUP_TIMEOUT;
 
-// 	err_code = sd_ble_gap_ppcp_set(&gap_conn_params);
-// 	APP_ERROR_CHECK(err_code);
-// }
+	err_code = sd_ble_gap_ppcp_set(&gap_conn_params);
+	APP_ERROR_CHECK(err_code);
+}
 
 
-// /**@brief Function for handling the data from the Nordic UART Service.
-//  *
-//  * @details This function will process the data received from the Nordic UART BLE Service and send
-//  *          it to the UART module.
-//  *
-//  * @param[in] p_nus    Nordic UART Service structure.
-//  * @param[in] p_data   Data to be send to UART module.
-//  * @param[in] length   Length of the data.
-//  */
-// /**@snippet [Handling the data received over BLE] */
-// static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
-// {
-// 	for (uint32_t i = 0; i < length; i++)
-// 	{
-// 		put_queue(&ble_rx_queue,p_data[i]);
+/**@brief Function for handling the data from the Nordic UART Service.
+ *
+ * @details This function will process the data received from the Nordic UART BLE Service and send
+ *          it to the UART module.
+ *
+ * @param[in] p_nus    Nordic UART Service structure.
+ * @param[in] p_data   Data to be send to UART module.
+ * @param[in] length   Length of the data.
+ */
+/**@snippet [Handling the data received over BLE] */
+static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
+{
+	for (uint32_t i = 0; i < length; i++)
+	{
+		//put_queue(&ble_rx_queue,p_data[i]);
 
-// 		//while (app_uart_put(p_data[i]) != NRF_SUCCESS);
-// 	}
-// 	//while (app_uart_put('\r') != NRF_SUCCESS);
-// 	//while (app_uart_put('\n') != NRF_SUCCESS);
-// }
-// /**@snippet [Handling the data received over BLE] */
+		//TODO: code to handle UART
+
+		//while (app_uart_put(p_data[i]) != NRF_SUCCESS);
+	}
+	//while (app_uart_put('\r') != NRF_SUCCESS);
+	//while (app_uart_put('\n') != NRF_SUCCESS);
+}
+/**@snippet [Handling the data received over BLE] */
 
 
 // /**@brief Function for initializing services that will be used by the application.
@@ -232,79 +234,79 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 // }
 
 
-// /**@brief Function for handling an event from the Connection Parameters Module.
-//  *
-//  * @details This function will be called for all events in the Connection Parameters Module
-//  *          which are passed to the application.
-//  *
-//  * @note All this function does is to disconnect. This could have been done by simply setting
-//  *       the disconnect_on_fail config parameter, but instead we use the event handler
-//  *       mechanism to demonstrate its use.
-//  *
-//  * @param[in] p_evt  Event received from the Connection Parameters Module.
-//  */
-// static void on_conn_params_evt(ble_conn_params_evt_t * p_evt)
-// {
-// 	uint32_t err_code;
+/**@brief Function for handling an event from the Connection Parameters Module.
+ *
+ * @details This function will be called for all events in the Connection Parameters Module
+ *          which are passed to the application.
+ *
+ * @note All this function does is to disconnect. This could have been done by simply setting
+ *       the disconnect_on_fail config parameter, but instead we use the event handler
+ *       mechanism to demonstrate its use.
+ *
+ * @param[in] p_evt  Event received from the Connection Parameters Module.
+ */
+static void on_conn_params_evt(ble_conn_params_evt_t * p_evt)
+{
+	uint32_t err_code;
 
-// 	if (p_evt->evt_type == BLE_CONN_PARAMS_EVT_FAILED)
-// 	{
-// 		err_code = sd_ble_gap_disconnect(m_conn_handle, BLE_HCI_CONN_INTERVAL_UNACCEPTABLE);
-// 		APP_ERROR_CHECK(err_code);
-// 	}
-// }
-
-
-// /**@brief Function for handling errors from the Connection Parameters module.
-//  *
-//  * @param[in] nrf_error  Error code containing information about what went wrong.
-//  */
-// static void conn_params_error_handler(uint32_t nrf_error)
-// {
-// 	APP_ERROR_HANDLER(nrf_error);
-// }
+	if (p_evt->evt_type == BLE_CONN_PARAMS_EVT_FAILED)
+	{
+		err_code = sd_ble_gap_disconnect(m_conn_handle, BLE_HCI_CONN_INTERVAL_UNACCEPTABLE);
+		APP_ERROR_CHECK(err_code);
+	}
+}
 
 
-// /**@brief Function for initializing the Connection Parameters module.
-// */
-// static void conn_params_init(void)
-// {
-// 	uint32_t               err_code;
-// 	ble_conn_params_init_t cp_init;
-
-// 	memset(&cp_init, 0, sizeof(cp_init));
-
-// 	cp_init.p_conn_params                  = NULL;
-// 	cp_init.first_conn_params_update_delay = FIRST_CONN_PARAMS_UPDATE_DELAY;
-// 	cp_init.next_conn_params_update_delay  = NEXT_CONN_PARAMS_UPDATE_DELAY;
-// 	cp_init.max_conn_params_update_count   = MAX_CONN_PARAMS_UPDATE_COUNT;
-// 	cp_init.start_on_notify_cccd_handle    = BLE_GATT_HANDLE_INVALID;
-// 	cp_init.disconnect_on_fail             = false;
-// 	cp_init.evt_handler                    = on_conn_params_evt;
-// 	cp_init.error_handler                  = conn_params_error_handler;
-
-// 	err_code = ble_conn_params_init(&cp_init);
-// 	APP_ERROR_CHECK(err_code);
-// }
+/**@brief Function for handling errors from the Connection Parameters module.
+ *
+ * @param[in] nrf_error  Error code containing information about what went wrong.
+ */
+static void conn_params_error_handler(uint32_t nrf_error)
+{
+	APP_ERROR_HANDLER(nrf_error);
+}
 
 
-// /**@brief Function for putting the chip into sleep mode.
-//  *
-//  * @note This function will not return.
-//  */
-// static void sleep_mode_enter(void)
-// {
-// 	uint32_t err_code = bsp_indication_set(BSP_INDICATE_IDLE);
-// 	APP_ERROR_CHECK(err_code);
+/**@brief Function for initializing the Connection Parameters module.
+*/
+static void conn_params_init(void)
+{
+	uint32_t               err_code;
+	ble_conn_params_init_t cp_init;
 
-// 	// Prepare wakeup buttons.
-// 	err_code = bsp_btn_ble_sleep_mode_prepare();
-// 	APP_ERROR_CHECK(err_code);
+	memset(&cp_init, 0, sizeof(cp_init));
 
-// 	// Go to system-off mode (this function will not return; wakeup will cause a reset).
-// 	err_code = sd_power_system_off();
-// 	APP_ERROR_CHECK(err_code);
-// }
+	cp_init.p_conn_params                  = NULL;
+	cp_init.first_conn_params_update_delay = FIRST_CONN_PARAMS_UPDATE_DELAY;
+	cp_init.next_conn_params_update_delay  = NEXT_CONN_PARAMS_UPDATE_DELAY;
+	cp_init.max_conn_params_update_count   = MAX_CONN_PARAMS_UPDATE_COUNT;
+	cp_init.start_on_notify_cccd_handle    = BLE_GATT_HANDLE_INVALID;
+	cp_init.disconnect_on_fail             = false;
+	cp_init.evt_handler                    = on_conn_params_evt;
+	cp_init.error_handler                  = conn_params_error_handler;
+
+	err_code = ble_conn_params_init(&cp_init);
+	APP_ERROR_CHECK(err_code);
+}
+
+
+/**@brief Function for putting the chip into sleep mode.
+ *
+ * @note This function will not return.
+ */
+static void sleep_mode_enter(void)
+{
+	uint32_t err_code = bsp_indication_set(BSP_INDICATE_IDLE);
+	APP_ERROR_CHECK(err_code);
+
+	// Prepare wakeup buttons.
+	err_code = bsp_btn_ble_sleep_mode_prepare();
+	APP_ERROR_CHECK(err_code);
+
+	// Go to system-off mode (this function will not return; wakeup will cause a reset).
+	err_code = sd_power_system_off();
+	APP_ERROR_CHECK(err_code);
+}
 
 
 // /**@brief Function for handling advertising events.
@@ -542,7 +544,7 @@ void uart_event_handle(app_uart_evt_t * p_event)
 		case APP_UART_DATA_READY:
 			
 			UNUSED_VARIABLE(app_uart_get(&getChar));
-			//put_queue(&uart_rx_queue,(char) getChar);
+			put_queue(&uart_rx_queue,(char) getChar);
 
 			/*
 			UNUSED_VARIABLE(app_uart_get(&data_array[index]));
@@ -658,13 +660,13 @@ static void uart_init(void)
 // }
 
 
-// /**@brief Function for placing the application in low power state while waiting for events.
-// */
-// //static void power_manage(void)
-// //{
-// //	uint32_t err_code = sd_app_evt_wait();
-// //	APP_ERROR_CHECK(err_code);
-// //}
+/**@brief Function for placing the application in low power state while waiting for events.
+*/
+static void power_manage(void)
+{
+	uint32_t err_code = sd_app_evt_wait();
+	APP_ERROR_CHECK(err_code);
+}
 
 // uint8_t spiRead(uint8_t addr)
 // {
@@ -764,19 +766,19 @@ int main(void)
 	uint32_t err_code;
 	bool erase_bonds;
 
-	//nrf_gpio_pin_dir_set(18,NRF_GPIO_PIN_DIR_INPUT);
-	// Initialize.
-	//APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
+	nrf_gpio_pin_dir_set(18,NRF_GPIO_PIN_DIR_INPUT);
+	//Initialize.
+	APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
 
-	// buttons_leds_init(&erase_bonds);
-	// ble_stack_init();
-	// gap_params_init();
+	//buttons_leds_init(&erase_bonds);
+	//ble_stack_init();
+	gap_params_init();
 	// services_init();
 	// advertising_init();
-	// conn_params_init();
+	conn_params_init();
 	
-	// uart_init();
-	// DEBUG_PRINTF("\n\rOFC\n\r");
+	uart_init();
+	DEBUG_PRINTF("\n\rOFC\n\r");
 
 	// ///////////////
 
