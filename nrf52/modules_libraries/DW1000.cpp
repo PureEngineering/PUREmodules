@@ -14,12 +14,11 @@
 #include "DW1000.h"
 #include "nrf_drv_spi.h"
 #include "nrf_delay.h"
+#include "main.h"
 
 
 
 DW1000Class DW1000;
-extern nrf_drv_spi_t spi;
-extern bool spi_xfer_done;
 
 // pins
 unsigned int DW1000Class::_ss;
@@ -1361,10 +1360,10 @@ void DW1000Class::readBytes(nrf_drv_spi_t m_spi, uint8_t cmd, uint16_t offset, u
 
 	APP_ERROR_CHECK(nrf_drv_spi_transfer(&m_spi, header, headerLen, data, n));
 
-	while (!spi_xfer_done)
-	{
-		__WFE();
-	}
+	//while (!spi_xfer_done)
+	//{
+	//	__WFE();
+	//}
 
 	nrf_delay_ms(1);
 }
@@ -1434,10 +1433,10 @@ void DW1000Class::writeBytes(nrf_drv_spi_t m_spi, uint8_t cmd, uint16_t offset, 
 	uint8_t buffer[2];
 	APP_ERROR_CHECK(nrf_drv_spi_transfer(&m_spi, send_data, sendLen, buffer, 2));
 
-	while (!spi_xfer_done)
-	{
-		__WFE();
-	}
+	//while (!spi_xfer_done)
+	//{
+	//	__WFE();
+	//}
 }
 
 

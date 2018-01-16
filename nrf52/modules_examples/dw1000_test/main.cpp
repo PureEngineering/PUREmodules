@@ -20,6 +20,8 @@
 #include "nrf_drv_spi.h"
 #include "DW1000Time.h"
 #include "DW1000.h"
+#include "nrf_drv_spi.h"
+#include "main.h"
 
 
 
@@ -67,9 +69,9 @@ static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_NUS_SERVICE, 
 
 // /////////////////////////////////////////
 
- #define SPI_INSTANCE  2 /**< SPI instance index. */
- static const nrf_drv_spi_t spi = NRF_DRV_SPI_INSTANCE(SPI_INSTANCE);  /**< SPI instance. */
- static volatile bool spi_xfer_done;  /**< Flag used to indicate that SPI instance completed the transfer. */
+ //#define SPI_INSTANCE  2 /**< SPI instance index. */
+ //static const nrf_drv_spi_t spi = NRF_DRV_SPI_INSTANCE(SPI_INSTANCE);  /**< SPI instance. */
+ //static volatile bool spi_xfer_done;  /**< Flag used to indicate that SPI instance completed the transfer. */
 
  void spi_event_handler(nrf_drv_spi_evt_t const * p_event)
  {
