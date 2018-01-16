@@ -760,8 +760,10 @@ int main(void)
 	
 	DEBUG_PRINTF("DW1000 Init\n\r");
 
-	//DW1000.newConfiguration();
-
+	DW1000.newConfiguration();
+	DW1000.setDeviceAddress(5);
+  	DW1000.setNetworkId(10);
+  	DW1000.commitConfiguration();
 
 
 	// DEBUG_PRINTF("BLE Start\n\r");

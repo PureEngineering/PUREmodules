@@ -805,7 +805,9 @@ void DW1000Class::idle() {
 	memset(_sysctrl, 0, LEN_SYS_CTRL);
 	setBit(_sysctrl, LEN_SYS_CTRL, TRXOFF_BIT, true);
 	_deviceMode = IDLE_MODE;
-	writeBytes(spi, SYS_CTRL, NO_SUB, _sysctrl, LEN_SYS_CTRL);
+	//TODO: figure out this line
+	//writeBytes(spi, SYS_CTRL, NO_SUB, _sysctrl, LEN_SYS_CTRL);
+	nrf_delay_ms(5);
 }
 
 void DW1000Class::newReceive() {
@@ -853,20 +855,20 @@ void DW1000Class::newConfiguration() {
 
 void DW1000Class::commitConfiguration() {
 	// write all configurations back to device
-	writeNetworkIdAndDeviceAddress();
-	writeSystemConfigurationRegister();
-	writeChannelControlRegister();
-	writeTransmitFrameControlRegister();
-	writeSystemEventMaskRegister();
+	writeNetworkIdAndDeviceAddress(); //TODO:
+	//writeSystemConfigurationRegister();
+	//writeChannelControlRegister();
+	//writeTransmitFrameControlRegister();
+	//writeSystemEventMaskRegister();
 	// tune according to configuration
-	tune();
+	//tune();
 	// TODO clean up code + antenna delay/calibration API
 	// TODO setter + check not larger two bytes integer
 	uint8_t  antennaDelayBytes[LEN_STAMP];
 	writeValueToBytes(antennaDelayBytes, 16384, LEN_STAMP);
 	_antennaDelay.setTimestamp(antennaDelayBytes);
-	writeBytes(spi, TX_ANTD, NO_SUB, antennaDelayBytes, LEN_TX_ANTD);
-    	writeBytes(spi, LDE_IF, LDE_RXANTD_SUB, antennaDelayBytes, LEN_LDE_RXANTD); 
+	//writeBytes(spi, TX_ANTD, NO_SUB, antennaDelayBytes, LEN_TX_ANTD);
+    //writeBytes(spi, LDE_IF, LDE_RXANTD_SUB, antennaDelayBytes, LEN_LDE_RXANTD); 
 }
 
 void DW1000Class::waitForResponse(bool val) {
