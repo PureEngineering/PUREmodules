@@ -513,8 +513,8 @@ public:
 	static void setDefaults();
 
 	/* debug pretty print registers. */
-	static void getPrettyBytes(uint8_t cmd, uint16_t offset, char msgBuffer[], unsigned int n);
-	static void getPrettyBytes(uint8_t data[], char msgBuffer[], unsigned int n);
+	static void getPrettyBytes(nrf_drv_spi_t m_spi, uint8_t cmd, uint16_t offset, char msgBuffer[], unsigned int n);
+	static void getPrettyBytes(nrf_drv_spi_t m_spi, uint8_t data[], char msgBuffer[], unsigned int n);
 
 	// transmission/reception bit rate
 	static const uint8_t TRX_RATE_110KBPS = 0x00;

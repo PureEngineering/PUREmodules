@@ -63,7 +63,7 @@ static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_NUS_SERVICE, 
 
 
 #define DEBUG_PRINTF(...) printf( __VA_ARGS__); 
-#define DEBUG_PRINTF(...)
+//#define DEBUG_PRINTF(...)
 
 // /////////////////////////////////////////
 
@@ -113,37 +113,33 @@ int put_queue(queue *q, char x)
 	}
 }
 
-// int get_queue(queue *q,char *x)
-// {
-// 	if(q->read_index == q->write_index)
-// 	{
-// 		return 0; //queue is empty
-// 	}
+int get_queue(queue *q,char *x)
+{
+	if(q->read_index == q->write_index)
+	{
+		return 0; //queue is empty
+	}
 
-// 	int nextindex = (q->read_index + 1) % q->size;
-// 	*x = q->q[q->read_index];
-// 	q->read_index = nextindex;
+	int nextindex = (q->read_index + 1) % q->size;
+	*x = q->q[q->read_index];
+	q->read_index = nextindex;
 
-// 	return 1;
-// }
+	return 1;
+}
 
 
 queue uart_rx_queue;
-// queue ble_rx_queue;
-// queue ble_tx_queue;
-// //queue lora_rx_queue;
-// //queue lora_tx_queue;
+queue ble_rx_queue;
+queue ble_tx_queue;
 
 #define MAX_QUEUE_SIZE (22)
 char uart_rx_buffer[MAX_QUEUE_SIZE];
-// char ble_rx_buffer[MAX_QUEUE_SIZE];
-// char ble_tx_buffer[MAX_QUEUE_SIZE];
-// //char lora_rx_buffer[MAX_QUEUE_SIZE];
-// //char lora_tx_buffer[MAX_QUEUE_SIZE];
+char ble_rx_buffer[MAX_QUEUE_SIZE];
+char ble_tx_buffer[MAX_QUEUE_SIZE];
 
-// char testdata[] = "hello world";
+char testdata[] = "hello world";
 
-// /////////////////////////////
+/////////////////////////////
 
 /**@brief Function for assert macro callback.
  *
@@ -334,155 +330,155 @@ static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
 }
 
 
-// /**@brief Function for the application's SoftDevice event handler.
-//  *
-//  * @param[in] p_ble_evt SoftDevice event.
-//  */
-// static void on_ble_evt(ble_evt_t * p_ble_evt)
-// {
-// 	uint32_t err_code;
+/**@brief Function for the application's SoftDevice event handler.
+ *
+ * @param[in] p_ble_evt SoftDevice event.
+ */
+static void on_ble_evt(ble_evt_t * p_ble_evt)
+{
+	uint32_t err_code;
 
-// 	switch (p_ble_evt->header.evt_id)
-// 	{
-// 		case BLE_GAP_EVT_CONNECTED:
-// 			err_code = bsp_indication_set(BSP_INDICATE_CONNECTED);
-// 			APP_ERROR_CHECK(err_code);
-// 			m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
-// 			break; // BLE_GAP_EVT_CONNECTED
+	switch (p_ble_evt->header.evt_id)
+	{
+		case BLE_GAP_EVT_CONNECTED:
+			err_code = bsp_indication_set(BSP_INDICATE_CONNECTED);
+			APP_ERROR_CHECK(err_code);
+			m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
+			break; // BLE_GAP_EVT_CONNECTED
 
-// 		case BLE_GAP_EVT_DISCONNECTED:
-// 			err_code = bsp_indication_set(BSP_INDICATE_IDLE);
-// 			APP_ERROR_CHECK(err_code);
-// 			m_conn_handle = BLE_CONN_HANDLE_INVALID;
-// 			break; // BLE_GAP_EVT_DISCONNECTED
+		case BLE_GAP_EVT_DISCONNECTED:
+			err_code = bsp_indication_set(BSP_INDICATE_IDLE);
+			APP_ERROR_CHECK(err_code);
+			m_conn_handle = BLE_CONN_HANDLE_INVALID;
+			break; // BLE_GAP_EVT_DISCONNECTED
 
-// 		case BLE_GAP_EVT_SEC_PARAMS_REQUEST:
-// 			// Pairing not supported
-// 			err_code = sd_ble_gap_sec_params_reply(m_conn_handle, BLE_GAP_SEC_STATUS_PAIRING_NOT_SUPP, NULL, NULL);
-// 			APP_ERROR_CHECK(err_code);
-// 			break; // BLE_GAP_EVT_SEC_PARAMS_REQUEST
+		case BLE_GAP_EVT_SEC_PARAMS_REQUEST:
+			// Pairing not supported
+			err_code = sd_ble_gap_sec_params_reply(m_conn_handle, BLE_GAP_SEC_STATUS_PAIRING_NOT_SUPP, NULL, NULL);
+			APP_ERROR_CHECK(err_code);
+			break; // BLE_GAP_EVT_SEC_PARAMS_REQUEST
 
-// 		case BLE_GATTS_EVT_SYS_ATTR_MISSING:
-// 			// No system attributes have been stored.
-// 			err_code = sd_ble_gatts_sys_attr_set(m_conn_handle, NULL, 0, 0);
-// 			APP_ERROR_CHECK(err_code);
-// 			break; // BLE_GATTS_EVT_SYS_ATTR_MISSING
+		case BLE_GATTS_EVT_SYS_ATTR_MISSING:
+			// No system attributes have been stored.
+			err_code = sd_ble_gatts_sys_attr_set(m_conn_handle, NULL, 0, 0);
+			APP_ERROR_CHECK(err_code);
+			break; // BLE_GATTS_EVT_SYS_ATTR_MISSING
 
-// 		case BLE_GATTC_EVT_TIMEOUT:
-// 			// Disconnect on GATT Client timeout event.
-// 			err_code = sd_ble_gap_disconnect(p_ble_evt->evt.gattc_evt.conn_handle,
-// 					BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
-// 			APP_ERROR_CHECK(err_code);
-// 			break; // BLE_GATTC_EVT_TIMEOUT
+		case BLE_GATTC_EVT_TIMEOUT:
+			// Disconnect on GATT Client timeout event.
+			err_code = sd_ble_gap_disconnect(p_ble_evt->evt.gattc_evt.conn_handle,
+					BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
+			APP_ERROR_CHECK(err_code);
+			break; // BLE_GATTC_EVT_TIMEOUT
 
-// 		case BLE_GATTS_EVT_TIMEOUT:
-// 			// Disconnect on GATT Server timeout event.
-// 			err_code = sd_ble_gap_disconnect(p_ble_evt->evt.gatts_evt.conn_handle,
-// 					BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
-// 			APP_ERROR_CHECK(err_code);
-// 			break; // BLE_GATTS_EVT_TIMEOUT
+		case BLE_GATTS_EVT_TIMEOUT:
+			// Disconnect on GATT Server timeout event.
+			err_code = sd_ble_gap_disconnect(p_ble_evt->evt.gatts_evt.conn_handle,
+					BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
+			APP_ERROR_CHECK(err_code);
+			break; // BLE_GATTS_EVT_TIMEOUT
 
-// 		case BLE_EVT_USER_MEM_REQUEST:
-// 			err_code = sd_ble_user_mem_reply(p_ble_evt->evt.gattc_evt.conn_handle, NULL);
-// 			APP_ERROR_CHECK(err_code);
-// 			break; // BLE_EVT_USER_MEM_REQUEST
+		case BLE_EVT_USER_MEM_REQUEST:
+			err_code = sd_ble_user_mem_reply(p_ble_evt->evt.gattc_evt.conn_handle, NULL);
+			APP_ERROR_CHECK(err_code);
+			break; // BLE_EVT_USER_MEM_REQUEST
 
-// 		case BLE_GATTS_EVT_RW_AUTHORIZE_REQUEST:
-// 			{
-// 				ble_gatts_evt_rw_authorize_request_t  req;
-// 				ble_gatts_rw_authorize_reply_params_t auth_reply;
+		case BLE_GATTS_EVT_RW_AUTHORIZE_REQUEST:
+			{
+				ble_gatts_evt_rw_authorize_request_t  req;
+				ble_gatts_rw_authorize_reply_params_t auth_reply;
 
-// 				req = p_ble_evt->evt.gatts_evt.params.authorize_request;
+				req = p_ble_evt->evt.gatts_evt.params.authorize_request;
 
-// 				if (req.type != BLE_GATTS_AUTHORIZE_TYPE_INVALID)
-// 				{
-// 					if ((req.request.write.op == BLE_GATTS_OP_PREP_WRITE_REQ)     ||
-// 							(req.request.write.op == BLE_GATTS_OP_EXEC_WRITE_REQ_NOW) ||
-// 							(req.request.write.op == BLE_GATTS_OP_EXEC_WRITE_REQ_CANCEL))
-// 					{
-// 						if (req.type == BLE_GATTS_AUTHORIZE_TYPE_WRITE)
-// 						{
-// 							auth_reply.type = BLE_GATTS_AUTHORIZE_TYPE_WRITE;
-// 						}
-// 						else
-// 						{
-// 							auth_reply.type = BLE_GATTS_AUTHORIZE_TYPE_READ;
-// 						}
-// 						auth_reply.params.write.gatt_status = APP_FEATURE_NOT_SUPPORTED;
-// 						err_code = sd_ble_gatts_rw_authorize_reply(p_ble_evt->evt.gatts_evt.conn_handle,
-// 								&auth_reply);
-// 						APP_ERROR_CHECK(err_code);
-// 					}
-// 				}
-// 			} break; // BLE_GATTS_EVT_RW_AUTHORIZE_REQUEST
+				if (req.type != BLE_GATTS_AUTHORIZE_TYPE_INVALID)
+				{
+					if ((req.request.write.op == BLE_GATTS_OP_PREP_WRITE_REQ)     ||
+							(req.request.write.op == BLE_GATTS_OP_EXEC_WRITE_REQ_NOW) ||
+							(req.request.write.op == BLE_GATTS_OP_EXEC_WRITE_REQ_CANCEL))
+					{
+						if (req.type == BLE_GATTS_AUTHORIZE_TYPE_WRITE)
+						{
+							auth_reply.type = BLE_GATTS_AUTHORIZE_TYPE_WRITE;
+						}
+						else
+						{
+							auth_reply.type = BLE_GATTS_AUTHORIZE_TYPE_READ;
+						}
+						auth_reply.params.write.gatt_status = APP_FEATURE_NOT_SUPPORTED;
+						err_code = sd_ble_gatts_rw_authorize_reply(p_ble_evt->evt.gatts_evt.conn_handle,
+								&auth_reply);
+						APP_ERROR_CHECK(err_code);
+					}
+				}
+			} break; // BLE_GATTS_EVT_RW_AUTHORIZE_REQUEST
 
-// #if (NRF_SD_BLE_API_VERSION == 3)
-// 		case BLE_GATTS_EVT_EXCHANGE_MTU_REQUEST:
-// 			err_code = sd_ble_gatts_exchange_mtu_reply(p_ble_evt->evt.gatts_evt.conn_handle,
-// 					NRF_BLE_MAX_MTU_SIZE);
-// 			APP_ERROR_CHECK(err_code);
-// 			break; // BLE_GATTS_EVT_EXCHANGE_MTU_REQUEST
-// #endif
+#if (NRF_SD_BLE_API_VERSION == 3)
+		case BLE_GATTS_EVT_EXCHANGE_MTU_REQUEST:
+			err_code = sd_ble_gatts_exchange_mtu_reply(p_ble_evt->evt.gatts_evt.conn_handle,
+					NRF_BLE_MAX_MTU_SIZE);
+			APP_ERROR_CHECK(err_code);
+			break; // BLE_GATTS_EVT_EXCHANGE_MTU_REQUEST
+#endif
 
-// 		default:
-// 			// No implementation needed.
-// 			break;
-// 	}
-// }
-
-
-// /**@brief Function for dispatching a SoftDevice event to all modules with a SoftDevice
-//  *        event handler.
-//  *
-//  * @details This function is called from the SoftDevice event interrupt handler after a
-//  *          SoftDevice event has been received.
-//  *
-//  * @param[in] p_ble_evt  SoftDevice event.
-//  */
-// static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
-// {
-// 	ble_conn_params_on_ble_evt(p_ble_evt);
-// 	ble_nus_on_ble_evt(&m_nus, p_ble_evt);
-// 	on_ble_evt(p_ble_evt);
-// 	ble_advertising_on_ble_evt(p_ble_evt);
-// 	bsp_btn_ble_on_ble_evt(p_ble_evt);
-
-// }
+		default:
+			// No implementation needed.
+			break;
+	}
+}
 
 
-// /**@brief Function for the SoftDevice initialization.
-//  *
-//  * @details This function initializes the SoftDevice and the BLE event interrupt.
-//  */
-// static void ble_stack_init(void)
-// {
-// 	uint32_t err_code;
+/**@brief Function for dispatching a SoftDevice event to all modules with a SoftDevice
+ *        event handler.
+ *
+ * @details This function is called from the SoftDevice event interrupt handler after a
+ *          SoftDevice event has been received.
+ *
+ * @param[in] p_ble_evt  SoftDevice event.
+ */
+static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
+{
+	ble_conn_params_on_ble_evt(p_ble_evt);
+	ble_nus_on_ble_evt(&m_nus, p_ble_evt);
+	on_ble_evt(p_ble_evt);
+	ble_advertising_on_ble_evt(p_ble_evt);
+	bsp_btn_ble_on_ble_evt(p_ble_evt);
 
-// 	nrf_clock_lf_cfg_t clock_lf_cfg = NRF_CLOCK_LFCLKSRC;
+}
 
-// 	// Initialize SoftDevice.
-// 	SOFTDEVICE_HANDLER_INIT(&clock_lf_cfg, NULL);
 
-// 	ble_enable_params_t ble_enable_params;
-// 	err_code = softdevice_enable_get_default_config(CENTRAL_LINK_COUNT,
-// 			PERIPHERAL_LINK_COUNT,
-// 			&ble_enable_params);
-// 	APP_ERROR_CHECK(err_code);
+/**@brief Function for the SoftDevice initialization.
+ *
+ * @details This function initializes the SoftDevice and the BLE event interrupt.
+ */
+static void ble_stack_init(void)
+{
+	uint32_t err_code;
 
-// 	//Check the ram settings against the used number of links
-// 	CHECK_RAM_START_ADDR(CENTRAL_LINK_COUNT,PERIPHERAL_LINK_COUNT);
+	nrf_clock_lf_cfg_t clock_lf_cfg = NRF_CLOCK_LFCLKSRC;
 
-// 	// Enable BLE stack.
-// #if (NRF_SD_BLE_API_VERSION == 3)
-// 	ble_enable_params.gatt_enable_params.att_mtu = NRF_BLE_MAX_MTU_SIZE;
-// #endif
-// 	err_code = softdevice_enable(&ble_enable_params);
-// 	APP_ERROR_CHECK(err_code);
+	// Initialize SoftDevice.
+	SOFTDEVICE_HANDLER_INIT(&clock_lf_cfg, NULL);
 
-// 	// Subscribe for BLE events.
-// 	err_code = softdevice_ble_evt_handler_set(ble_evt_dispatch);
-// 	APP_ERROR_CHECK(err_code);
-// }
+	ble_enable_params_t ble_enable_params;
+	err_code = softdevice_enable_get_default_config(CENTRAL_LINK_COUNT,
+			PERIPHERAL_LINK_COUNT,
+			&ble_enable_params);
+	APP_ERROR_CHECK(err_code);
+
+	//Check the ram settings against the used number of links
+	CHECK_RAM_START_ADDR(CENTRAL_LINK_COUNT,PERIPHERAL_LINK_COUNT);
+
+	// Enable BLE stack.
+#if (NRF_SD_BLE_API_VERSION == 3)
+	ble_enable_params.gatt_enable_params.att_mtu = NRF_BLE_MAX_MTU_SIZE;
+#endif
+	err_code = softdevice_enable(&ble_enable_params);
+	APP_ERROR_CHECK(err_code);
+
+	// Subscribe for BLE events.
+	err_code = softdevice_ble_evt_handler_set(ble_evt_dispatch);
+	APP_ERROR_CHECK(err_code);
+}
 
 
 
@@ -668,53 +664,8 @@ static void power_manage(void)
 	APP_ERROR_CHECK(err_code);
 }
 
-// uint8_t spiRead(uint8_t addr)
-// {
-// 	uint8_t address = addr & 0x7F;
-// 	uint8_t buffer[3];
-// 	int length =2;
-// 	buffer[0] = address;
-// 	spi_xfer_done = false;
-// 	APP_ERROR_CHECK(nrf_drv_spi_transfer(&spi, buffer, length, buffer, length));
 
-// 	while (!spi_xfer_done)
-// 	{
-// 		__WFE();
-// 	}
 
-// 	return buffer[1];
-// }
-
-// void spiWrite(uint8_t addr, uint8_t data)
-// {
-// 	uint8_t address = addr | 0x80;
-// 	uint8_t buffer[3];
-// 	buffer[0] = address;
-// 	buffer[1] = data;
-// 	spi_xfer_done = false;
-// 	APP_ERROR_CHECK(nrf_drv_spi_transfer(&spi, buffer, 2, buffer, 2));
-
-// 	while (!spi_xfer_done)
-// 	{
-// 		__WFE();
-// 	}
-// /*
-// 	//read back check
-// 	if(addr != REG_FIFO)
-// 	{
-// 		if(addr != REG_OP_MODE)
-// 		{
-// 			if(addr != REG_IRQ_FLAGS)
-// 			{
-// 				buffer[1] = spiRead(addr);
-// 				if(buffer[1] != data)
-// 				{
-// 					DEBUG_PRINTF("spiWrite ERROR A:%x D:%x != %x\n\r",addr,buffer[1],data);
-// 				}
-// 			}
-// 		}
-// 	}*/
-// }
 
 
 
@@ -783,10 +734,8 @@ int main(void)
 	// ///////////////
 
 	init_queue(&uart_rx_queue,uart_rx_buffer,MAX_QUEUE_SIZE);
-	// init_queue(&ble_rx_queue,ble_rx_buffer,MAX_QUEUE_SIZE);
-	// init_queue(&ble_tx_queue,ble_tx_buffer,MAX_QUEUE_SIZE);
-	// //init_queue(&lora_rx_queue,lora_rx_buffer,MAX_QUEUE_SIZE);
-	// //init_queue(&lora_tx_queue,lora_tx_buffer,MAX_QUEUE_SIZE);
+	init_queue(&ble_rx_queue,ble_rx_buffer,MAX_QUEUE_SIZE);
+	init_queue(&ble_tx_queue,ble_tx_buffer,MAX_QUEUE_SIZE);
 
 
 	nrf_gpio_cfg_output(8);
@@ -809,19 +758,20 @@ int main(void)
 	
 	DEBUG_PRINTF("DW1000 Init\n\r");
 
+	//DW1000.newConfiguration();
 
 
 
 	// DEBUG_PRINTF("BLE Start\n\r");
-	// err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
-	// APP_ERROR_CHECK(err_code);
+	//err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
+	//APP_ERROR_CHECK(err_code);
 
 	// DEBUG_PRINTF("App Loop\n\r");
 	// Enter main loop.
 	for (;;)
 	{
 		//app_loop();
-		//power_manage();  //TODO: fix power management, for now always on. 
+		power_manage();  //TODO: fix power management, for now always on. 
 	}
 }
 

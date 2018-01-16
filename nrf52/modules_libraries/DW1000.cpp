@@ -1359,7 +1359,7 @@ void DW1000Class::readBytes(nrf_drv_spi_t m_spi, uint8_t cmd, uint16_t offset, u
 		}
 	}
 
-	APP_ERROR_CHECK(nrf_drv_spi_transfer(&m_spi, header, 3, data, n));
+	APP_ERROR_CHECK(nrf_drv_spi_transfer(&m_spi, header, headerLen, data, n));
 
 	while (!spi_xfer_done)
 	{
@@ -1403,7 +1403,7 @@ void DW1000Class::readBytesOTP(nrf_drv_spi_t m_spi,uint16_t address, uint8_t dat
  * 		the register).
  */
 void DW1000Class::writeBytes(nrf_drv_spi_t m_spi, uint8_t cmd, uint16_t offset, uint8_t data[], unsigned int n) {
-	uint8_t header[3] = {0,0,0};
+	uint8_t header[1] = {0};
 	int headerLen = 1;
 	uint32_t i;
 	// TODO proper error handling: address out of bounds
@@ -1421,13 +1421,15 @@ void DW1000Class::writeBytes(nrf_drv_spi_t m_spi, uint8_t cmd, uint16_t offset, 
 		}
 	}
 	spi_xfer_done = false;
-	int sendLen = n+3;
+	int sendLen = n+headerLen;
 	uint8_t send_data[sendLen];
-	send_data[0] = header[0];
-	send_data[1] = header[1];
-	send_data[2] = header[2];
 	for(i = 0; i < n; i++) {
-		send_data[3+i] = data[i];
+		if(i<headerLen){
+			send_data[i] = header[i];
+		}
+		else{
+			send_data[i] = data[i-headerLen];
+		}
 	}
 	uint8_t buffer[2];
 	APP_ERROR_CHECK(nrf_drv_spi_transfer(&m_spi, send_data, sendLen, buffer, 2));
@@ -1440,7 +1442,7 @@ void DW1000Class::writeBytes(nrf_drv_spi_t m_spi, uint8_t cmd, uint16_t offset, 
 
 
 
-void DW1000Class::getPrettyBytes(uint8_t data[], char msgBuffer[], unsigned int n) {
+void DW1000Class::getPrettyBytes(nrf_drv_spi_t m_spi,uint8_t data[], char msgBuffer[], unsigned int n) {
 	unsigned int i, j, b;
 	b = sprintf(msgBuffer, "Data, bytes: %d\nB: 7 6 5 4 3 2 1 0\n", n);
 	for(i = 0; i < n; i++) {
@@ -1462,10 +1464,10 @@ void DW1000Class::getPrettyBytes(uint8_t data[], char msgBuffer[], unsigned int 
 	msgBuffer[b++] = '\0';
 }
 
-void DW1000Class::getPrettyBytes(uint8_t cmd, uint16_t offset, char msgBuffer[], unsigned int n) {
+void DW1000Class::getPrettyBytes(nrf_drv_spi_t m_spi, uint8_t cmd, uint16_t offset, char msgBuffer[], unsigned int n) {
 	unsigned int i, j, b;
 	uint8_t* readBuf = (uint8_t*)malloc(n);
-	readBytes(spi, cmd, offset, readBuf, n);
+	readBytes(m_spi, cmd, offset, readBuf, n);
 	b = sprintf(msgBuffer, "Reg: 0x%02x, bytes: %d\nB: 7 6 5 4 3 2 1 0\n", cmd, n);
 	for(i = 0; i < n; i++) {
 		uint8_t curByte = readBuf[i];
