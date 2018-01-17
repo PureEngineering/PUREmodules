@@ -17,7 +17,6 @@
 
 
 #include "bsp_btn_ble.h"
-#include "nrf_drv_spi.h"
 #include "DW1000Time.h"
 #include "DW1000.h"
 #include "nrf_drv_spi.h"
@@ -764,7 +763,7 @@ int main(void)
 	DW1000.newConfiguration(); //TODO: Fix this function
 	DW1000.setDeviceAddress(5);
   	DW1000.setNetworkId(10);
-  	//DW1000.commitConfiguration();  //TODO: Set this function working
+  	DW1000.commitConfiguration();  //TODO: Set this function working
 
 
 	// DEBUG_PRINTF("BLE Start\n\r");
