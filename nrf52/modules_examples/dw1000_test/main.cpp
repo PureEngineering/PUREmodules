@@ -22,6 +22,7 @@
 #include "DW1000.h"
 #include "nrf_drv_spi.h"
 #include "main.h"
+#include "nrf_delay.h"
 
 
 
@@ -660,11 +661,11 @@ static void buttons_leds_init(bool * p_erase_bonds)
 
 /**@brief Function for placing the application in low power state while waiting for events.
 */
-static void power_manage(void)
-{
-	uint32_t err_code = sd_app_evt_wait();
-	APP_ERROR_CHECK(err_code);
-}
+//static void power_manage(void)
+//{
+//	uint32_t err_code = sd_app_evt_wait();
+//	APP_ERROR_CHECK(err_code);
+//}
 
 
 
@@ -760,10 +761,10 @@ int main(void)
 	
 	DEBUG_PRINTF("DW1000 Init\n\r");
 
-	DW1000.newConfiguration();
+	DW1000.newConfiguration(); //TODO: Fix this function
 	DW1000.setDeviceAddress(5);
   	DW1000.setNetworkId(10);
-  	DW1000.commitConfiguration();
+  	//DW1000.commitConfiguration();  //TODO: Set this function working
 
 
 	// DEBUG_PRINTF("BLE Start\n\r");
@@ -774,8 +775,17 @@ int main(void)
 	// Enter main loop.
 	for (;;)
 	{
-		//app_loop();
-		power_manage();  //TODO: fix power management, for now always on. 
+		char msg[1024];
+		DW1000.getPrintableDeviceIdentifier(msg);
+		DEBUG_PRINTF("DW1000 Device ID: %x \r\n", msg);
+		DW1000.getPrintableExtendedUniqueIdentifier(msg);
+		DEBUG_PRINTF("DW1000 Unique ID: %x \r\n", msg);
+		DW1000.getPrintableNetworkIdAndShortAddress(msg);
+		DEBUG_PRINTF("DW1000 Network ID & Device address: %x \r\n", msg);
+  		DW1000.getPrintableDeviceMode(msg);
+		DEBUG_PRINTF("DW1000 Device Mode: %x \r\n", msg);
+		nrf_delay_ms(10000);
+
 	}
 }
 

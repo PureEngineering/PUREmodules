@@ -18,7 +18,7 @@ extern "C++" {
 #include "nrf_drv_spi.h"
 
 
-
+#define LEN_STAMP 5
 // enum to determine RX or TX mode of device
 #define IDLE_MODE 0x00
 #define RX_MODE 0x01
@@ -45,6 +45,13 @@ extern "C++" {
 // device configuration register
 #define SYS_CFG 0x04
 #define LEN_SYS_CFG 4
+#define FFEN_BIT 0
+#define FFBC_BIT 1
+#define FFAB_BIT 2
+#define FFAD_BIT 3
+#define FFAA_BIT 4
+#define FFAM_BIT 5
+#define FFAR_BIT 6
 #define FFEN_BIT 0
 #define DIS_DRXB_BIT 12
 #define DIS_STXP_BIT 18
@@ -212,6 +219,8 @@ extern "C++" {
 #define TX_CAL 0x2A
 #define TC_PGDELAY_SUB 0x0B
 #define LEN_TC_PGDELAY 1
+#define TC_SARC 0x00
+#define TC_SARL 0x03
 
 // FS_CTRL (for re-tuning only)
 #define FS_CTRL 0x2B
@@ -222,10 +231,41 @@ extern "C++" {
 #define LEN_FS_PLLTUNE 1
 #define LEN_FS_XTALT 1
 
+// AON
+#define AON 0x2C
+#define AON_WCFG_SUB 0x00
+#define LEN_AON_WCFG 2
+#define ONW_LDC_BIT 6
+#define ONW_LDD0_BIT 12
+#define AON_CTRL_SUB 0x02
+#define LEN_AON_CTRL 1
+#define RESTORE_BIT 0
+#define SAVE_BIT 1
+#define UPL_CFG_BIT 2
+
+#define AON_CFG0_SUB 0x06
+#define LEN_AON_CFG0 4
+#define SLEEP_EN_BIT 0
+#define WAKE_PIN_BIT 1
+#define WAKE_SPI_BIT 2
+#define WAKE_CNT_BIT 3
+
+
 // PMSC
 #define PMSC 0x36
 #define PMSC_CTRL0_SUB 0x00
+#define PMSC_CTRL1_SUB 0x04
+#define PMSC_LEDC_SUB 0x28
 #define LEN_PMSC_CTRL0 4
+#define LEN_PMSC_CTRL1 4
+#define LEN_PMSC_LEDC 4
+#define GPDCE_BIT 18
+#define KHZCLKEN_BIT 23
+#define BLNKEN 8
+
+#define ATXSLP_BIT 11
+#define ARXSLP_BIT 12
+
 
 // TX_ANTD Antenna delays
 #define TX_ANTD 0x18
