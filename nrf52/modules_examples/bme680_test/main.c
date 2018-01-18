@@ -104,10 +104,10 @@ int main(void)
 
 
 	NRF_LOG_RAW_INFO("----- BME680 START -------");
-	
+/*	
     if(!bme680_begin()){
         NRF_LOG_RAW_INFO("BME680 Failed at Begin");
-    } 
+    } */
 
     //bme680_setTemperatureOversampling(BME680_OS_8X);
     //bme680_setHumidityOversampling(BME680_OS_2X);
@@ -116,7 +116,7 @@ int main(void)
     //bme680_setGasHeater(320, 150); // 320*C for 150 ms
 
 
-    while(1){
+    while(1){/*
         if(!bme680_performReading()){
             NRF_LOG_RAW_INFO("BME680 failed to perform reading");
         }
@@ -125,7 +125,7 @@ int main(void)
         NRF_LOG_RAW_INFO("BME680 Hum(%): %f \r\n",BME680_data.humidity);
         NRF_LOG_RAW_INFO("BME680 Press(Pa): %f \r\n",BME680_data.pressure);
         NRF_LOG_RAW_INFO("BME680 Gas Res(ohms): %f \r\n",BME680_data.gas_resistance);
-
+*/
 
 
         nrf_delay_ms(2000);
