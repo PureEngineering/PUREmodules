@@ -47,6 +47,7 @@ extern "C++" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
 #include "DW1000Time.h"
 #include "nrf_drv_spi.h"
 
@@ -496,10 +497,12 @@ public:
 	/* transmit and receive configuration. */
 	static DW1000Time setDelay(const DW1000Time& delay);
 	static void receivePermanently(bool val);
-	static void setData(uint8_t data[], unsigned int n);
-	//static void setData(char[] data); //remember to check this
-	static void getData(uint8_t data[], unsigned int n);
-	//static void getData(char[] data);  //remember to check this
+
+	static void setData(uint8_t data[], uint16_t n);
+	static void setData(const std::string& data); //remember to check this
+	static void getData(uint8_t data[], uint16_t n);
+	static void getData(std::string& data);  //remember to check this
+
 	static unsigned int getDataLength();
 	static void getTransmitTimestamp(DW1000Time& time);
 	static void getReceiveTimestamp(DW1000Time& time);
@@ -557,6 +560,15 @@ public:
 	// transmission state
 	static void newTransmit();
 	static void startTransmit();
+
+
+
+
+	//Application Functions/////////////////////////
+	static void printDeviceData();
+
+
+
 
 	/* ##### Operation mode selection ############################################ */
 	/** 

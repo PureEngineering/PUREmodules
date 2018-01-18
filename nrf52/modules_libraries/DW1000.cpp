@@ -37,6 +37,11 @@
 #include "ble_driver.h"
 #include "math.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <string>
+
 #include "DW1000Time.h"
 #include "DW1000.h"
 #include "main.h"
@@ -46,6 +51,9 @@
 //TODO: figure out what these vars are used for
 void *__gxx_personality_v0;
 void *__cxa_end_cleanup;
+
+#define DEBUG_PRINTF(...) printf( __VA_ARGS__); 
+//#define DEBUG_PRINTF(...)
 
 DW1000Class DW1000;
 
@@ -1046,7 +1054,7 @@ void DW1000Class::setDefaults() {
 	}
 }
 
-void DW1000Class::setData(uint8_t  data[], unsigned int n) {
+void DW1000Class::setData(uint8_t  data[], uint16_t n) {
 	if(_frameCheck) {
 		n+=2; // two bytes CRC-16
 	}
@@ -1063,14 +1071,14 @@ void DW1000Class::setData(uint8_t  data[], unsigned int n) {
 	_txfctrl[1] |= (uint8_t )((n >> 8) & 0x03);	// 2 added bits if extended length
 }
 
-/* //TODO
-void DW1000Class::setData(const String& data) {
+//TODO
+void DW1000Class::setData(const std::string& data) {
 	unsigned int n = data.length()+1;
 	uint8_t* dataBytes = (uint8_t*)malloc(n);
 	data.getBytes(dataBytes, n);
 	setData(dataBytes, n);
 	free(dataBytes);
-}*/
+}
 
 unsigned int DW1000Class::getDataLength() {
 	unsigned int len = 0;
@@ -1089,14 +1097,14 @@ unsigned int DW1000Class::getDataLength() {
 	return len;
 }
 
-void DW1000Class::getData(uint8_t data[], unsigned int n) {
+void DW1000Class::getData(uint8_t data[], uint16_t n) {
 	if(n <= 0) {
 		return;
 	}
 	readBytes(spi, RX_BUFFER, NO_SUB, data, n);
 }
-/*  TODO
-void DW1000Class::getData(String& data) {
+//  TODO
+void DW1000Class::getData(std::string& data) {
 	unsigned int i;
 	unsigned int n = getDataLength(); // number of uint8_ts w/o the two FCS ones
 	if(n <= 0) {
@@ -1112,7 +1120,7 @@ void DW1000Class::getData(String& data) {
 		data += (char)dataBytes[i];
 	}
 	free(dataBytes);
-}*/
+}
 
 void DW1000Class::getTransmitTimestamp(DW1000Time& time) {
 	uint8_t txTimeBytes[LEN_TX_STAMP];
@@ -1518,3 +1526,22 @@ void DW1000Class::getPrettyBytes(nrf_drv_spi_t m_spi, uint8_t cmd, uint16_t offs
 	msgBuffer[b++] = '\0';
 	free(readBuf);
 }
+
+
+void DW1000Class::printDeviceData(){
+	char msg[1024];
+	DW1000.getPrintableDeviceIdentifier(msg);
+	DW1000.getPrintableExtendedUniqueIdentifier(msg);
+	DEBUG_PRINTF("DW1000 Unique ID: %x \r\n", msg);
+	DW1000.getPrintableNetworkIdAndShortAddress(msg);
+	DEBUG_PRINTF("DW1000 Network ID & Device address: %x \r\n", msg);
+	DW1000.getPrintableDeviceMode(msg);
+	DEBUG_PRINTF("DW1000 Device Mode: %x \r\n", msg);
+	nrf_delay_ms(10000);
+}
+
+
+
+
+
+

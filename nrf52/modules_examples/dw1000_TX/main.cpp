@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <string.h>
+#include <string>
 #include "nordic_common.h"
 #include "nrf.h"
 #include "ble_hci.h"
@@ -14,6 +15,11 @@
 #include "nrf_gpio.h"
 #include "app_util_platform.h"
 #include "bsp.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <string>
 
 
 #include "bsp_btn_ble.h"
@@ -712,6 +718,38 @@ static void buttons_leds_init(bool * p_erase_bonds)
 	
 // }
 
+
+
+bool sent = false;
+volatile bool sentAck = false;
+volatile unsigned long delaySent = 0;
+int16_t sentNum = 0;
+DW1000Time sentTime;
+
+
+void handleSent(){
+	sentAck = false;
+}
+
+
+void dw1000TX(){
+	DEBUG_PRINTF("DW1000 TX #: %x \r\n", sentNum);
+	DW1000.newTransmit();
+	DW1000.setDefaults();
+
+	//string testdata = "Hello world :"; 
+	//testdata += sentNum;
+	//DW1000.setData(testdata);
+
+	DW1000Time delayTime = DW1000Time(10, DW1000Time::MILLISECONDS);
+
+	DW1000.setDelay(delayTime);
+	DW1000.startTransmit();
+	//delaySent = millis();
+
+}
+
+
 /**@brief Application main function.
 */
 int main(void)
@@ -760,12 +798,16 @@ int main(void)
 	
 	DEBUG_PRINTF("DW1000 Init\n\r");
 
-	DW1000.newConfiguration(); //TODO: Fix this function
+	DW1000.newConfiguration(); 
+	DW1000.setDefaults();
 	DW1000.setDeviceAddress(5);
   	DW1000.setNetworkId(10);
-  	DW1000.commitConfiguration();  //TODO: Set this function working
+  	DW1000.enableMode(DW1000.MODE_LONGDATA_RANGE_LOWPOWER);
+  	DW1000.commitConfiguration();  
+	DW1000.printDeviceData();
 
-
+	DW1000.attachSentHandler(handleSent);
+	dw1000TX();
 	// DEBUG_PRINTF("BLE Start\n\r");
 	//err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
 	//APP_ERROR_CHECK(err_code);
@@ -774,17 +816,6 @@ int main(void)
 	// Enter main loop.
 	for (;;)
 	{
-		char msg[1024];
-		DW1000.getPrintableDeviceIdentifier(msg);
-		DEBUG_PRINTF("DW1000 Device ID: %x \r\n", msg);
-		DW1000.getPrintableExtendedUniqueIdentifier(msg);
-		DEBUG_PRINTF("DW1000 Unique ID: %x \r\n", msg);
-		DW1000.getPrintableNetworkIdAndShortAddress(msg);
-		DEBUG_PRINTF("DW1000 Network ID & Device address: %x \r\n", msg);
-  		DW1000.getPrintableDeviceMode(msg);
-		DEBUG_PRINTF("DW1000 Device Mode: %x \r\n", msg);
-		nrf_delay_ms(10000);
-
 	}
 }
 
