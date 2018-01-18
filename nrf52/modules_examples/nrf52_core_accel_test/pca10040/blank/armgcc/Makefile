@@ -1,4 +1,4 @@
-PROJECT_NAME     := supersensor
+PROJECT_NAME     := core_test
 TARGETS          := nrf52832_xxaa
 OUTPUT_DIRECTORY := _build
 
@@ -41,13 +41,6 @@ SRC_FILES += \
   $(PROJ_DIR)/main.c \
   $(LIB_DIR)/i2c_driver.c \
   $(LIB_DIR)/lis2de.c \
-  $(LIB_DIR)/vl53l0.c \
-  $(LIB_DIR)/si1153.c \
-  $(LIB_DIR)/lis3mdl.c \
-  $(LIB_DIR)/veml6075.c \
-  $(LIB_DIR)/bme280.c \
-  $(LIB_DIR)/supersensor.c \
-
 
 # Include folders common to all targets
 INC_FOLDERS += \
