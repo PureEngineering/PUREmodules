@@ -1113,7 +1113,8 @@ void DW1000Class::getData(std::string& data) {
 	uint8_t* dataBytes = (uint8_t*)malloc(n);
 	getData(dataBytes, n);
 	// clear string
-	data.remove(0);
+	//data.remove(0);
+	data.erase(data.begin(),data.end());
 	data = "";
 	// append to string
 	for(i = 0; i < n; i++) {
@@ -1328,10 +1329,10 @@ void DW1000Class::setBit(uint8_t data[], unsigned int n, unsigned int bit, bool 
 	if(idx >= n) {
 		return; // TODO proper error handling: out of bounds
 	}
-	uint8_t* targetByte = &data[idx];
-	uint8_t target = data[idx];
+	//uint8_t* targetByte = &data[idx];
+	//uint8_t target = data[idx];
 	shift = bit % 8;
-	uint8_t mask;
+	//uint8_t mask;
 
 	if(val) {
 		data[idx] |= 0x01 << shift;
@@ -1442,7 +1443,7 @@ void DW1000Class::readBytesOTP(nrf_drv_spi_t m_spi,uint16_t address, uint8_t dat
  */
 void DW1000Class::writeBytes(nrf_drv_spi_t m_spi, uint8_t cmd, uint16_t offset, uint8_t data[], unsigned int n) {
 	uint8_t header[1] = {0};
-	int headerLen = 1;
+	uint32_t headerLen = 1;
 	uint32_t i;
 	// TODO proper error handling: address out of bounds
 	if(offset == NO_SUB) {
@@ -1459,7 +1460,7 @@ void DW1000Class::writeBytes(nrf_drv_spi_t m_spi, uint8_t cmd, uint16_t offset, 
 		}
 	}
 	spi_xfer_done = false;
-	int sendLen = n+headerLen;
+	uint32_t sendLen = n+headerLen;
 	uint8_t send_data[sendLen];
 	for(i = 0; i < n; i++) {
 		if(i<headerLen){
@@ -1532,11 +1533,11 @@ void DW1000Class::printDeviceData(){
 	char msg[1024];
 	DW1000.getPrintableDeviceIdentifier(msg);
 	DW1000.getPrintableExtendedUniqueIdentifier(msg);
-	DEBUG_PRINTF("DW1000 Unique ID: %x \r\n", msg);
+	//DEBUG_PRINTF("DW1000 Unique ID: %c \r\n", msg);
 	DW1000.getPrintableNetworkIdAndShortAddress(msg);
-	DEBUG_PRINTF("DW1000 Network ID & Device address: %x \r\n", msg);
+	//DEBUG_PRINTF("DW1000 Network ID & Device address: %c \r\n", msg);
 	DW1000.getPrintableDeviceMode(msg);
-	DEBUG_PRINTF("DW1000 Device Mode: %x \r\n", msg);
+	//DEBUG_PRINTF("DW1000 Device Mode: %c \r\n", msg);
 	nrf_delay_ms(10000);
 }
 

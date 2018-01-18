@@ -733,7 +733,7 @@ void handleSent(){
 
 
 void dw1000TX(){
-	DEBUG_PRINTF("DW1000 TX #: %x \r\n", sentNum);
+	DEBUG_PRINTF("DW1000 TX #: %d \r\n", sentNum);
 	DW1000.newTransmit();
 	DW1000.setDefaults();
 
