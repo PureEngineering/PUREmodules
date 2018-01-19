@@ -719,7 +719,6 @@ static void buttons_leds_init(bool * p_erase_bonds)
 volatile bool received = false;
 volatile bool error = false;
 volatile int16_t numReceived = 0;
-//char message[];
 
 void handleReceived(){
 	received = true;
@@ -729,7 +728,7 @@ void handleError(){
 	error = true;
 }
 
-void receiver(){
+void dw1000RX(){
 	DW1000.newReceive();
 	DW1000.setDefaults();
 	DW1000.receivePermanently(true);
@@ -802,7 +801,7 @@ int main(void)
   	DW1000.attachReceiveFailedHandler(handleError);
   	DW1000.attachErrorHandler(handleError);
 
-  	receiver();
+  	dw1000RX();
 	// DEBUG_PRINTF("BLE Start\n\r");
 	//err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
 	//APP_ERROR_CHECK(err_code);
@@ -815,7 +814,9 @@ int main(void)
 		if(received){
 			numReceived++;
 			//TODO:
-			//DW1000.getData(message);
+			int dataLen = DW1000.getDataLength();
+			uint8_t message[dataLen];
+			DW1000.getData(message,dataLen);
 			DEBUG_PRINTF("Message No: %d \n\r", numReceived);
 			//DEBUG_PRINTF("Message: %s \n\r", message);
 			DEBUG_PRINTF("FP Power[dB]: %f \n\r", DW1000.getFirstPathPower());
@@ -826,8 +827,10 @@ int main(void)
 		if(error){
 			DEBUG_PRINTF("Receieve Error  --- \n\r");
 			error = false;
-			//DW1000.getData(message);
-			//DEBUG_PRINTF("Error Message: %s \n\r", message);
+			int dataLen = DW1000.getDataLength();
+			uint8_t message[dataLen];
+			DW1000.getData(message,dataLen);
+			DEBUG_PRINTF("Error Message: %s \n\r", message);
 
 		}
 

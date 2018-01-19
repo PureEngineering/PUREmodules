@@ -799,7 +799,7 @@ int main(void)
 	DEBUG_PRINTF("DW1000 Reset\n\r");
 	nrf_gpio_pin_dir_set(14,NRF_GPIO_PIN_DIR_INPUT);
 	
-	DEBUG_PRINTF("DW1000 Init\n\r");
+	DEBUG_PRINTF("--------  DW1000 Transmitter Test -----------\n\r");
 
 	DW1000.newConfiguration(); 
 	DW1000.setDefaults();
@@ -807,10 +807,12 @@ int main(void)
   	DW1000.setNetworkId(10);
   	DW1000.enableMode(DW1000.MODE_LONGDATA_RANGE_LOWPOWER);
   	DW1000.commitConfiguration();  
-	DW1000.printDeviceData();
 
+   	DEBUG_PRINTF("--------  DW1000 Transmitter Configured\n\r");
+
+	DW1000.printDeviceData();
 	DW1000.attachSentHandler(handleSent);
-	dw1000TX();
+	//dw1000TX();
 
 
 	// DEBUG_PRINTF("BLE Start\n\r");
