@@ -1071,6 +1071,7 @@ void DW1000Class::setData(uint8_t  data[], uint16_t n) {
 	_txfctrl[1] |= (uint8_t )((n >> 8) & 0x03);	// 2 added bits if extended length
 }
 
+/*
 //TODO
 void DW1000Class::setData(const std::string& data) {
 	unsigned int n = data.length()+1;
@@ -1078,7 +1079,7 @@ void DW1000Class::setData(const std::string& data) {
 	data.getBytes(dataBytes, n);
 	setData(dataBytes, n);
 	free(dataBytes);
-}
+}*/
 
 unsigned int DW1000Class::getDataLength() {
 	unsigned int len = 0;
@@ -1103,6 +1104,8 @@ void DW1000Class::getData(uint8_t data[], uint16_t n) {
 	}
 	readBytes(spi, RX_BUFFER, NO_SUB, data, n);
 }
+
+/*
 //  TODO
 void DW1000Class::getData(std::string& data) {
 	unsigned int i;
@@ -1121,7 +1124,7 @@ void DW1000Class::getData(std::string& data) {
 		data += (char)dataBytes[i];
 	}
 	free(dataBytes);
-}
+}*/
 
 void DW1000Class::getTransmitTimestamp(DW1000Time& time) {
 	uint8_t txTimeBytes[LEN_TX_STAMP];

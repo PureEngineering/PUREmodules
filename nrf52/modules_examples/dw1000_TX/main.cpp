@@ -758,7 +758,7 @@ int main(void)
 
 	nrf_gpio_pin_dir_set(18,NRF_GPIO_PIN_DIR_INPUT);
 	//Initialize.
-	APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
+	APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, 0);
 
 	buttons_leds_init(&erase_bonds);
 	ble_stack_init();
@@ -815,6 +815,9 @@ int main(void)
 	// Enter main loop.
 	for (;;)
 	{
+
+
+
 	}
 }
 

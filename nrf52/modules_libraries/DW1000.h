@@ -499,9 +499,10 @@ public:
 	static void receivePermanently(bool val);
 
 	static void setData(uint8_t data[], uint16_t n);
-	static void setData(const std::string& data); //remember to check this
+	//TODO:
+	//static void setData(const std::string& data); //remember to check this
 	static void getData(uint8_t data[], uint16_t n);
-	static void getData(std::string& data);  //remember to check this
+	//static void getData(std::string& data);  //remember to check this
 
 	static unsigned int getDataLength();
 	static void getTransmitTimestamp(DW1000Time& time);

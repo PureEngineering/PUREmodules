@@ -336,6 +336,7 @@ static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
  *
  * @param[in] p_ble_evt SoftDevice event.
  */
+/*
 static void on_ble_evt(ble_evt_t * p_ble_evt)
 {
 	uint32_t err_code;
@@ -427,6 +428,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
 			break;
 	}
 }
+*/
 
 
 /**@brief Function for dispatching a SoftDevice event to all modules with a SoftDevice
@@ -437,6 +439,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
  *
  * @param[in] p_ble_evt  SoftDevice event.
  */
+/*
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
 	ble_conn_params_on_ble_evt(p_ble_evt);
@@ -445,13 +448,13 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 	ble_advertising_on_ble_evt(p_ble_evt);
 	bsp_btn_ble_on_ble_evt(p_ble_evt);
 
-}
+}*/
 
 
 /**@brief Function for the SoftDevice initialization.
  *
  * @details This function initializes the SoftDevice and the BLE event interrupt.
- */
+ *//*
 static void ble_stack_init(void)
 {
 	uint32_t err_code;
@@ -480,7 +483,7 @@ static void ble_stack_init(void)
 	// Subscribe for BLE events.
 	err_code = softdevice_ble_evt_handler_set(ble_evt_dispatch);
 	APP_ERROR_CHECK(err_code);
-}
+}*/
 
 
 
@@ -712,16 +715,39 @@ static void buttons_leds_init(bool * p_erase_bonds)
 	
 // }
 
+
+volatile bool received = false;
+volatile bool error = false;
+volatile int16_t numReceived = 0;
+//char message[];
+
+void handleReceived(){
+	received = true;
+}
+
+void handleError(){
+	error = true;
+}
+
+void receiver(){
+	DW1000.newReceive();
+	DW1000.setDefaults();
+	DW1000.receivePermanently(true);
+	DW1000.startReceive();
+}
+
+
+
 /**@brief Application main function.
 */
 int main(void)
 {
-	uint32_t err_code;
+	//uint32_t err_code;
 	bool erase_bonds;
 
 	nrf_gpio_pin_dir_set(18,NRF_GPIO_PIN_DIR_INPUT);
 	//Initialize.
-	APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
+	APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, 0);
 
 	buttons_leds_init(&erase_bonds);
 	//ble_stack_init();
@@ -758,14 +784,25 @@ int main(void)
 	DEBUG_PRINTF("DW1000 Reset\n\r");
 	nrf_gpio_pin_dir_set(14,NRF_GPIO_PIN_DIR_INPUT);
 	
-	DEBUG_PRINTF("DW1000 Init\n\r");
+	DEBUG_PRINTF("--------  DW1000 Receiver Test -----------\n\r");
 
-	DW1000.newConfiguration(); //TODO: Fix this function
-	DW1000.setDeviceAddress(5);
+
+	DW1000.newConfiguration();
+	DW1000.setDefaults(); 
+	DW1000.setDeviceAddress(6);
   	DW1000.setNetworkId(10);
-  	DW1000.commitConfiguration();  //TODO: Set this function working
+  	DW1000.enableMode(DW1000.MODE_LONGDATA_RANGE_LOWPOWER);
+  	DW1000.commitConfiguration(); 
 
+  	DEBUG_PRINTF("--------  DW1000 Receiver Configured\n\r");
+ 
 
+  	DW1000.printDeviceData();
+  	DW1000.attachReceivedHandler(handleReceived);
+  	DW1000.attachReceiveFailedHandler(handleError);
+  	DW1000.attachErrorHandler(handleError);
+
+  	receiver();
 	// DEBUG_PRINTF("BLE Start\n\r");
 	//err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
 	//APP_ERROR_CHECK(err_code);
@@ -774,16 +811,27 @@ int main(void)
 	// Enter main loop.
 	for (;;)
 	{
-		char msg[1024];
-		DW1000.getPrintableDeviceIdentifier(msg);
-		DEBUG_PRINTF("DW1000 Device ID: %x \r\n", msg);
-		DW1000.getPrintableExtendedUniqueIdentifier(msg);
-		DEBUG_PRINTF("DW1000 Unique ID: %x \r\n", msg);
-		DW1000.getPrintableNetworkIdAndShortAddress(msg);
-		DEBUG_PRINTF("DW1000 Network ID & Device address: %x \r\n", msg);
-  		DW1000.getPrintableDeviceMode(msg);
-		DEBUG_PRINTF("DW1000 Device Mode: %x \r\n", msg);
-		nrf_delay_ms(10000);
+
+		if(received){
+			numReceived++;
+			//TODO:
+			//DW1000.getData(message);
+			DEBUG_PRINTF("Message No: %d \n\r", numReceived);
+			//DEBUG_PRINTF("Message: %s \n\r", message);
+			DEBUG_PRINTF("FP Power[dB]: %f \n\r", DW1000.getFirstPathPower());
+			DEBUG_PRINTF("RX Power[dB]: %f \n\r", DW1000.getReceivePower());
+			DEBUG_PRINTF("Signal Quality: %f \n\r", DW1000.getReceiveQuality());
+			received = false;
+		}
+		if(error){
+			DEBUG_PRINTF("Receieve Error  --- \n\r");
+			error = false;
+			//DW1000.getData(message);
+			//DEBUG_PRINTF("Error Message: %s \n\r", message);
+
+		}
+
+
 
 	}
 }
