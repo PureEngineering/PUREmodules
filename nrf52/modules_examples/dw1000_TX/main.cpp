@@ -145,7 +145,7 @@ char uart_rx_buffer[MAX_QUEUE_SIZE];
 char ble_rx_buffer[MAX_QUEUE_SIZE];
 char ble_tx_buffer[MAX_QUEUE_SIZE];
 
-char testdata[] = "hello world";
+//char testdata[] = "hello world";
 
 /////////////////////////////
 
@@ -458,6 +458,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
  *
  * @details This function initializes the SoftDevice and the BLE event interrupt.
  */
+/*
 static void ble_stack_init(void)
 {
 	uint32_t err_code;
@@ -486,7 +487,7 @@ static void ble_stack_init(void)
 	// Subscribe for BLE events.
 	err_code = softdevice_ble_evt_handler_set(ble_evt_dispatch);
 	APP_ERROR_CHECK(err_code);
-}
+}*/
 
 
 
@@ -737,7 +738,7 @@ void dw1000TX(){
 	DW1000.newTransmit();
 	DW1000.setDefaults();
 
-	char testdata[] = "Hello world :"; 
+	//char testdata[] = "Hello world :"; 
 	//testdata += sentNum;
 	//DW1000.setData(testdata);
 
@@ -761,7 +762,7 @@ int main(void)
 	APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, 0);
 
 	buttons_leds_init(&erase_bonds);
-	ble_stack_init();
+	//ble_stack_init();
 	gap_params_init();
 	services_init();
 	advertising_init();
@@ -806,7 +807,9 @@ int main(void)
 	DW1000.printDeviceData();
 
 	DW1000.attachSentHandler(handleSent);
-	dw1000TX();
+	//dw1000TX();
+
+
 	// DEBUG_PRINTF("BLE Start\n\r");
 	//err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
 	//APP_ERROR_CHECK(err_code);
