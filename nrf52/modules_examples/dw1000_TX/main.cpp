@@ -737,7 +737,7 @@ void dw1000TX(){
 	DW1000.newTransmit();
 	DW1000.setDefaults();
 
-	//string testdata = "Hello world :"; 
+	char testdata[] = "Hello world :"; 
 	//testdata += sentNum;
 	//DW1000.setData(testdata);
 
@@ -745,7 +745,6 @@ void dw1000TX(){
 
 	DW1000.setDelay(delayTime);
 	DW1000.startTransmit();
-	//delaySent = millis();
 
 }
 
@@ -754,7 +753,7 @@ void dw1000TX(){
 */
 int main(void)
 {
-	uint32_t err_code;
+	//uint32_t err_code;
 	bool erase_bonds;
 
 	nrf_gpio_pin_dir_set(18,NRF_GPIO_PIN_DIR_INPUT);
@@ -762,7 +761,7 @@ int main(void)
 	APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
 
 	buttons_leds_init(&erase_bonds);
-	//ble_stack_init();
+	ble_stack_init();
 	gap_params_init();
 	services_init();
 	advertising_init();
