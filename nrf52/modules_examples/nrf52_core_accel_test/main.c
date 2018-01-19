@@ -14,15 +14,10 @@
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 #include "nrf_delay.h"
-
+#include "ble_driver.h"
 #include "i2c_driver.h"
-#include "lis3mdl.h"
 #include "lis2de.h"
-#include "vl53l0.h"
-#include "si1153.h"
-#include "veml6075.h"
-#include "bme280.h"
-#include "supersensor.h"
+
 
 /**
  * @brief TWI master instance
@@ -62,12 +57,12 @@ static ret_code_t twi_master_init(void)
 }
 
 
+
 /**
  *  The begin of the journey
  */
 int main(void)
 {
-    int i = 0;
     ret_code_t err_code;
     /* Initialization of UART */
     bsp_board_leds_init();
@@ -78,29 +73,15 @@ int main(void)
     err_code = twi_master_init();
     APP_ERROR_CHECK(err_code);
 
-    override_defaut_lis2de_address(Lis2de_CORE_DEVICE_ADDRESS);  ////0x18 for Super Sensor Accel. 0x19 for Nrf52 onboard Accel.
 
     /* Welcome message */
     NRF_LOG_RAW_INFO("\r\nStarted Super Sensor\r\n");
-    NRF_LOG_FLUSH();   
-    //test_SuperSensor_init(m_twi_master); 
     lis2de_init(m_twi_master);
-    NRF_LOG_FLUSH();   
 
-    NRF_LOG_FLUSH();   
-
+    NRF_LOG_FLUSH();
     while (1)
     {
-
-    NRF_LOG_FLUSH();   
-    NRF_LOG_RAW_INFO("%d------------------------\r\n",i++);
-    nrf_delay_ms(1000);
-
-    run_lis2de(m_twi_master);
-    bsp_board_led_invert(0);
-
-
-
-   NRF_LOG_FLUSH();
+        run_lis2de(m_twi_master);
+        NRF_LOG_FLUSH();
     }
 }

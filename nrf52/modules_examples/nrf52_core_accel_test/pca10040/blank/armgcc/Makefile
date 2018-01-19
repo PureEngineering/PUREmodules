@@ -1,4 +1,4 @@
-PROJECT_NAME     := supersensor
+PROJECT_NAME     := core_test
 TARGETS          := nrf52832_xxaa
 OUTPUT_DIRECTORY := _build
 
@@ -13,6 +13,7 @@ $(OUTPUT_DIRECTORY)/nrf52832_xxaa.out: \
 # Source files common to all targets
 SRC_FILES += \
   $(SDK_ROOT)/components/libraries/log/src/nrf_log_backend_serial.c \
+  $(SDK_ROOT)/components/ble/ble_services/ble_nus/ble_nus.c \
   $(SDK_ROOT)/components/libraries/log/src/nrf_log_frontend.c \
   $(SDK_ROOT)/components/libraries/button/app_button.c \
   $(SDK_ROOT)/components/libraries/util/app_error.c \
@@ -39,19 +40,14 @@ SRC_FILES += \
   $(SDK_ROOT)/components/toolchain/system_nrf52.c \
   $(PROJ_DIR)/main.c \
   $(LIB_DIR)/i2c_driver.c \
-  $(LIB_DIR)/lis3mdl.c \
   $(LIB_DIR)/lis2de.c \
-  $(LIB_DIR)/vl53l0.c \
-  $(LIB_DIR)/si1153.c \
-  $(LIB_DIR)/veml6075.c \
-  $(LIB_DIR)/bme280.c \
-
-
-
 
 # Include folders common to all targets
 INC_FOLDERS += \
   $(SDK_ROOT)/components \
+  $(SDK_ROOT)/components/ble/ble_services/ble_nus \
+  $(SDK_ROOT)/components/softdevice/s132/headers \
+  $(SDK_ROOT)/components/ble/common \
   $(SDK_ROOT)/components/drivers_nrf/twi_master \
   $(SDK_ROOT)/components/libraries/fifo \
   $(SDK_ROOT)/components/drivers_nrf/delay \
@@ -76,7 +72,7 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/drivers_nrf/common \
   $(SDK_ROOT)/components/drivers_nrf/twis_slave \
   $(SDK_ROOT)/components/libraries/log/src \
-  $(LIB_DIR) \
+  $(LIB_DIR)  \
 
 # Libraries common to all targets
 LIB_FILES += \

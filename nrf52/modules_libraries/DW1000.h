@@ -1,3 +1,36 @@
+/*
+ * Copyright (c) 2015 by Thomas Trojer <thomas@trojer.net>
+ * Decawave DW1000 library for arduino.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @file DW1000.h
+ * Arduino driver library (header file) for the Decawave DW1000 UWB transceiver IC.
+ * 
+ * @todo
+ * - impl: later:
+ * - TXBOFFS in TX_FCTRL for offset buffer transmit
+ * - TR in TX_FCTRL for flagging for ranging messages
+ * - CANSFCS in SYS_CTRL to cancel frame check suppression
+ * - HSRBP in SYS_CTRL to determine in double buffered mode from which buffer to read
+ */
+
+/*
+*   All arduino dependencies and code changes for use with nrf52
+*
+*/
+
+
 #ifndef DW1000_H
 #define DW1000_H
 
@@ -14,11 +47,12 @@ extern "C++" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
 #include "DW1000Time.h"
 #include "nrf_drv_spi.h"
 
 
-
+#define LEN_STAMP 5
 // enum to determine RX or TX mode of device
 #define IDLE_MODE 0x00
 #define RX_MODE 0x01
@@ -45,6 +79,13 @@ extern "C++" {
 // device configuration register
 #define SYS_CFG 0x04
 #define LEN_SYS_CFG 4
+#define FFEN_BIT 0
+#define FFBC_BIT 1
+#define FFAB_BIT 2
+#define FFAD_BIT 3
+#define FFAA_BIT 4
+#define FFAM_BIT 5
+#define FFAR_BIT 6
 #define FFEN_BIT 0
 #define DIS_DRXB_BIT 12
 #define DIS_STXP_BIT 18
@@ -212,6 +253,8 @@ extern "C++" {
 #define TX_CAL 0x2A
 #define TC_PGDELAY_SUB 0x0B
 #define LEN_TC_PGDELAY 1
+#define TC_SARC 0x00
+#define TC_SARL 0x03
 
 // FS_CTRL (for re-tuning only)
 #define FS_CTRL 0x2B
@@ -222,10 +265,41 @@ extern "C++" {
 #define LEN_FS_PLLTUNE 1
 #define LEN_FS_XTALT 1
 
+// AON
+#define AON 0x2C
+#define AON_WCFG_SUB 0x00
+#define LEN_AON_WCFG 2
+#define ONW_LDC_BIT 6
+#define ONW_LDD0_BIT 12
+#define AON_CTRL_SUB 0x02
+#define LEN_AON_CTRL 1
+#define RESTORE_BIT 0
+#define SAVE_BIT 1
+#define UPL_CFG_BIT 2
+
+#define AON_CFG0_SUB 0x06
+#define LEN_AON_CFG0 4
+#define SLEEP_EN_BIT 0
+#define WAKE_PIN_BIT 1
+#define WAKE_SPI_BIT 2
+#define WAKE_CNT_BIT 3
+
+
 // PMSC
 #define PMSC 0x36
 #define PMSC_CTRL0_SUB 0x00
+#define PMSC_CTRL1_SUB 0x04
+#define PMSC_LEDC_SUB 0x28
 #define LEN_PMSC_CTRL0 4
+#define LEN_PMSC_CTRL1 4
+#define LEN_PMSC_LEDC 4
+#define GPDCE_BIT 18
+#define KHZCLKEN_BIT 23
+#define BLNKEN 8
+
+#define ATXSLP_BIT 11
+#define ARXSLP_BIT 12
+
 
 // TX_ANTD Antenna delays
 #define TX_ANTD 0x18
@@ -423,10 +497,12 @@ public:
 	/* transmit and receive configuration. */
 	static DW1000Time setDelay(const DW1000Time& delay);
 	static void receivePermanently(bool val);
-	static void setData(uint8_t data[], unsigned int n);
-	//static void setData(char[] data); //remember to check this
-	static void getData(uint8_t data[], unsigned int n);
-	//static void getData(char[] data);  //remember to check this
+
+	static void setData(uint8_t data[], uint16_t n);
+	static void setData(const std::string& data); //remember to check this
+	static void getData(uint8_t data[], uint16_t n);
+	static void getData(std::string& data);  //remember to check this
+
 	static unsigned int getDataLength();
 	static void getTransmitTimestamp(DW1000Time& time);
 	static void getReceiveTimestamp(DW1000Time& time);
@@ -485,6 +561,15 @@ public:
 	static void newTransmit();
 	static void startTransmit();
 
+
+
+
+	//Application Functions/////////////////////////
+	static void printDeviceData();
+
+
+
+
 	/* ##### Operation mode selection ############################################ */
 	/** 
 	Specifies the mode of operation for the DW1000. Modes of operation are pre-defined
@@ -513,8 +598,8 @@ public:
 	static void setDefaults();
 
 	/* debug pretty print registers. */
-	static void getPrettyBytes(uint8_t cmd, uint16_t offset, char msgBuffer[], unsigned int n);
-	static void getPrettyBytes(uint8_t data[], char msgBuffer[], unsigned int n);
+	static void getPrettyBytes(nrf_drv_spi_t m_spi, uint8_t cmd, uint16_t offset, char msgBuffer[], unsigned int n);
+	static void getPrettyBytes(nrf_drv_spi_t m_spi, uint8_t data[], char msgBuffer[], unsigned int n);
 
 	// transmission/reception bit rate
 	static const uint8_t TRX_RATE_110KBPS = 0x00;
@@ -676,7 +761,7 @@ private:
 
 	/* reading and writing bytes from and to DW1000 module. */
 	static void readBytes(nrf_drv_spi_t spi, uint8_t cmd, uint16_t offset, uint8_t data[], unsigned int n);
-	static void readBytesOTP(uint16_t address, uint8_t data[]);
+	static void readBytesOTP(nrf_drv_spi_t spi, uint16_t address, uint8_t data[]);
 	static void writeBytes(nrf_drv_spi_t spi, uint8_t cmd, uint16_t offset, uint8_t data[], unsigned int n);
 
 	/* writing numeric values to bytes. */

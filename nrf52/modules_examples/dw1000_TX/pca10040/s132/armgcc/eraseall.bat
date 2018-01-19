@@ -1,0 +1,1 @@
+nrfjprog --eraseall --family NRF52

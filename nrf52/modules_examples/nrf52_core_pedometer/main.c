@@ -14,7 +14,7 @@
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 #include "nrf_delay.h"
-
+#include "ble_driver.h"
 #include "i2c_driver.h"
 #include "lis3mdl.h"
 #include "lis2de.h"
