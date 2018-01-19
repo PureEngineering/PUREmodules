@@ -342,6 +342,7 @@ static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
  *
  * @param[in] p_ble_evt SoftDevice event.
  */
+/*
 static void on_ble_evt(ble_evt_t * p_ble_evt)
 {
 	uint32_t err_code;
@@ -433,7 +434,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
 			break;
 	}
 }
-
+*/
 
 /**@brief Function for dispatching a SoftDevice event to all modules with a SoftDevice
  *        event handler.
@@ -442,7 +443,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
  *          SoftDevice event has been received.
  *
  * @param[in] p_ble_evt  SoftDevice event.
- */
+ *//*
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
 	ble_conn_params_on_ble_evt(p_ble_evt);
@@ -451,7 +452,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 	ble_advertising_on_ble_evt(p_ble_evt);
 	bsp_btn_ble_on_ble_evt(p_ble_evt);
 
-}
+}*/
 
 
 /**@brief Function for the SoftDevice initialization.
@@ -738,9 +739,11 @@ void dw1000TX(){
 	DW1000.newTransmit();
 	DW1000.setDefaults();
 
-	//char testdata[] = "Hello world :"; 
-	//testdata += sentNum;
-	//DW1000.setData(testdata);
+	char senddata[16];
+	sprintf(senddata, "Hello world: %d", sentNum);
+	DEBUG_PRINTF("DW1000 sendata: %s \r\n", senddata);
+
+	DW1000.setData((uint8_t*)senddata,16);
 
 	DW1000Time delayTime = DW1000Time(10, DW1000Time::MILLISECONDS);
 
@@ -807,7 +810,7 @@ int main(void)
 	DW1000.printDeviceData();
 
 	DW1000.attachSentHandler(handleSent);
-	//dw1000TX();
+	dw1000TX();
 
 
 	// DEBUG_PRINTF("BLE Start\n\r");
@@ -827,10 +830,8 @@ int main(void)
 		DW1000Time newSentTime;
 		DW1000.getTransmitTimestamp(newSentTime);
 		DEBUG_PRINTF("Processed packet # %d \n\r", sentNum);
-		//DEBUG_PRINTF("Sent timestamp %d \n\r", newSentTime.getAsMicroSeconds());
-		//DEBUG_PRINTF("Dw1000 delta send time(ms)%d \n\r", newSentTime.getAsMicroSeconds()-sentTime.getAsMicroSeconds() );
-
-
+		DEBUG_PRINTF("Sent timestamp %lld \n\r", newSentTime.getTimestamp());
+		DEBUG_PRINTF("Dw1000 delta send time(ms)%lld \n\r", newSentTime.getTimestamp()-sentTime.getTimestamp() );
 		sentTime = newSentTime;
 		sentNum++;
 		dw1000TX();
