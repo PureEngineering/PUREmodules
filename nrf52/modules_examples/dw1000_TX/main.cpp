@@ -819,6 +819,21 @@ int main(void)
 	for (;;)
 	{
 
+		if(!sentAck){
+			return -1;
+		}
+
+		sentAck = false;
+		DW1000Time newSentTime;
+		DW1000.getTransmitTimestamp(newSentTime);
+		DEBUG_PRINTF("Processed packet # %d \n\r", sentNum);
+		//DEBUG_PRINTF("Sent timestamp %d \n\r", newSentTime.getAsMicroSeconds());
+		//DEBUG_PRINTF("Dw1000 delta send time(ms)%d \n\r", newSentTime.getAsMicroSeconds()-sentTime.getAsMicroSeconds() );
+
+
+		sentTime = newSentTime;
+		sentNum++;
+		dw1000TX();
 
 
 	}
