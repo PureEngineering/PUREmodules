@@ -20,8 +20,6 @@
  * DW1000 UWB transceiver IC.
  */
 
-
-
 #include "DW1000Time.h"
 #include "math.h"
 #include <string.h>

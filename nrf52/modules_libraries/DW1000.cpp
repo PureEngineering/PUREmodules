@@ -23,10 +23,6 @@
 *
 */
 
-
-
-#include "DW1000Time.h"
-
 #define NRF_LOG_MODULE_NAME "APP"
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
@@ -1470,7 +1466,9 @@ void DW1000Class::writeBytes(nrf_drv_spi_t m_spi, uint8_t cmd, uint16_t offset, 
 			send_data[i] = header[i];
 		}
 		else{
-			send_data[i] = data[i-headerLen];
+			uint32_t dataindex = i - headerLen;
+			send_data[i] = data[dataindex];
+
 		}
 	}
 	uint8_t buffer[2];
