@@ -133,13 +133,16 @@ int get_queue(queue *q,char *x)
 queue uart_rx_queue;
 queue ble_rx_queue;
 queue ble_tx_queue;
+queue tx_queue;
+queue rx_queue;
 
 #define MAX_QUEUE_SIZE (22)
 char uart_rx_buffer[MAX_QUEUE_SIZE];
 char ble_rx_buffer[MAX_QUEUE_SIZE];
 char ble_tx_buffer[MAX_QUEUE_SIZE];
+char tx_buffer[MAX_QUEUE_SIZE];
+char rx_buffer[MAX_QUEUE_SIZE];
 
-char testdata[] = "hello world";
 
 /////////////////////////////
 
@@ -204,7 +207,7 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
 {
 	for (uint32_t i = 0; i < length; i++)
 	{
-		//put_queue(&ble_rx_queue,p_data[i]);
+		put_queue(&ble_rx_queue,p_data[i]);
 
 		//TODO: code to handle UART
 
@@ -336,7 +339,6 @@ static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
  *
  * @param[in] p_ble_evt SoftDevice event.
  */
-/*
 static void on_ble_evt(ble_evt_t * p_ble_evt)
 {
 	uint32_t err_code;
@@ -428,7 +430,6 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
 			break;
 	}
 }
-*/
 
 
 /**@brief Function for dispatching a SoftDevice event to all modules with a SoftDevice
@@ -439,7 +440,6 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
  *
  * @param[in] p_ble_evt  SoftDevice event.
  */
-/*
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
 	ble_conn_params_on_ble_evt(p_ble_evt);
@@ -448,13 +448,13 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 	ble_advertising_on_ble_evt(p_ble_evt);
 	bsp_btn_ble_on_ble_evt(p_ble_evt);
 
-}*/
+}
 
 
 /**@brief Function for the SoftDevice initialization.
  *
  * @details This function initializes the SoftDevice and the BLE event interrupt.
- *//*
+ */
 static void ble_stack_init(void)
 {
 	uint32_t err_code;
@@ -483,7 +483,7 @@ static void ble_stack_init(void)
 	// Subscribe for BLE events.
 	err_code = softdevice_ble_evt_handler_set(ble_evt_dispatch);
 	APP_ERROR_CHECK(err_code);
-}*/
+}
 
 
 
@@ -674,27 +674,26 @@ static void buttons_leds_init(bool * p_erase_bonds)
 
 
 
-// void bleTxProcessQueue(void)
-// {
-// 	char rxChar;
-// 	int numToSend = 0;
-// 	uint8_t send_buffer[50];
+ void bleTxProcessQueue(void)
+ {
+ 	char rxChar;
+ 	int numToSend = 0;
+ 	uint8_t send_buffer[50];
+ 	while(get_queue(&ble_tx_queue,&rxChar) )
+ 	{
+ 		send_buffer[numToSend++] = rxChar;
 
-// 	while(get_queue(&ble_tx_queue,&rxChar) )
-// 	{
-// 		send_buffer[numToSend++] = rxChar;
+ 		if(numToSend >= 20)
+ 		{
+ 			break;
+ 		}
+ 	}
 
-// 		if(numToSend >= 20)
-// 		{
-// 			break;
-// 		}
-// 	}
-
-// 	if(numToSend)
-// 	{
-// 		ble_nus_string_send(&m_nus, send_buffer, numToSend);
-// 	}
-// }
+ 	if(numToSend)
+ 	{
+ 		ble_nus_string_send(&m_nus, send_buffer, numToSend);
+ 	}
+ }
 
 // void app_loop(void)
 // {
@@ -833,8 +832,6 @@ int main(void)
 			DEBUG_PRINTF("Error Message: %s \n\r", message);
 
 		}
-
-
 
 	}
 }
