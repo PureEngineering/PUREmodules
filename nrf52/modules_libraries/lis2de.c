@@ -94,7 +94,7 @@ uint8_t run_lis2de(nrf_drv_twi_t twi_master){
 }
 
 
-/*
+
 uint8_t run_lis2de_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
 	uint8_t length = 13;
 	uint8_t *ble_string[length];
@@ -119,7 +119,7 @@ uint8_t run_lis2de_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus){
     send_ble_data(m_nus,(uint8_t *)ble_string,length);
 	return who_am_i;
 
-}*/
+}
 
 uint8_t lis2de_init(nrf_drv_twi_t twi_master){
 

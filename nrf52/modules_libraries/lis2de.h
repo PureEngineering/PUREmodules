@@ -104,7 +104,7 @@ void override_defaut_lis2de_address(uint8_t new_address);
 void Lis2de_setup(void);
 void Lis2de_begin(nrf_drv_twi_t twi_master);
 uint8_t run_lis2de(nrf_drv_twi_t twi_master);
-//uint8_t run_lis2de_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus);
+uint8_t run_lis2de_ble(nrf_drv_twi_t twi_master,ble_nus_t m_nus);
 
 uint8_t lis2de_init(nrf_drv_twi_t twi_master);
 bool lis2de_pass(nrf_drv_twi_t twi_master);
