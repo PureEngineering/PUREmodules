@@ -42,6 +42,8 @@
 #define APP_ADV_INTERVAL                64                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS      180                                         /**< The advertising timeout (in units of seconds). */
 
+#define APP_ADV_INTERVAL_SLOW             0x0664
+
 #define APP_TIMER_PRESCALER             0                                           /**< Value of the RTC1 PRESCALER register. */
 #define APP_TIMER_OP_QUEUE_SIZE         4                                           /**< Size of timer operation queues. */
 
@@ -204,6 +206,7 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
 {
 	for (uint32_t i = 0; i < length; i++)
 	{
+		app_uart_put(p_data[0]);
 		//put_queue(&ble_rx_queue,p_data[i]);
 
 		//TODO: code to handle UART
@@ -633,6 +636,11 @@ static void advertising_init(void)
 	options.ble_adv_fast_interval = APP_ADV_INTERVAL;
 	options.ble_adv_fast_timeout  = APP_ADV_TIMEOUT_IN_SECONDS;
 
+	//TODO: check these 3 lines
+    options.ble_adv_slow_enabled  = true;
+    options.ble_adv_slow_interval = APP_ADV_INTERVAL_SLOW;
+    options.ble_adv_slow_timeout  = 0;
+
 	err_code = ble_advertising_init(&advdata, &scanrsp, &options, on_adv_evt, NULL);
 	APP_ERROR_CHECK(err_code);
 }
@@ -645,11 +653,12 @@ static void advertising_init(void)
 static void buttons_leds_init(bool * p_erase_bonds)
 {
 	bsp_event_t startup_event;
-
-	uint32_t err_code = bsp_init(BSP_INIT_LED | BSP_INIT_BUTTONS,
-			APP_TIMER_TICKS(100, APP_TIMER_PRESCALER),
-			bsp_event_handler);
-	APP_ERROR_CHECK(err_code);
+	uint32_t err_code;
+	//TODO: uncomment this code
+	//uint32_t err_code = bsp_init(BSP_INIT_LED | BSP_INIT_BUTTONS,
+	//		APP_TIMER_TICKS(100, APP_TIMER_PRESCALER),
+	//		bsp_event_handler);
+	//APP_ERROR_CHECK(err_code);
 
 	err_code = bsp_btn_ble_init(NULL, &startup_event);
 	APP_ERROR_CHECK(err_code);
@@ -671,46 +680,45 @@ static void buttons_leds_init(bool * p_erase_bonds)
 
 
 
-// void bleTxProcessQueue(void)
-// {
-// 	char rxChar;
-// 	int numToSend = 0;
-// 	uint8_t send_buffer[50];
+void bleTxProcessQueue(void)
+{
+	char rxChar;
+	int numToSend = 0;
+	uint8_t send_buffer[50];
 
-// 	while(get_queue(&ble_tx_queue,&rxChar) )
-// 	{
-// 		send_buffer[numToSend++] = rxChar;
+	while(get_queue(&ble_tx_queue,&rxChar) )
+	{
+		send_buffer[numToSend++] = rxChar;
+		if(numToSend >= 20)
+		{
+			break;
+		}
+	}
 
-// 		if(numToSend >= 20)
-// 		{
-// 			break;
-// 		}
-// 	}
+	if(numToSend)
+	{
+		ble_nus_string_send(&m_nus, send_buffer, numToSend);
+	}
+}
 
-// 	if(numToSend)
-// 	{
-// 		ble_nus_string_send(&m_nus, send_buffer, numToSend);
-// 	}
-// }
-
-// void app_loop(void)
-// {
-// 	char rxChar;
+void app_loop(void)
+{
+	char rxChar;
 
 
-// 	while(get_queue(&uart_rx_queue,&rxChar) )
-// 	{
-// 		put_queue(&ble_tx_queue,rxChar);
-// 	}
-// 	bleTxProcessQueue();
+	while(get_queue(&uart_rx_queue,&rxChar) )
+	{
+		put_queue(&ble_tx_queue,rxChar);
+	}
+	bleTxProcessQueue();
 
-// 	while(get_queue(&ble_rx_queue,&rxChar) )
-// 	{
-// 		app_uart_put(rxChar);
-// 	}
+	while(get_queue(&ble_rx_queue,&rxChar) )
+	{
+		app_uart_put(rxChar);
+	}
 
 	
-// }
+}
 
 /**@brief Application main function.
 */
@@ -721,14 +729,15 @@ int main(void)
 
 	nrf_gpio_pin_dir_set(18,NRF_GPIO_PIN_DIR_INPUT);
 	//Initialize.
-	APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
+	//APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
 
 	buttons_leds_init(&erase_bonds);
-	//ble_stack_init();
+	ble_stack_init();
 	gap_params_init();
 	services_init();
 	advertising_init();
 	conn_params_init();
+	bsp_board_leds_init();
 	
 	uart_init();
 	DEBUG_PRINTF("\n\rOFC\n\r");
@@ -750,8 +759,10 @@ int main(void)
 	spi_config.mosi_pin = SPI_MOSI_PIN;
 	spi_config.sck_pin  = SPI_SCK_PIN;
 
-	APP_ERROR_CHECK(nrf_drv_spi_init(&spi, &spi_config, spi_event_handler));
-	
+
+	err_code = nrf_drv_spi_init(&spi, &spi_config, spi_event_handler);
+	APP_ERROR_CHECK(err_code);
+
 	//Set output on pin 14
 	nrf_gpio_pin_dir_set(14,NRF_GPIO_PIN_DIR_OUTPUT);
 	nrf_gpio_pin_set(14);  
@@ -760,10 +771,10 @@ int main(void)
 	
 	DEBUG_PRINTF("DW1000 Init\n\r");
 
-	DW1000.newConfiguration(); //TODO: Fix this function
+	DW1000.newConfiguration(); 
 	DW1000.setDeviceAddress(5);
   	DW1000.setNetworkId(10);
-  	DW1000.commitConfiguration();  //TODO: Set this function working
+  	DW1000.commitConfiguration();  
 
 
 	// DEBUG_PRINTF("BLE Start\n\r");
@@ -774,6 +785,7 @@ int main(void)
 	// Enter main loop.
 	for (;;)
 	{
+		/*
 		char msg[1024];
 		DW1000.getPrintableDeviceIdentifier(msg);
 		DEBUG_PRINTF("DW1000 Device ID: %x \r\n", msg);
@@ -782,8 +794,11 @@ int main(void)
 		DW1000.getPrintableNetworkIdAndShortAddress(msg);
 		DEBUG_PRINTF("DW1000 Network ID & Device address: %x \r\n", msg);
   		DW1000.getPrintableDeviceMode(msg);
-		DEBUG_PRINTF("DW1000 Device Mode: %x \r\n", msg);
+		DEBUG_PRINTF("DW1000 Device Mode: %x \r\n", msg);*/
 		nrf_delay_ms(10000);
+		DEBUG_PRINTF("DW1000 Device Mode: \r\n");
+
+		//app_loop();
 
 	}
 }
