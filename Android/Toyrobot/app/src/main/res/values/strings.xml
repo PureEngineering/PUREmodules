@@ -1,4 +1,0 @@
-<resources>
-    <string name="app_name">Toyrobot</string>
-    <string name = "ble_not_supported">BLE is not supported</string>
-</resources>
