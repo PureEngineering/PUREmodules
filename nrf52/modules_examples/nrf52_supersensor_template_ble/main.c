@@ -179,12 +179,18 @@ static void gap_params_init(void)
 static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
 {
     app_uart_put(p_data[0]);
+    uint8_t lengthble = 13;
+    uint8_t *ble_string[lengthble];
     //Parses the input from the android app to turn on or off
     //the different sensors. 
     switch (p_data[0])
     {
         case LIS2DE_ON_MESSAGE:
+
             lis2de_init(m_twi_master);
+            uint8_t id = lis2de_whoami(m_twi_master);
+            sprintf((char *)ble_string, "lis2deid: %d \r\n",id);
+            send_ble_data(m_nus,(uint8_t *)ble_string,lengthble);
             lis2de_on = true;
             break;
 
