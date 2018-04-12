@@ -53,7 +53,7 @@ static ret_code_t twi_master_init(void)
     ret_code_t ret;
     const nrf_drv_twi_config_t config =
     {
-       .scl                = TWI_SCL_M,
+       .scl                = TWI_SCL_M,  
        .sda                = TWI_SDA_M,
        .frequency          = NRF_TWI_FREQ_400K,
        .interrupt_priority = APP_IRQ_PRIORITY_HIGH,
