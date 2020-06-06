@@ -21,7 +21,7 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:id="@+id/imageView"
-                android:src="@drawable/ic_action_network_cell"
+                android:src="@mipmap/ic_action_network_cell"
                 android:cropToPadding="false"
                 android:focusableInTouchMode="false"
                 android:layout_gravity="center"

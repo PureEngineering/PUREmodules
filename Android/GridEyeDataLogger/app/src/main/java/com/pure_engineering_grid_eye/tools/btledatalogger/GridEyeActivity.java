@@ -1,10 +1,11 @@
 package com.pure_engineering_grid_eye.tools.btledatalogger;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-public class GridEyeActivity extends ActionBarActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class GridEyeActivity extends AppCompatActivity {
 
     DrawingSquares v;
     @Override
