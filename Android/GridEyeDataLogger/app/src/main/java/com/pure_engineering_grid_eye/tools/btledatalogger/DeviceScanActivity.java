@@ -59,6 +59,7 @@ public class DeviceScanActivity extends BaseActivity {
             return;
         }
 
+
         // initialize the device list
         bluetoothDevices = new ArrayList<BluetoothDevice>();
         deviceRSSIs = new HashMap<BluetoothDevice, Integer>();
